@@ -26,7 +26,28 @@ class ParkingSpot {
 	 */
 	private $placardNumber;
 
-	//constructor
+	/**
+	 * constructor for this parkingSpot
+	 *
+	 * @param mixed $newParkingSpotId parkingSpotId or null if new
+	 * @param int $newLocationId locationId associated with this parkingSpotId
+	 * @param string $newPlacardNumber placardNumber associated with this parkingSpotId
+	 * @throws InvalidArgumentException if data types are not valid
+	 * @throws RangeException if data values are out of bounds
+	 */
+	public function __construct($newParkingSpotId, $newLocationId, $newPlacardId = null) {
+		try {
+			$this->setParkingSpotId($newParkingSpotId);
+			$this->setLocationId($newLocationId);
+			$this->newPlacardId($newPlacardId);
+		} catch(InvalidArgumentException $invalidArgument) {
+			// rethrow exception to caller
+			throw(new InvalidArgumentException($invalidArgument->getMessage(), 0, $invalidArgument));
+		} catch(RangeException $range) {
+			// rethrow exception to caller
+			throw(new RangeException($range->getMessage(), 0, $range));
+		}
+	}
 
 	/**
 	 * accessor method for parkingSpotId
