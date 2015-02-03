@@ -33,19 +33,19 @@ class Visitor {
 	 *
 	 * @param mixed $newVisitorId id of the new visitor
 	 * @param string $newVisitorEmail string containing visitor's email address
-	 * @param string $visitorFirstName string containing visitor's first name
-	 * @param string $visitorLastName string containing visitor's last name
-	 * @param string $visitorPhone string containing visitor's phone
+	 * @param string $newVisitorFirstName string containing visitor's first name
+	 * @param string $newVisitorLastName string containing visitor's last name
+	 * @param string $newVisitorPhone string containing visitor's phone
 	 * @throws InvalidArgumentException if data types are not valid
 	 * @throws RangeException if data values are out of bounds (e.g., strings too long, negative integers)
 	 **/
-	public function __construct($newVisitorId, $newVisitorEmail, $visitorFirstName, $visitorLastName, $visitorPhone) {
+	public function __construct($newVisitorId, $newVisitorEmail, $newVisitorFirstName, $newVisitorLastName, $newVisitorPhone) {
 		try {
 			$this->setVisitorId($newVisitorId);
 			$this->setVisitorEmail($newVisitorEmail);
-			$this->setVisitorFirstName($visitorFirstName);
-			$this->setVisitorLastName($visitorLastName);
-			$this->setVisitorPhone($visitorPhone);
+			$this->setVisitorFirstName($newVisitorFirstName);
+			$this->setVisitorLastName($newVisitorLastName);
+			$this->setVisitorPhone($newVisitorPhone);
 		} catch(InvalidArgumentException $invalidArgument) {
 			// rethrow the exception to the caller
 			throw(new InvalidArgumentException($invalidArgument->getMessage(), 0, $invalidArgument));
@@ -62,7 +62,7 @@ class Visitor {
 	 * @return int value of visitor id
 	 **/
 	public function getVisitorId() {
-		return($this->visitorId);
+		return ($this->visitorId);
 	}
 
 	/**
@@ -100,7 +100,7 @@ class Visitor {
 	 * @return string value of visitor email
 	 **/
 	public function getVisitorEmail() {
-		return($this->visitorEmail);
+		return ($this->visitorEmail);
 	}
 
 	/**
@@ -133,7 +133,7 @@ class Visitor {
 	 * @return string value of visitor first name
 	 **/
 	public function getVisitorFirstName() {
-		return($this->visitorFirstName);
+		return ($this->visitorFirstName);
 	}
 
 	/**
@@ -144,16 +144,16 @@ class Visitor {
 	 * @throws RangeException if $newVisitorFirstName is > 128 characters
 	 **/
 	public function setVisitorFirstName($newVisitorFirstName) {
-		// verify the visitor first name make is secure
+		// verify the visitor first name is secure
 		$newVisitorFirstName = trim($newVisitorFirstName);
 		$newVisitorFirstName = filter_var($newVisitorFirstName, FILTER_SANITIZE_STRING);
 		if(empty($newVisitorFirstName) === true) {
 			throw(new InvalidArgumentException("visitor first name is empty or insecure"));
 		}
 
-		// verify the visitor first name make will fit in the database
+		// verify the visitor first name will fit in the database
 		if(strlen($newVisitorFirstName) > 128) {
-			throw(new RangeException("visitor first name make too large"));
+			throw(new RangeException("visitor first name too large"));
 		}
 
 		// store the visitor first name
@@ -166,7 +166,7 @@ class Visitor {
 	 * @return string value of visitor last name
 	 **/
 	public function getVisitorLastName() {
-		return($this->visitorLastName);
+		return ($this->visitorLastName);
 	}
 
 	/**
@@ -199,7 +199,7 @@ class Visitor {
 	 * @return string value of visitor phone number
 	 **/
 	public function getVisitorPhone() {
-		return($this->visitorPhone);
+		return ($this->visitorPhone);
 	}
 
 	/**
@@ -239,19 +239,19 @@ class Visitor {
 		}
 
 		// enforce the visitorId is null (i.e., don't insert a visitor that already exists)
-		if($this->visitorId!== null) {
+		if($this->visitorId !== null) {
 			throw(new mysqli_sql_exception("not a new visitor"));
 		}
 
 		// create query template
-		$query	 = "INSERT INTO visitor(visitorEmail, visitorFirstName, visitorLastName, visitorPhone) VALUES(?, ?, ?, ?)";
+		$query = "INSERT INTO visitor(visitorEmail, visitorFirstName, visitorLastName, visitorPhone) VALUES(?, ?, ?, ?)";
 		$statement = $mysqli->prepare($query);
 		if($statement === false) {
 			throw(new mysqli_sql_exception("unable to prepare statement"));
 		}
 
 		// bind the visitor variables to the place holders in the template
-		$wasClean	  = $statement->bind_param("ssss", $this->visitorEmail, $this->visitorFirstName, $this->visitorLastName, $this->visitorPhone);
+		$wasClean = $statement->bind_param("ssss", $this->visitorEmail, $this->visitorFirstName, $this->visitorLastName, $this->visitorPhone);
 		if($wasClean === false) {
 			throw(new mysqli_sql_exception("unable to bind parameters"));
 		}
@@ -286,7 +286,7 @@ class Visitor {
 		}
 
 // create query template
-		$query	 = "DELETE FROM visitor WHERE visitorId = ?";
+		$query = "DELETE FROM visitor WHERE visitorId = ?";
 		$statement = $mysqli->prepare($query);
 		if($statement === false) {
 			throw(new mysqli_sql_exception("unable to prepare statement"));
@@ -320,12 +320,12 @@ class Visitor {
 		}
 
 // enforce the visitorId is not null (i.e., don't update a visitor that hasn't been inserted)
-		if($this->visitorId=== null) {
+		if($this->visitorId === null) {
 			throw(new mysqli_sql_exception("unable to update a visitor that does not exist"));
 		}
 
 // create query template
-		$query	 = "UPDATE visitor SET visitorEmail = ?, visitorFirstName = ?, visitorLastName = ?, visitorPhone = ? WHERE visitorId = ?";
+		$query = "UPDATE visitor SET visitorEmail = ?, visitorFirstName = ?, visitorLastName = ?, visitorPhone = ? WHERE visitorId = ?";
 		$statement = $mysqli->prepare($query);
 		if($statement === false) {
 			throw(new mysqli_sql_exception("unable to prepare statement"));
@@ -370,7 +370,7 @@ class Visitor {
 		}
 
 // create query template
-		$query	 = "SELECT visitorId, visitorEmail, visitorFirstName, visitorLastName, visitorPhone FROM visitor WHERE visitorId= ?";
+		$query = "SELECT visitorId, visitorEmail, visitorFirstName, visitorLastName, visitorPhone FROM visitor WHERE visitorId= ?";
 		$statement = $mysqli->prepare($query);
 		if($statement === false) {
 			throw(new mysqli_sql_exception("unable to prepare statement"));
@@ -396,7 +396,7 @@ class Visitor {
 // grab the visitor from mySQL
 		try {
 			$visitor = null;
-			$row   = $result->fetch_assoc();
+			$row = $result->fetch_assoc();
 			if($row !== null) {
 				$visitor = new Visitor($row["visitorId"], $row["visitorEmail"], $row["visitorFirstName"], $row["visitorLastName"], $row["visitorPhone"]);
 			}
@@ -408,7 +408,133 @@ class Visitor {
 // free up memory and return the result
 		$result->free();
 		$statement->close();
-		return($visitor);
+		return ($visitor);
+	}
+
+	/**
+	 * gets the visitor by visitor first name
+	 *
+	 * @param resource $mysqli pointer to mySQL connection, by reference
+	 * @param string $visitorFirstName visitor to search for by first name
+	 * @return mixed visitor found or null if not found
+	 * @throws mysqli_sql_exception when mySQL related errors occur
+	 **/
+	public static function getVisitorByVisitorFirstName(&$mysqli, $visitorFirstName) {
+// handle degenerate cases
+		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
+			throw(new mysqli_sql_exception("input is not a mysqli object"));
+		}
+
+// sanitize the visitorFirstName before searching
+		$visitorFirstName = trim($visitorFirstName);
+		$visitorFirstName = filter_var($visitorFirstName, FILTER_SANITIZE_STRING);
+		if(empty($visitorFirstName) === true) {
+			throw(new InvalidArgumentException("visitor first name is empty or insecure"));
+		}
+
+// create query template
+		$query = "SELECT visitorId, visitorEmail, visitorFirstName, visitorLastName, visitorPhone FROM visitor WHERE visitorFirstName = ?";
+		$statement = $mysqli->prepare($query);
+		if($statement === false) {
+			throw(new mysqli_sql_exception("unable to prepare statement"));
+		}
+
+// bind the visitorFirstName to the place holder in the template
+		$wasClean = $statement->bind_param("s", $visitorFirstName);
+		if($wasClean === false) {
+			throw(new mysqli_sql_exception("unable to bind parameters"));
+		}
+
+// execute the statement
+		if($statement->execute() === false) {
+			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
+		}
+
+// get result from the SELECT query
+		$result = $statement->get_result();
+		if($result === false) {
+			throw(new mysqli_sql_exception("unable to get result set"));
+		}
+
+// grab the visitor from mySQL
+		try {
+			$visitor = null;
+			$row = $result->fetch_assoc();
+			if($row !== null) {
+				$visitor = new Visitor($row["visitorId"], $row["visitorEmail"], $row["visitorFirstName"], $row["visitorLastName"], $row["visitorPhone"]);
+			}
+		} catch(Exception $exception) {
+// if the row couldn't be converted, rethrow it
+			throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
+		}
+
+// free up memory and return the result
+		$result->free();
+		$statement->close();
+		return ($visitor);
+	}
+
+	/**
+	 * gets the visitor by visitor last name
+	 *
+	 * @param resource $mysqli pointer to mySQL connection, by reference
+	 * @param string $visitorLastName visitor to search for by first name
+	 * @return mixed visitor found or null if not found
+	 * @throws mysqli_sql_exception when mySQL related errors occur
+	 **/
+	public static function getVisitorByVisitorLastName(&$mysqli, $visitorLastName) {
+// handle degenerate cases
+		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
+			throw(new mysqli_sql_exception("input is not a mysqli object"));
+		}
+
+// sanitize the visitorLastName before searching
+		$visitorLastName = trim($visitorLastName);
+		$visitorLastName = filter_var($visitorLastName, FILTER_SANITIZE_STRING);
+		if(empty($visitorLastName) === true) {
+			throw(new InvalidArgumentException("visitor last name is empty or insecure"));
+		}
+
+// create query template
+		$query = "SELECT visitorId, visitorEmail, visitorFirstName, visitorLastName, visitorPhone FROM visitor WHERE visitorLastName = ?";
+		$statement = $mysqli->prepare($query);
+		if($statement === false) {
+			throw(new mysqli_sql_exception("unable to prepare statement"));
+		}
+
+// bind the visitorLastName to the place holder in the template
+		$wasClean = $statement->bind_param("s", $visitorLastName);
+		if($wasClean === false) {
+			throw(new mysqli_sql_exception("unable to bind parameters"));
+		}
+
+// execute the statement
+		if($statement->execute() === false) {
+			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
+		}
+
+// get result from the SELECT query
+		$result = $statement->get_result();
+		if($result === false) {
+			throw(new mysqli_sql_exception("unable to get result set"));
+		}
+
+// grab the visitor from mySQL
+		try {
+			$visitor = null;
+			$row = $result->fetch_assoc();
+			if($row !== null) {
+				$visitor = new Visitor($row["visitorId"], $row["visitorEmail"], $row["visitorFirstName"], $row["visitorLastName"], $row["visitorPhone"]);
+			}
+		} catch(Exception $exception) {
+// if the row couldn't be converted, rethrow it
+			throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
+		}
+
+// free up memory and return the result
+		$result->free();
+		$statement->close();
+		return ($visitor);
 	}
 }
 ?>
