@@ -364,7 +364,7 @@ class Vehicle {
 			throw(new mysqli_sql_exception("unable to prepare statement"));
 		}
 
-		// bind the member variables to the place holders in the template
+		// bind the vehicle variables to the place holders in the template
 		$wasClean	  = $statement->bind_param("isssssi", $this->visitorId, $this->vehicleColor, $this->vehicleMake, $this->vehicleModel, $this->vehiclePlateNumber, $this->vehiclePlateState, $this->vehicleYear);
 		if($wasClean === false) {
 			throw(new mysqli_sql_exception("unable to bind parameters"));
@@ -406,7 +406,7 @@ class Vehicle {
 			throw(new mysqli_sql_exception("unable to prepare statement"));
 		}
 
-// bind the member variables to the place holder in the template
+// bind the vehicle variables to the place holder in the template
 		$wasClean = $statement->bind_param("i", $this->vehicleId);
 		if($wasClean === false) {
 			throw(new mysqli_sql_exception("unable to bind parameters"));
@@ -445,7 +445,7 @@ class Vehicle {
 			throw(new mysqli_sql_exception("unable to prepare statement"));
 		}
 
-// bind the member variables to the place holders in the template
+// bind the vehicle variables to the place holders in the template
 		$wasClean = $statement->bind_param("isssssii", $this->visitorId, $this->vehicleColor, $this->vehicleMake, $this->vehicleModel, $this->vehiclePlateNumber, $this->vehiclePlateState, $this->vehicleYear, $this->vehicleId);
 		if($wasClean === false) {
 			throw(new mysqli_sql_exception("unable to bind parameters"));
