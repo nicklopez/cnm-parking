@@ -80,5 +80,42 @@ class ParkingPass {
 		}
 	}
 
+	/**
+	 * accessor method for parkingPassId
+	 *
+	 * @return mixed value of parkingPassId
+	 */
+	public function getParkingPassId() {
+		return ($this->parkingPassId);
+	}
+
+	/**
+	 * mutator method for parkingPassId
+	 *
+	 * @param mixed $newParkingPassId new value of parkingPassId
+	 * @throws InvalidArgumentException if $newParkingPassId is not an integer
+	 * @throws RangeException if $newParkingPassId is not positive
+	 */
+		public function setParkingPassId($newParkingPassId) {
+			// base case: if the parkingPassId is null, this is a new object
+			if($newParkingPassId = null) {
+				$this->parkingPassId = null;
+					return;
+				}
+
+			// verify that parkingPasssId is valid
+			$newParkingPassId = filter_var($newParkingPassId, FILTER_VALIDATE_INT);
+			if($newParkingPassId === false) {
+				throw(new InvalidArgumentException("parkingPassId is not a valid integer"));
+
+			// verify that parkingPassId is positive
+			if($newParkingPassId <= 0) {
+				throw(new RangeException("parkingPassId is not positive"));
+			}
+
+			// convert and store the parkingPassId
+				$this->parkingPassId = intval(($newParkingPassId));
+		}
+	}
 }
 ?>
