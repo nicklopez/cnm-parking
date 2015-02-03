@@ -96,26 +96,89 @@ class ParkingPass {
 	 * @throws InvalidArgumentException if $newParkingPassId is not an integer
 	 * @throws RangeException if $newParkingPassId is not positive
 	 */
-		public function setParkingPassId($newParkingPassId) {
-			// base case: if the parkingPassId is null, this is a new object
-			if($newParkingPassId = null) {
-				$this->parkingPassId = null;
-					return;
-				}
-
-			// verify that parkingPasssId is valid
-			$newParkingPassId = filter_var($newParkingPassId, FILTER_VALIDATE_INT);
-			if($newParkingPassId === false) {
-				throw(new InvalidArgumentException("parkingPassId is not a valid integer"));
-
-			// verify that parkingPassId is positive
-			if($newParkingPassId <= 0) {
-				throw(new RangeException("parkingPassId is not positive"));
+	public function setParkingPassId($newParkingPassId) {
+		// base case: if the parkingPassId is null, this is a new object
+		if($newParkingPassId = null) {
+			$this->parkingPassId = null;
+				return;
 			}
 
-			// convert and store the parkingPassId
-				$this->parkingPassId = intval(($newParkingPassId));
+			// verify that parkingPassId is valid
+		$newParkingPassId = filter_var($newParkingPassId, FILTER_VALIDATE_INT);
+		if($newParkingPassId === false) {
+			throw(new InvalidArgumentException("parkingPassId is not a valid integer"));
 		}
+
+		// verify that parkingPassId is positive
+		if($newParkingPassId <= 0) {
+			throw(new RangeException("parkingPassId is not positive"));
+		}
+		// convert and store the parkingPassId
+		$this->parkingPassId = intval(($newParkingPassId));
+		}
+
+	/**
+	 * accessor method for parkingSpotId
+	 *
+	 * @return int value of parkingSpotId
+	 */
+	public function getParkingSpotId() {
+		return ($this->parkingSpotId);
 	}
+
+	/**
+	 * mutator method for parkingSpotId
+	 *
+	 * @param int $newParkingSpotId new value of parkingSpotId
+	 * @throws InvalidArgumentException if $newParkingSpotId is not an integer or is null
+	 * @throws RangeException if $newParkingSpotId is not positive
+	 */
+	public function setParkingSpotId($newParkingSpotId) {
+		// verify that parkingPassId is valid
+		$newParkingSpotId = filter_var($newParkingSpotId, FILTER_VALIDATE_INT);
+		if($newParkingSpotId === false) {
+			throw(new InvalidArgumentException("parkingSpotId is not a valid integer or is null"));
+		}
+
+		// verify that parkingSpotId is positive
+		if($newParkingSpotId <= 0) {
+			throw(new RangeException("parkingSpotId is not positive"));
+		}
+		// convert and store the parkingSpotId
+		$this->parkingSpotId = intval(($newParkingSpotId));
+	}
+
+	/**
+	 * accessor method for adminId
+	 *
+	 * @return int value of adminId
+	 */
+	public function getAdminId() {
+		return ($this->adminId);
+	}
+
+	/**
+	 * mutator method for adminId
+	 *
+	 * @param int $newAdminId new value of adminId
+	 * @throws InvalidArgumentException if $newAdminId is not an integer or is null
+	 * @throws RangeException if $newAdminId is not positive
+	 */
+	public function setAdminId($newAdminId) {
+		// verify that parkingPassId is valid
+		$newAdminId = filter_var($newAdminId, FILTER_VALIDATE_INT);
+		if($newAdminId === false) {
+			throw(new InvalidArgumentException("adminId is not a valid integer or is null"));
+		}
+
+		// verify that adminId is positive
+		if($newAdminId <= 0) {
+			throw(new RangeException("adminId is not positive"));
+		}
+		// convert and store the adminId
+		$this->adminId = intval(($newAdminId));
+	}
+
+
 }
 ?>
