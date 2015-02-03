@@ -524,5 +524,68 @@ class Vehicle {
 		$statement->close();
 		return($vehicle);
 	}
+
+	/**
+	 * gets the vehicle by vehiclePlateNumber
+	 *
+	 * @param resource $mysqli pointer to mySQL connection, by reference
+	 * @param string $vehiclePlateNumber vehicle to search for by plate number
+	 * @return mixed vehicle found or null if not found
+	 * @throws mysqli_sql_exception when mySQL related errors occur
+	 **/
+	public static function getVehicleByPlateNumber(&$mysqli, $vehiclePlateNumber) {
+// handle degenerate cases
+		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
+			throw(new mysqli_sql_exception("input is not a mysqli object"));
+		}
+
+// sanitize the vehiclePlateNumber before searching
+		$vehiclePlateNumber = trim($vehiclePlateNumber);
+		$vehiclePlateNumber = filter_var($vehiclePlateNumber, FILTER_SANITIZE_STRING);
+		if(empty($vehiclePlateNumber) === true) {
+			throw(new InvalidArgumentException("vehicle plate number is empty or insecure"));
+		}
+
+// create query template
+		$query	 = "SELECT vehicleId, visitorId, vehicleColor, vehicleMake, vehicleModel, vehiclePlateNumber, vehiclePlateState, vehicleYear FROM vehicle WHERE vehiclePlateNumber = ?";
+		$statement = $mysqli->prepare($query);
+		if($statement === false) {
+			throw(new mysqli_sql_exception("unable to prepare statement"));
+		}
+
+// bind the vehiclePlateNumber to the place holder in the template
+		$wasClean = $statement->bind_param("s", $vehiclePlateNumber);
+		if($wasClean === false) {
+			throw(new mysqli_sql_exception("unable to bind parameters"));
+		}
+
+// execute the statement
+		if($statement->execute() === false) {
+			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
+		}
+
+// get result from the SELECT query
+		$result = $statement->get_result();
+		if($result === false) {
+			throw(new mysqli_sql_exception("unable to get result set"));
+		}
+
+// grab the vehicle from mySQL
+		try {
+			$vehicle = null;
+			$row   = $result->fetch_assoc();
+			if($row !== null) {
+				$vehicle = new Vehicle($row["vehicleId"], $row["visitorId"], $row["vehicleColor"], $row["vehicleMake"], $row["vehicleModel"], $row["vehiclePlateNumber"], $row["vehiclePlateState"], $row["vehicleYear"]);
+			}
+		} catch(Exception $exception) {
+// if the row couldn't be converted, rethrow it
+			throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
+		}
+
+// free up memory and return the result
+		$result->free();
+		$statement->close();
+		return($vehicle);
+	}
 }
 ?>
