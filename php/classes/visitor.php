@@ -370,7 +370,7 @@ class Visitor {
 		}
 
 // create query template
-		$query	 = "SELECT visitorEmail, visitorFirstName, visitorLastName, visitorPhone FROM visitor WHERE visitorId= ?";
+		$query	 = "SELECT visitorId, visitorEmail, visitorFirstName, visitorLastName, visitorPhone FROM visitor WHERE visitorId= ?";
 		$statement = $mysqli->prepare($query);
 		if($statement === false) {
 			throw(new mysqli_sql_exception("unable to prepare statement"));
