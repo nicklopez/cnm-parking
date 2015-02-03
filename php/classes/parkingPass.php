@@ -224,6 +224,61 @@ class ParkingPass {
 	 *
 	 *
 	 */
+	// public function
+
+
+	/**
+	 * accessor method for startDateTime
+	 *
+	 * @return DateTime value of startDateTime
+	 */
+	public function getStartDateTime() {
+		return($this->startDateTime);
+	}
+
+	/**
+	 * mutator method for startDateTime
+	 *
+	 *
+	 */
+	public function setStartDateTime($newStartDateTime) {
+		// verify not null
+		if($newStartDateTime === null) {
+			throw(new InvalidArgumentException("startDateTime cannot be null"));
+		}
+
+		// base case: if is a DateTime object already then pass as-is
+		if(is_object($newStartDateTime) === true && get_class($newStartDateTime) === "DateTime") {
+			$this->startDateTime = $newStartDateTime;
+			return;
+		}
+
+		// treat date as string(y-m-d H:i:s)
+		$newStartDateTime = trim($newStartDateTime);
+		if((preg_match("/^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2}):$/", $newStartDateTime, $matches)) !== 1) {
+			throw(new InvalidArgumentException("startDateTime is not a valid date"));
+		}
+
+		// verify is a valid calendar date
+		$year		= intval($matches[1]);
+		$month	= intval($matches[2]);
+		$day		= intval($matches[3]);
+		$hour		= intval($matches[4]);
+		$minute	= intval($matches[5]);
+		$second	= intval($matches[6]);
+		if(checkdate($month, $day, $year) === false) {
+			throw(new RangeException("given startDateTime value is not a Gregorian date"));
+		}
+
+		// verify the time is really a valid wall clock time
+		if($hour < 0 || $hour >= 24 || $minute < 0 || $minute >= 60 || $second < 0 || $second >= 60) {
+			throw(new RangeException("given startDateTime is not a valid time"));
+		}
+
+		// store the startDateTime
+		$newStartDateTime = DateTime::createFromFormat("Y-m-d H:i:s", $newStartDateTime);
+		$this->startDateTime = $newStartDateTime;
+	}
 
 
 
