@@ -149,6 +149,37 @@ class ParkingPass {
 	}
 
 	/**
+	 * accessor method for vehicleId
+	 *
+	 * @return int value of vehicleId
+	 */
+	public function getVehicleId() {
+		return ($this->vehicleId);
+	}
+
+	/**
+	 * mutator method for vehicleId
+	 *
+	 * @param int $newVehicleId new value of vehicleId
+	 * @throws InvalidArgumentException if $newVehicleId is not an integer or is null
+	 * @throws RangeException if $newVehicleId is not positive
+	 */
+	public function setVehicleId($newVehicleId) {
+		// verify that vehicleId is valid
+		$newVehicleId = filter_var($newVehicleId, FILTER_VALIDATE_INT);
+		if($newVehicleId === false) {
+			throw(new InvalidArgumentException("vehicleId is not a valid integer or is null"));
+		}
+
+		// verify that vehicleId is positive
+		if($newVehicleId <= 0) {
+			throw(new RangeException("vehicleId is not positive"));
+		}
+		// convert and store the vehicleId
+		$this->adminId = intval(($newVehicleId));
+	}
+
+	/**
 	 * accessor method for adminId
 	 *
 	 * @return int value of adminId
@@ -165,7 +196,7 @@ class ParkingPass {
 	 * @throws RangeException if $newAdminId is not positive
 	 */
 	public function setAdminId($newAdminId) {
-		// verify that parkingPassId is valid
+		// verify that adminId is valid
 		$newAdminId = filter_var($newAdminId, FILTER_VALIDATE_INT);
 		if($newAdminId === false) {
 			throw(new InvalidArgumentException("adminId is not a valid integer or is null"));
@@ -178,6 +209,22 @@ class ParkingPass {
 		// convert and store the adminId
 		$this->adminId = intval(($newAdminId));
 	}
+
+	/**
+	 * accessor method for uuId
+	 *
+	 * @return int value of uuId
+	 */
+	public function getUuId() {
+		return ($this->uuId);
+	}
+
+	/**
+	 * mutator method for uuId
+	 *
+	 *
+	 */
+
 
 
 }
