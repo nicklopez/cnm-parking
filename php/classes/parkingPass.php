@@ -239,7 +239,9 @@ class ParkingPass {
 	/**
 	 * mutator method for startDateTime
 	 *
-	 *
+	 * @param mixed $newStartDateTime startDateTime as DateTime or string
+	 * @throws InvalidArgumentException if $newStartDateTime is not a valid object or string
+	 * @throws RangeException if $newStartDateTime is a date that doesn't exist
 	 */
 	public function setStartDateTime($newStartDateTime) {
 		// verify not null
@@ -281,6 +283,117 @@ class ParkingPass {
 	}
 
 
+	/**
+	 * accessor method for endDateTime
+	 *
+	 * @return DateTime value of endDateTime
+	 */
+	public function getEndDateTime() {
+		return($this->endDateTime);
+	}
+
+	/**
+	 * mutator method for endDateTime
+	 *
+	 * @param mixed $newEndDateTime endDateTime as DateTime or string
+	 * @throws InvalidArgumentException if $newEndDateTime is not a valid object or string
+	 * @throws RangeException if $newEndDateTime is a date that doesn't exist
+	 */
+	public function setEndDateTime($newEndDateTime) {
+		// verify not null
+		if($newEndDateTime === null) {
+			throw(new InvalidArgumentException("endDateTime cannot be null"));
+		}
+
+		// base case: if is a DateTime object already then pass as-is
+		if(is_object($newEndDateTime) === true && get_class($newEndDateTime) === "DateTime") {
+			$this->endDateTime = $newEndDateTime;
+			return;
+		}
+
+		// treat date as string(y-m-d H:i:s)
+		$newEndDateTime = trim($newEndDateTime);
+		if((preg_match("/^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2}):$/", $newEndDateTime, $matches)) !== 1) {
+			throw(new InvalidArgumentException("endDateTime is not a valid date"));
+		}
+
+		// verify is a valid calendar date
+		$year		= intval($matches[1]);
+		$month	= intval($matches[2]);
+		$day		= intval($matches[3]);
+		$hour		= intval($matches[4]);
+		$minute	= intval($matches[5]);
+		$second	= intval($matches[6]);
+		if(checkdate($month, $day, $year) === false) {
+			throw(new RangeException("given endDateTime value is not a Gregorian date"));
+		}
+
+		// verify the time is really a valid wall clock time
+		if($hour < 0 || $hour >= 24 || $minute < 0 || $minute >= 60 || $second < 0 || $second >= 60) {
+			throw(new RangeException("given endDateTime is not a valid time"));
+		}
+
+		// store the endDateTime
+		$newEndDateTime = DateTime::createFromFormat("Y-m-d H:i:s", $newEndDateTime);
+		$this->endDateTime = $newEndDateTime;
+	}
+
+
+	/**
+	 * accessor method for issuedDateTime
+	 *
+	 * @return DateTime value of issuedDateTime
+	 */
+	public function getIssuedDateTime() {
+		return($this->issuedDateTime);
+	}
+
+	/**
+	 * mutator method for issuedDateTime
+	 *
+	 * @param mixed $newIssuedDateTime issuedDateTime as DateTime or string(or current datetime if null)
+	 * @throws InvalidArgumentException if $newIssuedDateTime is not a valid object or string
+	 * @throws RangeException if $newIssuedDateTime is a date that doesn't exist
+	 */
+	public function setIssuedDateTime($newIssuedDateTime) {
+		// base case: if issuedDateTime is null, use current DateTime(NOW)
+		if($newIssuedDateTime === null) {
+			$this->issuedDateTime = new DateTime();
+			return;
+		}
+
+		// base case: if is a DateTime object already then pass as-is
+		if(is_object($newIssuedDateTime) === true && get_class($newIssuedDateTime) === "DateTime") {
+			$this->issuedDateTime = $newIssuedDateTime;
+			return;
+		}
+
+		// treat date as string(y-m-d H:i:s)
+		$newIssuedDateTime = trim($newIssuedDateTime);
+		if((preg_match("/^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2}):$/", $newIssuedDateTime, $matches)) !== 1) {
+			throw(new InvalidArgumentException("issuedDateTime is not a valid date"));
+		}
+
+		// verify is a valid calendar date
+		$year		= intval($matches[1]);
+		$month	= intval($matches[2]);
+		$day		= intval($matches[3]);
+		$hour		= intval($matches[4]);
+		$minute	= intval($matches[5]);
+		$second	= intval($matches[6]);
+		if(checkdate($month, $day, $year) === false) {
+			throw(new RangeException("given issuedDateTime value is not a Gregorian date"));
+		}
+
+		// verify the time is really a valid wall clock time
+		if($hour < 0 || $hour >= 24 || $minute < 0 || $minute >= 60 || $second < 0 || $second >= 60) {
+			throw(new RangeException("given issuedDateTime is not a valid time"));
+		}
+
+		// store the issuedDateTime
+		$newIssuedDateTime = DateTime::createFromFormat("Y-m-d H:i:s", $newIssuedDateTime);
+		$this->issuedDateTime = $newIssuedDateTime;
+	}
 
 }
 ?>
