@@ -33,8 +33,8 @@ CREATE TABLE visitor (
 	visitorEmail VARCHAR(128) NOT NULL,
 	visitorFirstName VARCHAR(128) NOT NULL,
 	visitorLastName VARCHAR(128) NOT NULL,
-	visitorPhone INT(10) UNSIGNED NOT NULL,
-	-- for 10 digit phone number
+-- for 10 digit phone number
+	visitorPhone VARCHAR(11) NOT NULL,
 	UNIQUE(visitorEmail),
 	PRIMARY KEY(visitorId)
 );
@@ -47,7 +47,7 @@ CREATE TABLE vehicle (
 	vehicleModel VARCHAR(128) NOT NULL,
 	vehiclePlateNumber VARCHAR(128) NOT NULL,
 	vehiclePlateState VARCHAR(2),
-	vehicleYear TINYINT(4) NOT NULL,
+	vehicleYear SMALLINT(4) NOT NULL,
 	INDEX (visitorId),
 	FOREIGN KEY(visitorId) REFERENCES visitor(visitorId),
 	PRIMARY KEY(vehicleId)
