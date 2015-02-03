@@ -34,7 +34,7 @@ class ParkingPass {
 	private $adminId;
 
 	/**
-	 * string, not null
+	 * string, char 36,
 	 *
 	 * uuid
 	 */
@@ -213,7 +213,7 @@ class ParkingPass {
 	/**
 	 * accessor method for uuId
 	 *
-	 * @return int value of uuId
+	 * @return mixed value of uuId
 	 */
 	public function getUuId() {
 		return ($this->uuId);
@@ -222,10 +222,39 @@ class ParkingPass {
 	/**
 	 * mutator method for uuId
 	 *
-	 *
+	 * @param mixed $newUuId uuId as string (or null if new)
+	 * @throws InvalidArgumentException  if $newUuID is insecure or in improper format
+	 * @throws RangeException if $newUuID is of improper length
 	 */
 	// public function
+	public function setUuId($newUuId) {
+		// base case: if uuId is null, this is new object
+		if($newUuId === null) {
+			$this->uuId = null;
+				return;
+		}
+		
+		// verify is secure
+		$newUuId = trim($newUuId);
+		$newUuId = filter_var($newUuId, FILTER_SANITIZE_STRING);
+		if(empty($newUuId) === true) {
+			throw(new InvalidArgumentException("uuId is insecure"));
+		}
 
+		// verify string length
+		if(strlen($newUuId) !== 36) {
+			throw(new RangeException("uuId is improper length"));
+		}
+
+		// treat uuId as string : aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee
+		$newUuId = trim($newUuId);
+		if((preg_match("/^[\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12}$/", $newUuId, $matches)) !== 1) {
+			throw(new InvalidArgumentException("uuId is not in proper format"));
+		}
+
+		// store the uuId
+		$this->uuId = $newUuId;
+	}
 
 	/**
 	 * accessor method for startDateTime
