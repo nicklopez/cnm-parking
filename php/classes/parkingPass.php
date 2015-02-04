@@ -815,72 +815,143 @@ class ParkingPass {
 		}
 	}
 
-/**
- * gets parkingPass by uuId
- *
- * @param resource $mysqli pointer to mySQL connection, by reference
- * @param string $uuId uuId to search for
- * @throws mixed array of uuId 's found or null if not found
- * @throws mysqli_sql_exception when mySQL related errors occur
- */
-public function getParkingPassByUuId(&$mysqli, $uuId) {
-	// handle degenerate cases
-	if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
-		throw(new mysqli_sql_exception("input is not a mysqli object"));
-	}
+	/**
+	 * gets parkingPass by uuId
+	 *
+	 * @param resource $mysqli pointer to mySQL connection, by reference
+	 * @param string $uuId uuId to search for
+	 * @throws mixed array of uuId 's found or null if not found
+	 * @throws mysqli_sql_exception when mySQL related errors occur
+	 */
+	public function getParkingPassByUuId(&$mysqli, $uuId) {
+		// handle degenerate cases
+		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
+			throw(new mysqli_sql_exception("input is not a mysqli object"));
+		}
 
-	// sanitize before searching
-	$uuId = trim($uuId);
-	$uuId = filter_var($uuId, FILTER_SANITIZE_STRING);
-	if($uuId === false ||  strlen($uuId) !== 36) {
-		throw(new mysqli_sql_exception("uuId is invalid or not secure"));
-	}
+		// sanitize before searching
+		$uuId = trim($uuId);
+		$uuId = filter_var($uuId, FILTER_SANITIZE_STRING);
+		if($uuId === false ||  strlen($uuId) !== 36) {
+			throw(new mysqli_sql_exception("uuId is invalid or not secure"));
+		}
 
-	// create query template
-	$query = "SELECT parkingPassId, parkingSpotId, vehicleId, adminId, uuId, startDateTime, endDateTime, issuedDateTime FROM parkingPass WHERE uuId = ?";
-	$statement = $mysqli->prepare($query);
-	if($statement === false) {
-		throw(new mysqli_sql_exception(" unable to prepare statement"));
-	}
+		// create query template
+		$query = "SELECT parkingPassId, parkingSpotId, vehicleId, adminId, uuId, startDateTime, endDateTime, issuedDateTime FROM parkingPass WHERE uuId = ?";
+		$statement = $mysqli->prepare($query);
+		if($statement === false) {
+			throw(new mysqli_sql_exception(" unable to prepare statement"));
+		}
 
-	// bind the member variables to the place holders in the template
-	$wasClean = $statement->bind_param("i", $uuId);
-	if($wasClean === false) {
-		throw(new mysqli_sql_exception("unable to bind parameters"));
-	}
+		// bind the member variables to the place holders in the template
+		$wasClean = $statement->bind_param("i", $uuId);
+		if($wasClean === false) {
+			throw(new mysqli_sql_exception("unable to bind parameters"));
+		}
 
-	// execute the statement
-	if($statement->execute() === false) {
-		throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
-	}
+		// execute the statement
+		if($statement->execute() === false) {
+			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
+		}
 
-	// get result from SELECT query
-	$result = $statement->get_result();
-	if($result === false) {
-		throw(new mysqli_sql_exception("unable to get result set"));
-	}
+		// get result from SELECT query
+		$result = $statement->get_result();
+		if($result === false) {
+			throw(new mysqli_sql_exception("unable to get result set"));
+		}
 
-	// build array of parkingPass
-	$parkingPasses = array();
-	while(($row = $result->fetch_assoc()) !== null) {
-		try {
-			$parkingPass = new ParkingPass($row["parkingPassId"], $row["parkingSpotId"], $row["vehicleId"], $row["adminId"], $row["uuId"], $row["startDateTime"], $row["endDateTime"], $row["issuedDateTime"]);
-			$parkingPasses[] = $parkingPass;
-		} catch(Exception $exception) {
-			// if the row couldn't be converted, rethrow it
-			throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
+		// build array of parkingPass
+		$parkingPasses = array();
+		while(($row = $result->fetch_assoc()) !== null) {
+			try {
+				$parkingPass = new ParkingPass($row["parkingPassId"], $row["parkingSpotId"], $row["vehicleId"], $row["adminId"], $row["uuId"], $row["startDateTime"], $row["endDateTime"], $row["issuedDateTime"]);
+				$parkingPasses[] = $parkingPass;
+			} catch(Exception $exception) {
+				// if the row couldn't be converted, rethrow it
+				throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
+			}
+		}
+
+		// count the results in array and return:
+		// 1) null if zero results
+		// 2) the entire array if > 1 result
+		$numberOfParkingPasses = count($parkingPasses);
+		if($numberOfParkingPasses === 0) {
+			return (null);
+		} else {
+			return ($parkingPasses);
 		}
 	}
 
-	// count the results in array and return:
-	// 1) null if zero results
-	// 2) the entire array if > 1 result
-	$numberOfParkingPasses = count($parkingPasses);
-	if($numberOfParkingPasses === 0) {
-		return (null);
-	} else {
-		return ($parkingPasses);
+	/**
+	 * gets parkingPass by issuedDateTime
+	 *
+	 * @param resource $mysqli pointer to mySQL connection, by reference
+	 * @param string $issuedDateTime issuedDateTime to search for
+	 * @throws mixed array of issuedDateTime 's found or null if not found
+	 * @throws mysqli_sql_exception when mySQL related errors occur
+	 */
+	public function getParkingPassByIssuedDateTime(&$mysqli, $issuedDateTime) {
+		// handle degenerate cases
+		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
+			throw(new mysqli_sql_exception("input is not a mysqli object"));
+		}
+
+		// sanitize before searching - Using static function
+		try {
+			$newIssuedDateTime = self::sanitizeDate($newIssuedDateTime);
+		} catch(InvalidArgumentException $invalidArgument) {
+			throw(new InvalidArgumentException($invalidArgument->getMessage(), 0, $invalidArgument));
+		} catch(RangeException $range) {
+			throw(new RangeException($range->getMessage(), 0, $range));
+		}
+
+		// create query template
+		$query = "SELECT parkingPassId, parkingSpotId, vehicleId, adminId, uuId, startDateTime, endDateTime, issuedDateTime FROM parkingPass WHERE issuedDateTime >= $sunrise AND issuedDateTime =< $sunset";
+		$statement = $mysqli->prepare($query);
+		if($statement === false) {
+			throw(new mysqli_sql_exception(" unable to prepare statement"));
+		}
+
+		// bind the member variables to the place holders in the template
+		$formatIssued = $this->issuedDateTime->format("Y-m-d H:i:s");
+		$wasClean = $statement->bind_param("i", $parkingPassId);
+		if($wasClean === false) {
+			throw(new mysqli_sql_exception("unable to bind paramaters"));
+		}
+		// execute the statement
+		if($statement->execute() === false) {
+			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
+		}
+
+		// get result from SELECT query
+		$result = $statement->get_result();
+		if($result === false) {
+			throw(new mysqli_sql_exception("unable to get result set"));
+		}
+
+		// build array of parkingPass
+		$parkingPasses = array();
+		while(($row = $result->fetch_assoc()) !== null) {
+			try {
+				$parkingPass = new ParkingPass($row["parkingPassId"], $row["parkingSpotId"], $row["vehicleId"], $row["adminId"], $row["uuId"], $row["startDateTime"], $row["endDateTime"], $row["issuedDateTime"]);
+				$parkingPasses[] = $parkingPass;
+			} catch(Exception $exception) {
+				// if the row couldn't be converted, rethrow it
+				throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
+			}
+		}
+
+		// count the results in array and return:
+		// 1) null if zero results
+		// 2) the entire array if > 1 result
+		$numberOfParkingPasses = count($parkingPasses);
+		if($numberOfParkingPasses === 0) {
+			return (null);
+		} else {
+			return ($parkingPasses);
+		}
 	}
-}
+	
 }
 ?>
