@@ -912,15 +912,15 @@ class ParkingPass {
 		}
 
 		// create query template
-		$query = "SELECT parkingPassId, parkingSpotId, vehicleId, adminId, uuId, startDateTime, endDateTime, issuedDateTime FROM parkingPass WHERE issuedDateTime >= $sunrise AND issuedDateTime =< $sunset";
+		$query = "SELECT parkingPassId, parkingSpotId, vehicleId, adminId, uuId, startDateTime, endDateTime, issuedDateTime FROM parkingPass WHERE issuedDateTime >= ? AND issuedDateTime =< ?";
 		$statement = $mysqli->prepare($query);
 		if($statement === false) {
 			throw(new mysqli_sql_exception(" unable to prepare statement"));
 		}
 
 		// bind the member variables to the place holders in the template
-		$sunrise = $sunrise->format("H:i:s");
-		$sunset = $sunset->format("H:i:s");
+		$sunrise = $sunrise->format("Y-m-d H:i:s");
+		$sunset = $sunset->format("Y-m-d H:i:s");
 		$wasClean = $statement->bind_param("ss", $sunrise, $sunset);
 		if($wasClean === false) {
 			throw(new mysqli_sql_exception("unable to bind paramaters"));
@@ -958,6 +958,79 @@ class ParkingPass {
 			return ($parkingPasses);
 		}
 	}
-	
+
+
+	/**
+	 * gets parkingPass by DateTime range of startDateTime - endDateTime
+	 *
+	 * @param resource $mysqli pointer to mySQL connection, by reference
+	 * @param string $startDateTime, $endDateTime startDateTime to endDateTime range to search for
+	 * @throws mixed array of DateTime Ranges found or null if not found
+	 * @throws mysqli_sql_exception when mySQL related errors occur
+	 */
+	public function getParkingPassByStartDateTimeEndDateTimeRange(&$mysqli, $startDateTime, $endDateTime) {
+		// handle degenerate cases
+		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
+			throw(new mysqli_sql_exception("input is not a mysqli object"));
+		}
+
+		// sanitize before searching - Using static function
+		try {
+			$sunrise = self::sanitizeDate($startDateTime);
+			$sunset = self::sanitizeDate($endDateTime);
+		} catch(InvalidArgumentException $invalidArgument) {
+			throw(new InvalidArgumentException($invalidArgument->getMessage(), 0, $invalidArgument));
+		} catch(RangeException $range) {
+			throw(new RangeException($range->getMessage(), 0, $range));
+		}
+
+		// create query template
+		$query = "SELECT parkingPassId, parkingSpotId, vehicleId, adminId, uuId, startDateTime, endDateTime, issuedDateTime FROM parkingPass WHERE startDateTime >= ? AND endDateTime =< ?";
+		$statement = $mysqli->prepare($query);
+		if($statement === false) {
+			throw(new mysqli_sql_exception(" unable to prepare statement"));
+		}
+
+		// bind the member variables to the place holders in the template
+		$sunrise = $startDateTime->format("Y-m-d H:i:s");
+		$sunset = $endDateTime->format("Y-m-d H:i:s");
+		$wasClean = $statement->bind_param("ss", $sunrise, $sunset);
+		if($wasClean === false) {
+			throw(new mysqli_sql_exception("unable to bind paramaters"));
+		}
+		// execute the statement
+		if($statement->execute() === false) {
+			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
+		}
+
+		// get result from SELECT query
+		$result = $statement->get_result();
+		if($result === false) {
+			throw(new mysqli_sql_exception("unable to get result set"));
+		}
+
+		// build array of parkingPass
+		$parkingPasses = array();
+		while(($row = $result->fetch_assoc()) !== null) {
+			try {
+				$parkingPass = new ParkingPass($row["parkingPassId"], $row["parkingSpotId"], $row["vehicleId"], $row["adminId"], $row["uuId"], $row["startDateTime"], $row["endDateTime"], $row["issuedDateTime"]);
+				$parkingPasses[] = $parkingPass;
+			} catch(Exception $exception) {
+				// if the row couldn't be converted, rethrow it
+				throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
+			}
+		}
+
+		// count the results in array and return:
+		// 1) null if zero results
+		// 2) the entire array if > 1 result
+		$numberOfParkingPasses = count($parkingPasses);
+		if($numberOfParkingPasses === 0) {
+			return (null);
+		} else {
+			return ($parkingPasses);
+		}
+	}
+
 }
 ?>
