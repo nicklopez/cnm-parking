@@ -469,5 +469,88 @@ class ParkingPass {
 		$statement->close();
 	}
 
+	/**
+	 * delete parkingPass from mySQL
+	 *
+	 * @param resource $mysqli pointer to mySQL connection, by reference
+	 * @throws mysqli_sql_exception when mySQL related errors occur
+	 */
+	public function delete(&$mysqli) {
+		// handle degenerate cases
+		if(gettype($mysqli) !=="object" || get_class($mysqli) !=="mysqli") {
+			throw(new mysqli_sql_exception("input is not a mysqli object"));
+		}
+
+		// enforce parkingPassId is not null
+		if($this->parkingPassId === null) {
+			throw(new mysqli_sql_exception("parkingPassId does not exist"));
+		}
+
+		// create query template
+		$query	="DELETE FROM parkingPass WHERE parkingPassId = ?";
+		$statement = $mysqli->prepare($query);
+		if($statement === false) {
+			throw(new mysqli_sql_exception(" unable to prepare statement"));
+		}
+
+		// bind the member variables to the place holders in the template
+		$wasClean = $statement->bind_param("i", $this->parkingPassId);
+		if($wasClean === false) {
+			throw(new mysqli_sql_exception("unable to bind parameters"));
+		}
+
+		// execute the statement
+		if($statement->execute() === false) {
+			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
+		}
+
+		// clean up the statement
+		$statement->close();
+	}
+
+	/**
+	 * update parkingPass in mySQL
+	 *
+	 * @param resource $mysqli pointer to mySQL connection, by reference
+	 * @throws mysqli_sql_exception when mySQL related errors occur
+	 */
+	public function update(&$mysqli) {
+		// handle degenerate cases
+		if(gettype($mysqli) !=="object" || get_class($mysqli) !=="mysqli") {
+			throw(new mysqli_sql_exception("input is not a mysqli object"));
+		}
+
+		// enforce parkingPassId is not null
+		if($this->parkingPassId === null) {
+			throw(new mysqli_sql_exception("parkingPassId does not exists"));
+		}
+
+		// create query template
+		$query	= "UPDATE parkingSpot SET parkingSpotId = ?, locationId = ?, placardNumber = ? WHERE parkingSpotId = ?";
+		$statement = $mysqli->prepare($query);
+		if($statement === false) {
+			throw(new mysqli_sql_exception(" unable to prepare statement"));
+		}
+
+		// bind the member variables to the place holders in the template
+		$formatStart = $this->startDateTime->format("Y-m-d H:i:s");
+		$formatEnd = $this->endDateTime->format("Y-m-d H:i:s");
+		$formatIssued = $this->issuedDateTime->format("Y-m-d H:i:s");
+		$wasClean = $statement->bind_param("iiiis", $this->parkingPassId, $this->parkingSpotId, $this->vehicleId, $this->adminId, $this->uuId, $formatStart, $formatEnd, $formatIssued);
+		if($wasClean === false) {
+			throw(new mysqli_sql_exception("unable to bind paramaters"));
+		}
+
+		// execute the statement
+		if($statement->execute() === false) {
+			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
+		}
+
+		// clean up the statement
+		$statement->close();
+	}
+
+
+
 }
 ?>
