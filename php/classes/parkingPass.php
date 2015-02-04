@@ -359,37 +359,15 @@ class ParkingPass {
 			throw(new InvalidArgumentException("endDateTime cannot be null"));
 		}
 
-		// base case: if is a DateTime object already then pass as-is
-		if(is_object($newEndDateTime) === true && get_class($newEndDateTime) === "DateTime") {
-			$this->endDateTime = $newEndDateTime;
-			return;
-		}
-
-		// treat date as string(y-m-d H:i:s)
-		$newEndDateTime = trim($newEndDateTime);
-		if((preg_match("/^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2}):$/", $newEndDateTime, $matches)) !== 1) {
-			throw(new InvalidArgumentException("endDateTime is not a valid date"));
-		}
-
-		// verify is a valid calendar date
-		$year		= intval($matches[1]);
-		$month	= intval($matches[2]);
-		$day		= intval($matches[3]);
-		$hour		= intval($matches[4]);
-		$minute	= intval($matches[5]);
-		$second	= intval($matches[6]);
-		if(checkdate($month, $day, $year) === false) {
-			throw(new RangeException("given endDateTime value is not a Gregorian date"));
-		}
-
-		// verify the time is really a valid wall clock time
-		if($hour < 0 || $hour >= 24 || $minute < 0 || $minute >= 60 || $second < 0 || $second >= 60) {
-			throw(new RangeException("given endDateTime is not a valid time"));
-		}
-
 		// store the endDateTime
-		$newEndDateTime = DateTime::createFromFormat("Y-m-d H:i:s", $newEndDateTime);
-		$this->endDateTime = $newEndDateTime;
+		try {
+			$newEndDateTime = self::sanitizeDate($newEndDateTime);
+			$this->endDateTime = $newEndDateTime;
+		} catch(InvalidArgumentException $invalidArgument) {
+			throw(new InvalidArgumentException($invalidArgument->getMessage(), 0, $invalidArgument));
+		} catch(RangeException $range) {
+			throw(new RangeException($range->getMessage(), 0, $range));
+		}
 	}
 
 
@@ -416,37 +394,15 @@ class ParkingPass {
 			return;
 		}
 
-		// base case: if is a DateTime object already then pass as-is
-		if(is_object($newIssuedDateTime) === true && get_class($newIssuedDateTime) === "DateTime") {
-			$this->issuedDateTime = $newIssuedDateTime;
-			return;
-		}
-
-		// treat date as string(y-m-d H:i:s)
-		$newIssuedDateTime = trim($newIssuedDateTime);
-		if((preg_match("/^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2}):$/", $newIssuedDateTime, $matches)) !== 1) {
-			throw(new InvalidArgumentException("issuedDateTime is not a valid date"));
-		}
-
-		// verify is a valid calendar date
-		$year		= intval($matches[1]);
-		$month	= intval($matches[2]);
-		$day		= intval($matches[3]);
-		$hour		= intval($matches[4]);
-		$minute	= intval($matches[5]);
-		$second	= intval($matches[6]);
-		if(checkdate($month, $day, $year) === false) {
-			throw(new RangeException("given issuedDateTime value is not a Gregorian date"));
-		}
-
-		// verify the time is really a valid wall clock time
-		if($hour < 0 || $hour >= 24 || $minute < 0 || $minute >= 60 || $second < 0 || $second >= 60) {
-			throw(new RangeException("given issuedDateTime is not a valid time"));
-		}
-
 		// store the issuedDateTime
-		$newIssuedDateTime = DateTime::createFromFormat("Y-m-d H:i:s", $newIssuedDateTime);
-		$this->issuedDateTime = $newIssuedDateTime;
+		try {
+			$newIssuedDateTime = self::sanitizeDate($newIssuedDateTime);
+			$this->issuedDateTime = $newIssuedDateTime;
+		} catch(InvalidArgumentException $invalidArgument) {
+			throw(new InvalidArgumentException($invalidArgument->getMessage(), 0, $invalidArgument));
+		} catch(RangeException $range) {
+			throw(new RangeException($range->getMessage(), 0, $range));
+		}
 	}
 
 	/**
@@ -926,6 +882,5 @@ public function getParkingPassByUuId(&$mysqli, $uuId) {
 		return ($parkingPasses);
 	}
 }
-
 }
 ?>
