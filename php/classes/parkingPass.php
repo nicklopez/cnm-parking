@@ -424,5 +424,50 @@ class ParkingPass {
 		$this->issuedDateTime = $newIssuedDateTime;
 	}
 
+	/**
+	 * inserts this ParkingPass in mySQL
+	 *
+	 * @param resource $mysqli pointer to mySQL connection, by reference
+	 * @throws mysqli_sql_exception when mySQL related errors occur
+	 */
+	public function  insert(&$mysqli) {
+		// handle degenerate cases
+		if (gettype($mysqli) !== "object" || get_class($mysqli) !=="mysqli") {
+			throw(new mysqli_sql_exception("input is not a mysqli object"));
+		}
+
+		// enforce that parkingPassId is null
+		if($this->parkingPassId !== null) {
+			throw(new mysqli_sql_exception("not a new parkingPass"));
+		}
+
+		// create query template
+		$query = "INSERT INTO parkingPass(parkingSpotId, vehicleId, adminId, uuId, startDateTime, endDateTime, issueDateTime) VALUES(?, ?, ?, ?, ?, ?, ?)";
+		$statement = $mysqli->prepare($query);
+		if($statement === false) {
+			throw(new mysqli_sql_exception("unable to prepare statement"));
+		}
+
+		// bind the member variables to the place holders in the template
+		$formatStart = $this->startDateTime->format("Y-m-d H:i:s");
+		$formatEnd = $this->endDateTime->format("Y-m-d H:i:s");
+		$formatIssued = $this->issuedDateTime->format("Y-m-d H:i:s");
+		$wasClean = $statement->bind_param("iiiis", $this->parkingPassId, $this->parkingSpotId, $this->vehicleId, $this->adminId, $this->uuId, $formatStart, $formatEnd, $formatIssued);
+		if($wasClean === false) {
+			throw(new mysqli_sql_exception("unable to bind paramaters"));
+		}
+
+		// execute the statement
+		if($statement->execute() === false) {
+			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
+		}
+
+		// update the null parkingPassId with what mySQL just gave us
+		$this->parkingPassId = $mysqli->insert_id;
+
+		// clean up the statement
+		$statement->close();
+	}
+
 }
 ?>

@@ -128,7 +128,7 @@ class ParkingSpot {
 	 *
 	 * @return string value of placardNumber
 	 */
-	public function getplacardNumber() {
+	public function getPlacardNumber() {
 		return($this->placardNumber);
 	}
 
