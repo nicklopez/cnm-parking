@@ -1031,6 +1031,5 @@ class ParkingPass {
 			return ($parkingPasses);
 		}
 	}
-
 }
 ?>
