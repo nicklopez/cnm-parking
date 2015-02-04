@@ -899,7 +899,12 @@ class ParkingPass {
 
 		// sanitize before searching - Using static function
 		try {
-			$newIssuedDateTime = self::sanitizeDate($newIssuedDateTime);
+			$issuedDateTime = self::sanitizeDate($issuedDateTime);
+			// clone and assign sunrise/sunset to remove Time requirement
+			$sunrise = $issuedDateTime;
+				$sunrise->setTime(0, 0, 0);
+			$sunset = $issuedDateTime;
+				$sunset->setTime(23, 59, 59);
 		} catch(InvalidArgumentException $invalidArgument) {
 			throw(new InvalidArgumentException($invalidArgument->getMessage(), 0, $invalidArgument));
 		} catch(RangeException $range) {
@@ -914,8 +919,9 @@ class ParkingPass {
 		}
 
 		// bind the member variables to the place holders in the template
-		$formatIssued = $this->issuedDateTime->format("Y-m-d H:i:s");
-		$wasClean = $statement->bind_param("i", $parkingPassId);
+		$sunrise = $sunrise->format("H:i:s");
+		$sunset = $sunset->format("H:i:s");
+		$wasClean = $statement->bind_param("ss", $sunrise, $sunset);
 		if($wasClean === false) {
 			throw(new mysqli_sql_exception("unable to bind paramaters"));
 		}
