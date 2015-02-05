@@ -207,7 +207,7 @@ class Visitor {
 	 *
 	 * @param string $newVisitorPhone new value of visitor phone number
 	 * @throws InvalidArgumentException if $newVisitorPhone is not a string or insecure
-	 * @throws RangeException if $newVisitorPhone is > 11 characters
+	 * @throws RangeException if $newVisitorPhone is > 24 characters
 	 **/
 	public function setVisitorPhone($newVisitorPhone) {
 		// verify the visitor phone number is secure
@@ -218,7 +218,7 @@ class Visitor {
 		}
 
 		// verify the visitor phone number will fit in the database
-		if(strlen($newVisitorPhone) > 11) {
+		if(strlen($newVisitorPhone) > 24) {
 			throw(new RangeException("visitor phone number too large"));
 		}
 
