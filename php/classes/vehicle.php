@@ -332,7 +332,7 @@ class Vehicle {
 		}
 
 		// verify the vehicle year is positive
-		if($newVehicleYear <= 0) {
+		if($newVehicleYear <= 1900) {
 			throw(new RangeException("vehicle year is not positive"));
 		}
 
