@@ -56,11 +56,11 @@ CREATE TABLE vehicle (
 CREATE TABLE location (
 	locationId INT UNSIGNED AUTO_INCREMENT NOT NULL,
 -- using pure decimal representation for gps coordinates
-	latitude DOUBLE(4,2) NOT NULL,
+	latitude DECIMAL(8,6) NOT NULL,
 	locationDescription VARCHAR(128) NOT NULL,
 	locationNote VARCHAR(128),
 -- using pure decimal representation for gps coordinates
-	longitude DOUBLE(4,2) NOT NULL,
+	longitude DECIMAL(9,6) NOT NULL,
 	PRIMARY KEY(locationId)
 );
 
