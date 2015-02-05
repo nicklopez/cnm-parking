@@ -433,13 +433,14 @@ class Visitor {
 		}
 
 // create query template
-		$query = "SELECT visitorId, visitorEmail, visitorFirstName, visitorLastName, visitorPhone FROM visitor WHERE visitorFirstName = ?";
+		$query = "SELECT visitorId, visitorEmail, visitorFirstName, visitorLastName, visitorPhone FROM visitor WHERE visitorFirstName LIKE ?";
 		$statement = $mysqli->prepare($query);
 		if($statement === false) {
 			throw(new mysqli_sql_exception("unable to prepare statement"));
 		}
 
 // bind the visitorFirstName to the place holder in the template
+		$visitorFirstName = "%$visitorFirstName%";
 		$wasClean = $statement->bind_param("s", $visitorFirstName);
 		if($wasClean === false) {
 			throw(new mysqli_sql_exception("unable to bind parameters"));
@@ -456,22 +457,26 @@ class Visitor {
 			throw(new mysqli_sql_exception("unable to get result set"));
 		}
 
-// grab the visitor from mySQL
-		try {
-			$visitor = null;
-			$row = $result->fetch_assoc();
-			if($row !== null) {
+		// grab the visitor from mySQL
+		$visitors = array();
+		while(($row = $result->fetch_assoc()) !== null) {
+			try {
 				$visitor = new Visitor($row["visitorId"], $row["visitorEmail"], $row["visitorFirstName"], $row["visitorLastName"], $row["visitorPhone"]);
-			}
-		} catch(Exception $exception) {
+				$visitors[] = $visitor;
+			} catch(Exception $exception) {
 // if the row couldn't be converted, rethrow it
-			throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
+				throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
+			}
 		}
-
-// free up memory and return the result
-		$result->free();
-		$statement->close();
-		return ($visitor);
+// count the results in the array and return:
+		// 1) null if 0 results
+		// 2) the entire array if > 1 result
+		$numberOfVisitors = count($visitors);
+		if($numberOfVisitors === 0) {
+			return (null);
+		} else {
+			return ($visitors);
+		}
 	}
 
 	/**
@@ -496,13 +501,14 @@ class Visitor {
 		}
 
 // create query template
-		$query = "SELECT visitorId, visitorEmail, visitorFirstName, visitorLastName, visitorPhone FROM visitor WHERE visitorLastName = ?";
+		$query = "SELECT visitorId, visitorEmail, visitorFirstName, visitorLastName, visitorPhone FROM visitor WHERE visitorLastName LIKE ?";
 		$statement = $mysqli->prepare($query);
 		if($statement === false) {
 			throw(new mysqli_sql_exception("unable to prepare statement"));
 		}
 
 // bind the visitorLastName to the place holder in the template
+		$visitorLastName = "%$visitorLastName%";
 		$wasClean = $statement->bind_param("s", $visitorLastName);
 		if($wasClean === false) {
 			throw(new mysqli_sql_exception("unable to bind parameters"));
@@ -519,22 +525,26 @@ class Visitor {
 			throw(new mysqli_sql_exception("unable to get result set"));
 		}
 
-// grab the visitor from mySQL
-		try {
-			$visitor = null;
-			$row = $result->fetch_assoc();
-			if($row !== null) {
+		// grab the visitor from mySQL
+		$visitors = array();
+		while(($row = $result->fetch_assoc()) !== null) {
+			try {
 				$visitor = new Visitor($row["visitorId"], $row["visitorEmail"], $row["visitorFirstName"], $row["visitorLastName"], $row["visitorPhone"]);
-			}
-		} catch(Exception $exception) {
+				$visitors[] = $visitor;
+			} catch(Exception $exception) {
 // if the row couldn't be converted, rethrow it
-			throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
+				throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
+			}
 		}
-
-// free up memory and return the result
-		$result->free();
-		$statement->close();
-		return ($visitor);
+// count the results in the array and return:
+		// 1) null if 0 results
+		// 2) the entire array if > 1 result
+		$numberOfVisitors = count($visitors);
+		if($numberOfVisitors === 0) {
+			return (null);
+		} else {
+			return ($visitors);
+		}
 	}
 }
 ?>
