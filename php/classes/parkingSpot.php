@@ -35,11 +35,11 @@ class ParkingSpot {
 	 * @throws InvalidArgumentException if data types are not valid
 	 * @throws RangeException if data values are out of bounds
 	 */
-	public function __construct($newParkingSpotId, $newLocationId, $newPlacardId = null) {
+	public function __construct($newParkingSpotId, $newLocationId, $newPlacardNumber) {
 		try {
 			$this->setParkingSpotId($newParkingSpotId);
 			$this->setLocationId($newLocationId);
-			$this->newPlacardId($newPlacardId);
+			$this->setPlacardNumber($newPlacardNumber);
 		} catch(InvalidArgumentException $invalidArgument) {
 			// rethrow exception to caller
 			throw(new InvalidArgumentException($invalidArgument->getMessage(), 0, $invalidArgument));
@@ -179,6 +179,8 @@ class ParkingSpot {
 		if($statement === false) {
 			throw(new mysqli_sql_exception(" unable to prepare statement"));
 		}
+
+		var_dump($this);
 
 		// bind the member variables to the place holders in the template
 		$wasClean = $statement->bind_param("is", $this->locationId, $this->placardNumber);
