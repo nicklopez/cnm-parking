@@ -461,6 +461,71 @@ class Vehicle {
 	}
 
 	/**
+	 * gets the vehicle by vehicle Id
+	 *
+	 * @param resource $mysqli pointer to mySQL connection, by reference
+	 * @param int $vehicleId vehicle to search for by vehicle id
+	 * @return mixed vehicle found or null if not found
+	 * @throws mysqli_sql_exception when mySQL related errors occur
+	 **/
+	public static function getVehicleByVehicleId(&$mysqli, $vehicleId) {
+// handle degenerate cases
+		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
+			throw(new mysqli_sql_exception("input is not a mysqli object"));
+		}
+
+// sanitize the vehicleId before searching
+		$vehicleId = filter_var($vehicleId, FILTER_VALIDATE_INT);
+		if($vehicleId === false) {
+			throw(new mysqli_sql_exception("vehicle id is not an integer"));
+		}
+		if($vehicleId <= 0) {
+			throw(new mysqli_sql_exception("vehicle id is not positive"));
+		}
+
+// create query template
+		$query	 = "SELECT vehicleId, visitorId, vehicleColor, vehicleMake, vehicleModel, vehiclePlateNumber, vehiclePlateState, vehicleYear FROM vehicle WHERE vehicleId= ?";
+		$statement = $mysqli->prepare($query);
+		if($statement === false) {
+			throw(new mysqli_sql_exception("unable to prepare statement"));
+		}
+
+// bind the vehicle id to the place holder in the template
+		$wasClean = $statement->bind_param("i", $vehicleId);
+		if($wasClean === false) {
+			throw(new mysqli_sql_exception("unable to bind parameters"));
+		}
+
+// execute the statement
+		if($statement->execute() === false) {
+			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
+		}
+
+// get result from the SELECT query
+		$result = $statement->get_result();
+		if($result === false) {
+			throw(new mysqli_sql_exception("unable to get result set"));
+		}
+
+// grab the vehicle from mySQL
+		try {
+			$vehicle = null;
+			$row   = $result->fetch_assoc();
+			if($row !== null) {
+				$vehicle = new Vehicle($row["vehicleId"], $row["visitorId"], $row["vehicleColor"], $row["vehicleMake"], $row["vehicleModel"], $row["vehiclePlateNumber"], $row["vehiclePlateState"], $row["vehicleYear"]);
+			}
+		} catch(Exception $exception) {
+// if the row couldn't be converted, rethrow it
+			throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
+		}
+
+// free up memory and return the result
+		$result->free();
+		$statement->close();
+		return($vehicle);
+	}
+
+	/**
 	 * gets the vehicle by visitor Id
 	 *
 	 * @param resource $mysqli pointer to mySQL connection, by reference
@@ -547,13 +612,14 @@ class Vehicle {
 		}
 
 // create query template
-		$query	 = "SELECT vehicleId, visitorId, vehicleColor, vehicleMake, vehicleModel, vehiclePlateNumber, vehiclePlateState, vehicleYear FROM vehicle WHERE vehiclePlateNumber = ?";
+		$query	 = "SELECT vehicleId, visitorId, vehicleColor, vehicleMake, vehicleModel, vehiclePlateNumber, vehiclePlateState, vehicleYear FROM vehicle WHERE vehiclePlateNumber LIKE ?";
 		$statement = $mysqli->prepare($query);
 		if($statement === false) {
 			throw(new mysqli_sql_exception("unable to prepare statement"));
 		}
 
 // bind the vehiclePlateNumber to the place holder in the template
+		$vehiclePlateNumber = "%$vehiclePlateNumber%";
 		$wasClean = $statement->bind_param("s", $vehiclePlateNumber);
 		if($wasClean === false) {
 			throw(new mysqli_sql_exception("unable to bind parameters"));
@@ -570,22 +636,26 @@ class Vehicle {
 			throw(new mysqli_sql_exception("unable to get result set"));
 		}
 
-// grab the vehicle from mySQL
-		try {
-			$vehicle = null;
-			$row   = $result->fetch_assoc();
-			if($row !== null) {
+		// grab the vehicle from mySQL
+		$vehicles = array();
+		while(($row = $result->fetch_assoc()) !== null) {
+			try {
 				$vehicle = new Vehicle($row["vehicleId"], $row["visitorId"], $row["vehicleColor"], $row["vehicleMake"], $row["vehicleModel"], $row["vehiclePlateNumber"], $row["vehiclePlateState"], $row["vehicleYear"]);
-			}
-		} catch(Exception $exception) {
+				$vehicles[] = $vehicle;
+			} catch(Exception $exception) {
 // if the row couldn't be converted, rethrow it
-			throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
+				throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
+			}
 		}
-
-// free up memory and return the result
-		$result->free();
-		$statement->close();
-		return($vehicle);
+// count the results in the array and return:
+		// 1) null if 0 results
+		// 2) the entire array if > 1 result
+		$numberOfVehicles = count($vehicles);
+		if($numberOfVehicles === 0) {
+			return (null);
+		} else {
+			return ($vehicles);
+		}
 	}
 }
 ?>
