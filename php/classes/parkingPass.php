@@ -15,6 +15,13 @@ class ParkingPass {
 	/**
 	 * Foreign Key / int, not null
 	 *
+	 * id to reference Admin Class
+	 */
+	private $adminId;
+
+	/**
+	 * Foreign Key / int, not null
+	 *
 	 * id to reference ParkingSpot Class
 	 */
 	private $parkingSpotId;
@@ -25,27 +32,6 @@ class ParkingPass {
 	 * id to reference Vehicle Class
 	 */
 	private $vehicleId;
-
-	/**
-	 * Foreign Key / int, not null
-	 *
-	 * id to reference Admin Class
-	 */
-	private $adminId;
-
-	/**
-	 * string, char 36,
-	 *
-	 * uuId
-	 */
-	private $uuId;
-
-	/**
-	 * datetime, not null
-	 *
-	 * from when is the the pass valid
-	 */
-	private $startDateTime;
 
 	/**
 	 * datetime, not null
@@ -62,6 +48,21 @@ class ParkingPass {
 	private $issuedDateTime;
 
 	/**
+	 * datetime, not null
+	 *
+	 * from when is the the pass valid
+	 */
+	private $startDateTime;
+
+	/**
+	 * string, char 36,
+	 *
+	 * uuId
+	 */
+	private $uuId;
+
+
+	/**
 	 * constructor for the parkingPass class
 	 *
 	 * @param $newParkingPassId
@@ -73,7 +74,7 @@ class ParkingPass {
 	 * @param $newEndDateTime
 	 * @param $newIssuedDateTime
 	 */
-	public function __construct($newParkingPassId, $newAdminId, $newParkingSpotId, $newVehicleId, $newEndDateTime, $newIssuedDateTime, $newStartDateTime, $newUuId) {
+	public function __construct($newParkingPassId, $newAdminId, $newParkingSpotId, $newVehicleId, $newEndDateTime, $newIssuedDateTime, $newStartDateTime, $newUuId = null) {
 		try {
 			$this->setParkingPassId($newParkingPassId);
 			$this->setAdminId($newAdminId);
@@ -188,7 +189,7 @@ class ParkingPass {
 			throw(new RangeException("vehicleId is not positive"));
 		}
 		// convert and store the vehicleId
-		$this->adminId = intval(($newVehicleId));
+		$this->vehicleId = intval($newVehicleId);
 	}
 
 	/**
@@ -388,7 +389,7 @@ class ParkingPass {
 		}
 
 		// create query template
-		$query = "INSERT INTO parkingPass(adminId, parkingSpotId, vehicleId, endDateTime, issueDateTime, startDateTime, uuId) VALUES(?, ?, ?, UUID(), ?, ?, ?)";
+		$query = "INSERT INTO parkingPass(adminId, parkingSpotId, vehicleId, endDateTime, issuedDateTime, startDateTime, uuId) VALUES(?, ?, ?, ?, ?, ?, UUID())";
 		$statement = $mysqli->prepare($query);
 		if($statement === false) {
 			throw(new mysqli_sql_exception("unable to prepare statement"));
@@ -398,7 +399,7 @@ class ParkingPass {
 		$formatEnd = $this->endDateTime->format("Y-m-d H:i:s");
 		$formatIssued = $this->issuedDateTime->format("Y-m-d H:i:s");
 		$formatStart = $this->startDateTime->format("Y-m-d H:i:s");
-		$wasClean = $statement->bind_param("iiii", $this->parkingPassId, $this->adminId, $this->parkingSpotId, $this->vehicleId, $formatEnd, $formatIssued,  $formatStart);
+		$wasClean = $statement->bind_param("iiisss", $this->adminId, $this->parkingSpotId, $this->vehicleId, $formatEnd, $formatIssued,  $formatStart);
 		if($wasClean === false) {
 			throw(new mysqli_sql_exception("unable to bind paramaters"));
 		}
@@ -413,6 +414,12 @@ class ParkingPass {
 
 		// clean up the statement
 		$statement->close();
+
+		// regrab from mySQl to store the generated uuId
+		$parkingPass = self::getParkingPassByParkingPassId($mysqli, $this->parkingPassId);
+		$this->setUuId($parkingPass->getUuId());
+		var_dump($this);
+
 	}
 
 	/**
@@ -544,16 +551,13 @@ class ParkingPass {
 			throw(new mysqli_sql_exception("unable to get result set"));
 		}
 
-		// build array of parkingPass
-		$parkingPass = array();
-		while(($row = $result->fetch_assoc()) !== null) {
-			try {
-				$parkingPass = new ParkingPass($row["parkingPassId"], $row["adminId"], $row["parkingSpotId"], $row["vehicleId"], $row["endDateTime"], $row["issuedDateTime"], $row["startDateTime"], $row["uuId"]);
-				$parkingPass[] = $parkingPass;
-			} catch(Exception $exception) {
-				// if the row couldn't be converted, rethrow it
-				throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
-			}
+		// build parkingPass
+		try {
+			$row = $result->fetch_assoc();
+			$parkingPass = new ParkingPass($row["parkingPassId"], $row["adminId"], $row["parkingSpotId"], $row["vehicleId"], $row["endDateTime"], $row["issuedDateTime"], $row["startDateTime"], $row["uuId"]);
+		} catch(Exception $exception) {
+			// if the row couldn't be converted, rethrow it
+			throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
 		}
 
 		// count the results in array and return:

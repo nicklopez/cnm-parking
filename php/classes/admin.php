@@ -119,7 +119,7 @@ class Admin {
 			throw(new InvalidArgumentException("activation content is empty or insecure"));
 		}
 		// verify the activation will fit in the database
-		if(strlen($newActivation) > 128) {
+		if(strlen($newActivation) > 32) {
 			throw(new RangeException("activation too large"));
 		}
 		// store the activation content
@@ -216,7 +216,7 @@ class Admin {
 			throw(new InvalidArgumentException("salt is empty or insecure"));
 		}
 		// verify the salt will fit in the database
-		if(strlen($newSalt) > 128) {
+		if(strlen($newSalt) > 64) {
 			throw(new RangeException("salt too large"));
 		}
 		// store the salt
