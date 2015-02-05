@@ -157,7 +157,7 @@ class ParkingSpot {
 	}
 
 	/**
-	 * insert parkingSpot into mySQL
+	 * insert valid parkingSpot into mySQL
 	 *
 	 * @param resource $mysqli pointer to mySQL connection, by reference
 	 * @throws mysqli_sql_exception when mySQL related errors occur
@@ -179,8 +179,6 @@ class ParkingSpot {
 		if($statement === false) {
 			throw(new mysqli_sql_exception(" unable to prepare statement"));
 		}
-
-		var_dump($this);
 
 		// bind the member variables to the place holders in the template
 		$wasClean = $statement->bind_param("is", $this->locationId, $this->placardNumber);
@@ -357,7 +355,7 @@ class ParkingSpot {
 	 * @throws mysqli_sql_exception when mySQL related errors occur
 	 */
 	public
-	function getParkingSpotByplacardNumber(&$mysqli, $placardNumber) {
+	function getParkingSpotByPlacardNumber(&$mysqli, $placardNumber) {
 		// handle degenerate cases
 		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
 			throw(new mysqli_sql_exception("input is not a mysqli object"));
