@@ -1,22 +1,22 @@
 <?php
 /**
- * Class creation of the Admin table
+ * Creation of the CNM parking Admin
  *
- * Admin is the creation of admin credentials
+ * These the CNM parking of admin credentials
  *
  * @author David Fevig <davidfevig@davidfevig.com>
  **/
 class Admin {
 	/**
-	 * id for admin; this is the primary key
+	 * id for CNM Parking admin; this is the primary key
 	 **/
 	private $adminId;
 	/**
-	 * activation of the admin
+	 * activation of the CNM parking admin
 	 **/
 	private $activation;
 	/**
-	 * admin email; unique attribute
+	 * CNM parking admin's email; unique attribute
 	 **/
 	private $adminEmail;
 	/**
@@ -29,9 +29,15 @@ class Admin {
 	private $salt;
 
 	/**
-	 * constructor for Admin
+	 * constructor for the Admin
 	 *
-	 * place holder for constructor description
+	 ** @param int $newAdminId id of the new admin
+	 * @param string $newActivation string containing the activation message
+	 * @param string $newAdminEmail string containing the admin's email
+	 * @param string $newPassHass string containing the password hashing
+	 * @param string $newSalt string containing the salt
+	 * @throws InvalidArgumentException if data types are not valid
+	 * @throws RangeException if data values are out of bounds (e.g., strings too long, negative integers)
 	 *
 	 **/
 	public function __construct($newAdminId, $newActivation, $newAdminEmail, $newPassHash, $newSalt) {
@@ -63,11 +69,11 @@ class Admin {
 	 * mutator method for admin id
 	 *
 	 * @param int $newAdminId new value of admin id
-	 * @throws InvalidArgumentException if $newAdminiId is not an integer
+	 * @throws InvalidArgumentException if $newAdminId is not an integer
 	 * @throws RangeException if $newAdminId is not positive
 	 **/
 	public function setAdminId($newAdminId) {
-		// base case: if the admin id is null, this a new admin without a mySQL assigned id (yet)
+		// base case: if the admin id is null, this is a new admin without a mySQL assigned id (yet)
 		if($newAdminId === null) {
 			$this->adminId = null;
 			return;
@@ -112,6 +118,7 @@ class Admin {
 		if(empty($newActivation) === true) {
 			throw(new InvalidArgumentException("activation content is empty or insecure"));
 		}
+		// verify the activation will fit in the database
 		if(strlen($newActivation) > 128) {
 			throw(new RangeException("activation too large"));
 		}
@@ -138,10 +145,11 @@ class Admin {
 	public function setAdminEmail($newAdminEmail) {
 		// verify the admin email is secure is secure
 		$newAdminEmail = trim($newAdminEmail);
-		$newAdminEmail = filter_var($newAdminEmail, FILTER_SANITIZE_STRING);
+		$newAdminEmail = filter_var($newAdminEmail, FILTER_SANITIZE_EMAIL);
 		if(empty($newAdminEmail) === true) {
-			throw(new InvalidArgumentException("the admin email is empty or insecure"));
+			throw(new InvalidArgumentException("the admin email is valid"));
 		}
+		// verify the admin email will fit in the database
 		if(strlen($newAdminEmail) > 128) {
 			throw(new RangeException("admin email hash too large"));
 		}
@@ -175,6 +183,10 @@ class Admin {
 		// verify the pass hash will fit in the database
 		if(strlen($newPassHash) > 128) {
 			throw(new RangeException("password hash too large"));
+		}
+		//verify the pass hash is a hex value
+		if (ctype_xdigit($newPassHash) === false) {
+			throw(new InvalidArgumentException("pass hash is not a hex string"));
 		}
 		// store the activation content
 		$this->passHash = $newPassHash;
@@ -224,20 +236,20 @@ class Admin {
 			throw(new mysqli_sql_exception("input is not a mysqli object"));
 		}
 
-		// enforce the adminId is null (i.e., don't insert an admin that already exists)
+		// enforce the admin id is null (i.e., don't insert an admin that already exists)
 		if($this->adminId !== null) {
 			throw(new mysqli_sql_exception("not a new admin"));
 		}
 
 		// create query template
-		$query	 = "INSERT INTO admin(adminId, activation, adminEmail, passHash, salt) VALUES(?, ?, ?, ?, ?)";
+		$query	 = "INSERT INTO admin(activation, adminEmail, passHash, salt) VALUES(?, ?, ?, ?)";
 		$statement = $mysqli->prepare($query);
 		if($statement === false) {
 			throw(new mysqli_sql_exception("unable to prepare statement"));
 		}
 
 		// bind the member variables to the place holders in the template
-		$wasClean	  = $statement->bind_param("issss", $this->adminId, $this->activation, $this->adminEmail, $this->passHash, $this->salt);
+		$wasClean	  = $statement->bind_param("ssss", $this->activation, $this->adminEmail, $this->passHash, $this->salt);
 		if($wasClean === false) {
 			throw(new mysqli_sql_exception("unable to bind parameters"));
 		}
@@ -279,7 +291,7 @@ class Admin {
 		}
 
 		// bind the member variables to the place holder in the template
-		$wasClean = $statement->bind_param("i", $this->adminiId);
+		$wasClean = $statement->bind_param("i", $this->adminId);
 		if($wasClean === false) {
 			throw(new mysqli_sql_exception("unable to bind parameters"));
 		}
@@ -311,14 +323,14 @@ class Admin {
 		}
 
 		// create query template
-		$query	 = "UPDATE admin SET adminId = ?, activation = ?, adminEmail = ?, passHash = ?, salt = ? WHERE adminId = ?";
+		$query	 = "UPDATE admin SET activation = ?, adminEmail = ?, passHash = ?, salt = ? WHERE adminId = ?";
 		$statement = $mysqli->prepare($query);
 		if($statement === false) {
 			throw(new mysqli_sql_exception("unable to prepare statement"));
 		}
 
 		// bind the member variables to the place holders in the template
-		$wasClean = $statement->bind_param("issss",  $this->adminId, $this->activation, $this->adminEmail, $this->passHash, $this->salt);
+		$wasClean = $statement->bind_param("ssssi", $this->activation, $this->adminEmail, $this->passHash, $this->salt, $this->adminId);
 		if($wasClean === false) {
 			throw(new mysqli_sql_exception("unable to bind parameters"));
 		}
@@ -331,79 +343,8 @@ class Admin {
 		// clean up the statement
 		$statement->close();
 	}
-
 	/**
-	 * gets the Admin by admin email
-	 *
-	 * @param resource $mysqli pointer to mySQL connection, by reference
-	 * @param string $adminId to search for admin
-	 * @return mixed array of Admins found, Admin found, or null if not found
-	 * @throws mysqli_sql_exception when mySQL related errors occur
-	 **/
-	public static function getAdminByAdminEmail(&$mysqli, $adminEmail) {
-		// handle degenerate cases
-		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
-			throw(new mysqli_sql_exception("input is not a mysqli object"));
-		}
-
-		// validate the string before searching
-		$adminEmail = trim($adminEmail);
-		$adminEmail = filter_var($adminEmail, FILTER_SANITIZE_STRING);
-
-		// create query template
-		$query	 = "SELECT adminId, activation, adminEmail, passHash, salt FROM admin WHERE adminEmail LIKE ?";
-		$statement = $mysqli->prepare($query);
-		if($statement === false) {
-			throw(new mysqli_sql_exception("unable to prepare statement"));
-		}
-
-		// bind the admin email to the place holder in the template
-		$adminEmail = "%$adminEmail%";
-		$wasClean = $statement->bind_param("s", $adminEmail);
-		if($wasClean === false) {
-			throw(new mysqli_sql_exception("unable to bind parameters"));
-		}
-
-		// execute the statement
-		if($statement->execute() === false) {
-			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
-		}
-
-		// get result from the SELECT query
-		$result = $statement->get_result();
-		if($result === false) {
-			throw(new mysqli_sql_exception("unable to get result set"));
-		}
-
-		// build an array of admin emails
-		$adminEmails = array();
-		while(($row = $result->fetch_assoc()) !== null) {
-			try {
-				$adminEmail	= new Admin($row["newAdminId"], $row["newActivation"], $row["newAdminEmail"], $row["newPassHash"], $row["newSalt"]);
-				$adminEmails[] = $adminEmail;
-			}
-			catch(Exception $exception) {
-				// if the row couldn't be converted, rethrow it
-				throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
-			}
-		}
-
-		// count the results in the array and return:
-		// 1) null if 0 results
-		// 2) a single object if 1 result
-		// 3) the entire array if > 1 result
-		$numberOfAdminEmails = count($adminEmails);
-		if($numberOfAdminEmails === 0) {
-			return(null);
-		} else if($numberOfAdminEmails === 1) {
-			return($adminEmails[0]);
-		} else {
-			return($adminEmails);
-		}
-	}
-
-	/**
-	 * gets the Admin by adminId
+	 * get the Admin by adminId
 	 *
 	 * @param resource $mysqli pointer to mySQL connection, by reference
 	 * @param int $adminId admin content to search for
@@ -449,7 +390,7 @@ class Admin {
 			throw(new mysqli_sql_exception("unable to get result set"));
 		}
 
-		// grab the tweet from mySQL
+		// grab the admin from mySQL
 		try {
 			$admin = null;
 			$row   = $result->fetch_assoc();
@@ -474,7 +415,7 @@ class Admin {
 	 * @return int array of Admins found or null if not found
 	 * @throws mysqli_sql_exception when mySQL related errors occur
 	 **/
-	public static function getAllTweets(&$mysqli) {
+	public static function getAllAdmins(&$mysqli) {
 		// handle degenerate cases
 		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
 			throw(new mysqli_sql_exception("input is not a mysqli object"));
@@ -510,7 +451,6 @@ class Admin {
 				throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
 			}
 		}
-
 		// count the results in the array and return:
 		// 1) null if 0 results
 		// 2) the entire array if >= 1 result
@@ -520,6 +460,69 @@ class Admin {
 		} else {
 			return($admins);
 		}
+	}
+	/**
+	 * gets all Admins by Admin Email
+	 *
+	 * @param resource $mysqli pointer to mySQL connection, by reference
+	 * @param string $adminEmail to search Admin for Admin Email
+	 * @return mixed array of $adminEmail if not found or null if not found
+	 * @throws mysqli_sql_exception when mySQL related errors occur
+	 **/
+	public static function getAdminProfileByAdminEmail(&$mysqli, $adminEmail) {
+// handle degenerate cases
+		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
+			throw(new mysqli_sql_exception("input is not a mysqli object"));
+		}
+
+// sanitize the adminEmail before searching
+		$adminEmail = trim($adminEmail);
+		$adminEmail = filter_var($adminEmail, FILTER_SANITIZE_STRING);
+		if(empty($adminEmail) === true) {
+			throw(new InvalidArgumentException("admin email is empty or insecure"));
+		}
+
+// create query template
+		$query = "SELECT adminId, activation, adminEmail, passHash, salt FROM admin WHERE adminEmail = ?";
+		$statement = $mysqli->prepare($query);
+		if($statement === false) {
+			throw(new mysqli_sql_exception("unable to prepare statement"));
+		}
+
+// bind the adminEmail to the place holder in the template
+		$adminEmail = "%$adminEmail%";
+		$wasClean = $statement->bind_param("s", $adminEmail);
+		if($wasClean === false) {
+			throw(new mysqli_sql_exception("unable to bind parameters"));
+		}
+
+// execute the statement
+		if($statement->execute() === false) {
+			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
+		}
+
+// get result from the SELECT query
+		$result = $statement->get_result();
+		if($result === false) {
+			throw(new mysqli_sql_exception("unable to get result set"));
+		}
+
+// grab the adminProfile from mySQL
+		try {
+			$admin = null;
+			$row = $result->fetch_assoc();
+			if($row !== null) {
+				$admin = new Admin($row["adminId"], $row["activation"], $row["adminEmail"], $row["passHash"], $row["salt"]);
+			}
+		} catch(Exception $exception) {
+// if the row couldn't be converted, rethrow it
+			throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
+		}
+
+// free up memory and return the result
+		$result->free();
+		$statement->close();
+		return ($admin);
 	}
 }
 ?>
