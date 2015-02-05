@@ -113,7 +113,7 @@ class Location {
 	public function setLocationDescription($newLocationDescription) {
 		// verify the location description is secure
 		$newLocationDescription = trim($newLocationDescription);
-		$newLocationDescription = filter_var($newLocationDescription, FILTER_SANITIZE_EMAIL);
+		$newLocationDescription = filter_var($newLocationDescription, FILTER_SANITIZE_STRING);
 		if(empty($newLocationDescription) === true) {
 			throw(new InvalidArgumentException("location description is empty or insecure"));
 		}
@@ -183,8 +183,8 @@ class Location {
 			throw(new InvalidArgumentException("gps coordinates, latitude is empty or insecure"));
 		}
 
-		// verify gps coordinates, latitude does not exceed 5 characters
-		if(strlen($newLatitude) > 5) {
+		// verify gps coordinates, latitude value not between -90 and 90
+		if($newLatitude < -90 || $newLatitude > 90) {
 			throw(new RangeException("gps coordinates, latitude too large"));
 		}
 
@@ -215,8 +215,8 @@ class Location {
 			throw(new InvalidArgumentException("gps coordinates, longitude is empty or insecure"));
 		}
 
-		// verify gps coordinates, longitude does not exceed 5 characters
-		if(strlen($newLongitude) > 5) {
+		// verify gps coordinates, longitude value not between -180 and 80
+		if($newLongitude < -180 || $newLongitude > 180) {
 			throw(new RangeException("gps coordinates, longitude too large"));
 		}
 
@@ -273,35 +273,35 @@ class Location {
 	 * @throws mysqli_sql_exception when mySQL related errors occur
 	 **/
 	public function delete(&$mysqli) {
-// handle degenerate cases
+		// handle degenerate cases
 		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
 			throw(new mysqli_sql_exception("input is not a mysqli object"));
 		}
 
-// enforce the locationId is not null (i.e., don't delete a location that hasn't been inserted)
+		// enforce the locationId is not null (i.e., don't delete a location that hasn't been inserted)
 		if($this->locationId === null) {
 			throw(new mysqli_sql_exception("unable to delete a location that does not exist"));
 		}
 
-// create query template
+		// create query template
 		$query = "DELETE FROM location WHERE locationId = ?";
 		$statement = $mysqli->prepare($query);
 		if($statement === false) {
 			throw(new mysqli_sql_exception("unable to prepare statement"));
 		}
 
-// bind the location variables to the place holder in the template
+		// bind the location variables to the place holder in the template
 		$wasClean = $statement->bind_param("i", $this->locationId);
 		if($wasClean === false) {
 			throw(new mysqli_sql_exception("unable to bind parameters"));
 		}
 
-// execute the statement
+		// execute the statement
 		if($statement->execute() === false) {
 			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
 		}
 
-// clean up the statement
+		// clean up the statement
 		$statement->close();
 	}
 
@@ -312,35 +312,35 @@ class Location {
 	 * @throws mysqli_sql_exception when mySQL related errors occur
 	 **/
 	public function update(&$mysqli) {
-// handle degenerate cases
+		// handle degenerate cases
 		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
 			throw(new mysqli_sql_exception("input is not a mysqli object"));
 		}
 
-// enforce the locationId is not null (i.e., don't update a location that hasn't been inserted)
+		// enforce the locationId is not null (i.e., don't update a location that hasn't been inserted)
 		if($this->locationId === null) {
 			throw(new mysqli_sql_exception("unable to update a location that does not exist"));
 		}
 
-// create query template
+		// create query template
 		$query = "UPDATE location SET latitude = ?, locationDescription = ?, locationNote = ?, longitude = ? WHERE locationId = ?";
 		$statement = $mysqli->prepare($query);
 		if($statement === false) {
 			throw(new mysqli_sql_exception("unable to prepare statement"));
 		}
 
-// bind the location variables to the place holders in the template
+		// bind the location variables to the place holders in the template
 		$wasClean = $statement->bind_param("dssdi", $this->latitude, $this->locationDescription, $this->locationNote, $this->longitude, $this->locationId);
 		if($wasClean === false) {
 			throw(new mysqli_sql_exception("unable to bind parameters"));
 		}
 
-// execute the statement
+		// execute the statement
 		if($statement->execute() === false) {
 			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
 		}
 
-// clean up the statement
+		// clean up the statement
 		$statement->close();
 	}
 
@@ -353,12 +353,12 @@ class Location {
 	 * @throws mysqli_sql_exception when mySQL related errors occur
 	 **/
 	public static function getLocationByLocationId(&$mysqli, $locationId) {
-// handle degenerate cases
+		// handle degenerate cases
 		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
 			throw(new mysqli_sql_exception("input is not a mysqli object"));
 		}
 
-// sanitize the locationId before searching
+		// sanitize the locationId before searching
 		$locationId = filter_var($locationId, FILTER_VALIDATE_INT);
 		if($locationId === false) {
 			throw(new mysqli_sql_exception("location id is not an integer"));
@@ -367,31 +367,31 @@ class Location {
 			throw(new mysqli_sql_exception("location id is not positive"));
 		}
 
-// create query template
+		// create query template
 		$query = "SELECT locationId, latitude, locationDescription, locationNote, longitude FROM location WHERE locationId = ?";
 		$statement = $mysqli->prepare($query);
 		if($statement === false) {
 			throw(new mysqli_sql_exception("unable to prepare statement"));
 		}
 
-// bind the location id to the place holder in the template
+		// bind the location id to the place holder in the template
 		$wasClean = $statement->bind_param("i", $locationId);
 		if($wasClean === false) {
 			throw(new mysqli_sql_exception("unable to bind parameters"));
 		}
 
-// execute the statement
+		// execute the statement
 		if($statement->execute() === false) {
 			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
 		}
 
-// get result from the SELECT query
+		// get result from the SELECT query
 		$result = $statement->get_result();
 		if($result === false) {
 			throw(new mysqli_sql_exception("unable to get result set"));
 		}
 
-// grab the location from mySQL
+		// grab the location from mySQL
 		try {
 			$location = null;
 			$row = $result->fetch_assoc();
@@ -399,11 +399,11 @@ class Location {
 				$location = new Location($row["locationId"], $row["latitude"], $row["locationDescription"], $row["locationNote"], $row["longitude"]);
 			}
 		} catch(Exception $exception) {
-// if the row couldn't be converted, rethrow it
+		// if the row couldn't be converted, rethrow it
 			throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
 		}
 
-// free up memory and return the result
+		// free up memory and return the result
 		$result->free();
 		$statement->close();
 		return ($location);
@@ -418,63 +418,63 @@ class Location {
 	 * @throws mysqli_sql_exception when mySQL related errors occur
 	 **/
 	public static function getLocationByLocationDescription(&$mysqli, $locationDescription) {
-// handle degenerate cases
+		// handle degenerate cases
 		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
 			throw(new mysqli_sql_exception("input is not a mysqli object"));
 		}
 
-// sanitize the location description before searching
+		// sanitize the location description before searching
 		$locationDescription = trim($locationDescription);
 		$locationDescription = filter_var($locationDescription, FILTER_SANITIZE_STRING);
 		if(empty($locationDescription) === true) {
 			throw(new InvalidArgumentException("location description is empty or insecure"));
 		}
 
-// create query template
+		// create query template
 		$query = "SELECT locationId, latitude, locationDescription, locationNote, longitude FROM location WHERE locationDescription LIKE ?";
 		$statement = $mysqli->prepare($query);
 		if($statement === false) {
 			throw(new mysqli_sql_exception("unable to prepare statement"));
 		}
 
-// bind the location description to the place holder in the template
+		// bind the location description to the place holder in the template
 		$locationDescription = "%$locationDescription%";
 		$wasClean = $statement->bind_param("s", $locationDescription);
 		if($wasClean === false) {
 			throw(new mysqli_sql_exception("unable to bind parameters"));
 		}
 
-// execute the statement
+		// execute the statement
 		if($statement->execute() === false) {
 			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
 		}
 
-// get result from the SELECT query
+		// get result from the SELECT query
 		$result = $statement->get_result();
 		if($result === false) {
 			throw(new mysqli_sql_exception("unable to get result set"));
 		}
 
-// grab the location from mySQL
+		// grab the location from mySQL
 		$locations = array();
 		while(($row = $result->fetch_assoc()) !== null) {
 			try {
 				$location = new Location($row["locationId"], $row["latitude"], $row["locationDescription"], $row["locationNote"], $row["longitude"]);
 				$locations[] = $location;
 			} catch(Exception $exception) {
-// if the row couldn't be converted, rethrow it
+		// if the row couldn't be converted, rethrow it
 				throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
 			}
 		}
-// count the results in the array and return:
-			// 1) null if 0 results
-			// 2) the entire array if > 1 result
-			$numberOfLocations = count($locations);
-			if($numberOfLocations === 0) {
-				return (null);
-			} else {
-				return ($locations);
-			}
+		// count the results in the array and return:
+		// 1) null if 0 results
+		// 2) the entire array if > 1 result
+		$numberOfLocations = count($locations);
+		if($numberOfLocations === 0) {
+			return (null);
+		} else {
+			return ($locations);
 		}
+	}
 }
 ?>
