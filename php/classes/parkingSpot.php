@@ -301,7 +301,7 @@ class ParkingSpot {
 		}
 
 		// create query template
-		$query = "SELECT parkingSpotId, locationId, placardNumber FROM parkingSpot WHERE parkingSpotId LIKE ?";
+		$query = "SELECT parkingSpotId, locationId, placardNumber FROM parkingSpot WHERE parkingSpotId = ?";
 		$statement = $mysqli->prepare($query);
 		if($statement === false) {
 			throw(new mysqli_sql_exception(" unable to prepare statement"));
