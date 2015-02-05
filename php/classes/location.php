@@ -32,19 +32,19 @@ class Location {
 	 * constructor for location
 	 *
 	 * @param mixed $newLocationId id of the new location
+	 * @param float $newLatitude float containing gps coordinates, latitude
 	 * @param string $newLocationDescription string containing description of location
 	 * @param string $newLocationNote string containing additional notes regarding location
-	 * @param float $newLatitude float containing gps coordinates, latitude
 	 * @param float $newLongitude float containing gps coordinates, longitude
 	 * @throws InvalidArgumentException if data types are not valid
 	 * @throws RangeException if data values are out of bounds (e.g., strings too long, negative integers)
 	 **/
-	public function __construct($newLocationId, $newLocationDescription, $newLocationNote, $newLatitude, $newLongitude) {
+	public function __construct($newLocationId, $newLatitude, $newLocationDescription, $newLocationNote, $newLongitude) {
 		try {
 			$this->setLocationId($newLocationId);
+			$this->setLatitude($newLatitude);
 			$this->setLocationDescription($newLocationDescription);
 			$this->setLocationNote($newLocationNote);
-			$this->setLatitude($newLatitude);
 			$this->setLongitude($newLongitude);
 		} catch(InvalidArgumentException $invalidArgument) {
 			// rethrow the exception to the caller
@@ -172,9 +172,9 @@ class Location {
 	/**
 	 * mutator method for new gps coordinates, latitude
 	 *
-	 * @param float $newLatitude new bid dollar amount
+	 * @param float $newLatitude new GPS coordinates, latitude
 	 * @throws InvalidArgumentException if $newLatitude is not a float or insecure
-	 * @throws RangeException if $newLatitude is > 4 characters
+	 * @throws RangeException if $newLatitude is > 5 characters
 	 */
 	public function setLatitude($newLatitude) {
 		// verify gps coordinates, latitude is valid
@@ -183,8 +183,8 @@ class Location {
 			throw(new InvalidArgumentException("gps coordinates, latitude is empty or insecure"));
 		}
 
-		// verify gps coordinates, latitude does not exceed 4 characters
-		if(strlen($newLatitude) > 4) {
+		// verify gps coordinates, latitude does not exceed 5 characters
+		if(strlen($newLatitude) > 5) {
 			throw(new RangeException("gps coordinates, latitude too large"));
 		}
 
@@ -204,9 +204,9 @@ class Location {
 	/**
 	 * mutator method for new gps coordinates, longitude
 	 *
-	 * @param float $newLongitude new bid dollar amount
+	 * @param float $newLongitude new GPS coordinates, longitude
 	 * @throws InvalidArgumentException if $newLatitude is not a float or insecure
-	 * @throws RangeException if $newLatitude is > 4 characters
+	 * @throws RangeException if $newLatitude is > 5 characters
 	 */
 	public function setLongitude($newLongitude) {
 		// verify gps coordinates, longitude is valid
@@ -215,8 +215,8 @@ class Location {
 			throw(new InvalidArgumentException("gps coordinates, longitude is empty or insecure"));
 		}
 
-		// verify gps coordinates, longitude does not exceed 4 characters
-		if(strlen($newLongitude) > 4) {
+		// verify gps coordinates, longitude does not exceed 5 characters
+		if(strlen($newLongitude) > 5) {
 			throw(new RangeException("gps coordinates, longitude too large"));
 		}
 
@@ -431,7 +431,7 @@ class Location {
 		}
 
 // create query template
-		$query = "SELECT locationId, latitude, locationDescription, locationNote, longitude FROM location WHERE locationDescription = ?";
+		$query = "SELECT locationId, latitude, locationDescription, locationNote, longitude FROM location WHERE locationDescription LIKE ?";
 		$statement = $mysqli->prepare($query);
 		if($statement === false) {
 			throw(new mysqli_sql_exception("unable to prepare statement"));
