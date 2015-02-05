@@ -10,10 +10,10 @@ DROP TABLE IF EXISTS visitor;
 -- arbitrary use of character length as 128 for varchar.
 CREATE TABLE admin (
 	adminId INT UNSIGNED AUTO_INCREMENT NOT NULL,
-	activation VARCHAR(128),
+	activation VARCHAR(32),
 	adminEmail VARCHAR(128) NOT NULL,
 	passHash VARCHAR(128),
-	salt VARCHAR(128),
+	salt VARCHAR(64),
 	UNIQUE(adminEmail),
 	PRIMARY KEY(adminId)
 );
@@ -67,7 +67,7 @@ CREATE TABLE location (
 CREATE TABLE parkingSpot (
 	parkingSpotId INT UNSIGNED AUTO_INCREMENT NOT NULL,
 	locationId INT UNSIGNED NOT NULL,
-	placardNumber INT UNSIGNED NOT NULL,
+	placardNumber VARCHAR(16) NOT NULL,
 	UNIQUE (placardNumber),
 	INDEX (locationId),
 	FOREIGN KEY(locationId) REFERENCES location(locationId),
@@ -82,7 +82,7 @@ CREATE TABLE parkingPass (
 	endDateTime DATETIME NOT NULL,
 	issuedDateTime DATETIME NOT NULL,
 	startDateTime DATETIME NOT NULL,
-	uuid INT UNSIGNED NOT NULL,
+	uuid CHAR(36) NOT NULL,
 	INDEX(adminId),
 	INDEX(parkingSpotId),
 	INDEX (vehicleId),

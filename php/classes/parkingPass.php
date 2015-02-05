@@ -36,7 +36,7 @@ class ParkingPass {
 	/**
 	 * string, char 36,
 	 *
-	 * uuid
+	 * uuId
 	 */
 	private $uuId;
 
@@ -73,16 +73,16 @@ class ParkingPass {
 	 * @param $newEndDateTime
 	 * @param $newIssuedDateTime
 	 */
-	public function __construct($newParkingPassId, $newParkingSpotId, $newVehicleId, $newAdminId, $newUuId, $newStartDateTime, $newEndDateTime, $newIssuedDateTime) {
+	public function __construct($newParkingPassId, $newAdminId, $newParkingSpotId, $newVehicleId, $newEndDateTime, $newIssuedDateTime, $newStartDateTime, $newUuId) {
 		try {
 			$this->setParkingPassId($newParkingPassId);
+			$this->setAdminId($newAdminId);
 			$this->setParkingSpotId($newParkingSpotId);
 			$this->setVehicleId($newVehicleId);
-			$this->setAdminId($newAdminId);
-			$this->setUuId($newUuId);
-			$this->setStartDateTime($newStartDateTime);
 			$this->setEndDateTime($newEndDateTime);
 			$this->setIssuedDateTime($newIssuedDateTime);
+			$this->setStartDateTime($newStartDateTime);
+			$this->setUuId($newUuId);
 			} catch(InvalidArgumentException $invalidArgument) {
 				// rethrow the exception to caller
 			throw(new InvalidArgumentException($invalidArgument-> getMessage(), 0, $invalidArgument));
@@ -110,7 +110,7 @@ class ParkingPass {
 	 */
 	public function setParkingPassId($newParkingPassId) {
 		// base case: if the parkingPassId is null, this is a new object
-		if($newParkingPassId = null) {
+		if($newParkingPassId === null) {
 			$this->parkingPassId = null;
 				return;
 			}
@@ -254,9 +254,9 @@ class ParkingPass {
 		}
 
 		// verify string length
-		if(strlen($newUuId) !== 36) {
-			throw(new RangeException("uuId is improper length"));
-		}
+		//if(strlen($newUuId) != 36) {
+		//	throw(new RangeException("uuId is improper length"));
+		//}
 
 		// treat uuId as string : aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee
 		$newUuId = trim($newUuId);
@@ -388,17 +388,17 @@ class ParkingPass {
 		}
 
 		// create query template
-		$query = "INSERT INTO parkingPass(parkingSpotId, vehicleId, adminId, uuId, startDateTime, endDateTime, issueDateTime) VALUES(?, ?, ?, UUID(), ?, ?, ?)";
+		$query = "INSERT INTO parkingPass(adminId, parkingSpotId, vehicleId, endDateTime, issueDateTime, startDateTime, uuId) VALUES(?, ?, ?, UUID(), ?, ?, ?)";
 		$statement = $mysqli->prepare($query);
 		if($statement === false) {
 			throw(new mysqli_sql_exception("unable to prepare statement"));
 		}
 
 		// bind the member variables to the place holders in the template
-		$formatStart = $this->startDateTime->format("Y-m-d H:i:s");
 		$formatEnd = $this->endDateTime->format("Y-m-d H:i:s");
 		$formatIssued = $this->issuedDateTime->format("Y-m-d H:i:s");
-		$wasClean = $statement->bind_param("iiii", $this->parkingPassId, $this->parkingSpotId, $this->vehicleId, $this->adminId,  $formatStart, $formatEnd, $formatIssued);
+		$formatStart = $this->startDateTime->format("Y-m-d H:i:s");
+		$wasClean = $statement->bind_param("iiii", $this->parkingPassId, $this->adminId, $this->parkingSpotId, $this->vehicleId, $formatEnd, $formatIssued,  $formatStart);
 		if($wasClean === false) {
 			throw(new mysqli_sql_exception("unable to bind paramaters"));
 		}
@@ -472,17 +472,17 @@ class ParkingPass {
 		}
 
 		// create query template
-		$query	= "UPDATE parkingSpot SET parkingSpotId = ?, locationId = ?, placardNumber = ? WHERE parkingSpotId = ?";
+		$query	= "UPDATE parkingPass SET parkingPassId = ?, adminId = ?, parkingSpotId = ?, vehicleId  = ?, endDateTime = ?, issuedDateTime = ?, startDateTime = ?, uuId = ? WHERE parkingPassId = ?";
 		$statement = $mysqli->prepare($query);
 		if($statement === false) {
 			throw(new mysqli_sql_exception(" unable to prepare statement"));
 		}
 
 		// bind the member variables to the place holders in the template
-		$formatStart = $this->startDateTime->format("Y-m-d H:i:s");
 		$formatEnd = $this->endDateTime->format("Y-m-d H:i:s");
 		$formatIssued = $this->issuedDateTime->format("Y-m-d H:i:s");
-		$wasClean = $statement->bind_param("iiiis", $this->parkingPassId, $this->parkingSpotId, $this->vehicleId, $this->adminId, $this->uuId, $formatStart, $formatEnd, $formatIssued);
+		$formatStart = $this->startDateTime->format("Y-m-d H:i:s");
+		$wasClean = $statement->bind_param("iiiissss", $this->parkingPassId, $this->adminId, $this->parkingSpotId, $this->vehicleId, $formatEnd, $formatIssued, $formatStart, $this->uuId);
 		if($wasClean === false) {
 			throw(new mysqli_sql_exception("unable to bind paramaters"));
 		}
@@ -521,7 +521,7 @@ class ParkingPass {
 		}
 
 		// create query template
-		$query = "SELECT parkingPassId, parkingSpotId, vehicleId, adminId, uuId, startDateTime, endDateTime, issuedDateTime FROM parkingPass WHERE parkingPassId = ?";
+		$query = "SELECT parkingPassId, adminId, parkingSpotId, vehicleId, endDateTime, issuedDateTime, startDateTime, uuId FROM parkingPass WHERE parkingPassId = ?";
 		$statement = $mysqli->prepare($query);
 		if($statement === false) {
 			throw(new mysqli_sql_exception(" unable to prepare statement"));
@@ -548,7 +548,7 @@ class ParkingPass {
 		$parkingPass = array();
 		while(($row = $result->fetch_assoc()) !== null) {
 			try {
-				$parkingPass = new ParkingPass($row["parkingPassId"], $row["parkingSpotId"], $row["vehicleId"], $row["adminId"], $row["uuId"], $row["startDateTime"], $row["endDateTime"], $row["issuedDateTime"]);
+				$parkingPass = new ParkingPass($row["parkingPassId"], $row["adminId"], $row["parkingSpotId"], $row["vehicleId"], $row["endDateTime"], $row["issuedDateTime"], $row["startDateTime"], $row["uuId"]);
 				$parkingPass[] = $parkingPass;
 			} catch(Exception $exception) {
 				// if the row couldn't be converted, rethrow it
@@ -592,7 +592,7 @@ class ParkingPass {
 		}
 
 		// create query template
-		$query = "SELECT parkingPassId, parkingSpotId, vehicleId, adminId, uuId, startDateTime, endDateTime, issuedDateTime FROM parkingPass WHERE parkingSpotId = ?";
+		$query = "SELECT parkingPassId, adminId, parkingSpotId, vehicleId, endDateTime, issuedDateTime, startDateTime, uuId FROM parkingPass WHERE parkingSpotId = ?";
 		$statement = $mysqli->prepare($query);
 		if($statement === false) {
 			throw(new mysqli_sql_exception(" unable to prepare statement"));
@@ -619,7 +619,7 @@ class ParkingPass {
 		$parkingPasses = array();
 		while(($row = $result->fetch_assoc()) !== null) {
 			try {
-				$parkingPass = new ParkingPass($row["parkingPassId"], $row["parkingSpotId"], $row["vehicleId"], $row["adminId"], $row["uuId"], $row["startDateTime"], $row["endDateTime"], $row["issuedDateTime"]);
+				$parkingPass = new ParkingPass($row["parkingPassId"], $row["adminId"], $row["parkingSpotId"], $row["vehicleId"], $row["endDateTime"], $row["issuedDateTime"], $row["startDateTime"], $row["uuId"]);
 				$parkingPasses[] = $parkingPass;
 			} catch(Exception $exception) {
 				// if the row couldn't be converted, rethrow it
@@ -663,7 +663,7 @@ class ParkingPass {
 		}
 
 		// create query template
-		$query = "SELECT parkingPassId, parkingSpotId, vehicleId, adminId, uuId, startDateTime, endDateTime, issuedDateTime FROM parkingPass WHERE vehicleId = ?";
+		$query = "SELECT parkingPassId, adminId, parkingSpotId, vehicleId, endDateTime, issuedDateTime, startDateTime, uuId FROM parkingPass WHERE vehicleId = ?";
 		$statement = $mysqli->prepare($query);
 		if($statement === false) {
 			throw(new mysqli_sql_exception(" unable to prepare statement"));
@@ -690,7 +690,7 @@ class ParkingPass {
 		$parkingPasses = array();
 		while(($row = $result->fetch_assoc()) !== null) {
 			try {
-				$parkingPass = new ParkingPass($row["parkingPassId"], $row["parkingSpotId"], $row["vehicleId"], $row["adminId"], $row["uuId"], $row["startDateTime"], $row["endDateTime"], $row["issuedDateTime"]);
+				$parkingPass = new ParkingPass($row["parkingPassId"], $row["adminId"], $row["parkingSpotId"], $row["vehicleId"], $row["endDateTime"], $row["issuedDateTime"], $row["startDateTime"], $row["uuId"]);
 				$parkingPasses[] = $parkingPass;
 			} catch(Exception $exception) {
 				// if the row couldn't be converted, rethrow it
@@ -734,7 +734,7 @@ class ParkingPass {
 		}
 
 		// create query template
-		$query = "SELECT parkingPassId, parkingSpotId, vehicleId, adminId, uuId, startDateTime, endDateTime, issuedDateTime FROM parkingPass WHERE adminId = ?";
+		$query = "SELECT parkingPassId, adminId, parkingSpotId, vehicleId, endDateTime, issuedDateTime, startDateTime, uuId FROM parkingPass WHERE adminId = ?";
 		$statement = $mysqli->prepare($query);
 		if($statement === false) {
 			throw(new mysqli_sql_exception(" unable to prepare statement"));
@@ -761,7 +761,7 @@ class ParkingPass {
 		$parkingPasses = array();
 		while(($row = $result->fetch_assoc()) !== null) {
 			try {
-				$parkingPass = new ParkingPass($row["parkingPassId"], $row["parkingSpotId"], $row["vehicleId"], $row["adminId"], $row["uuId"], $row["startDateTime"], $row["endDateTime"], $row["issuedDateTime"]);
+				$parkingPass = new ParkingPass($row["parkingPassId"], $row["adminId"], $row["parkingSpotId"], $row["vehicleId"], $row["endDateTime"], $row["issuedDateTime"], $row["startDateTime"], $row["uuId"]);
 				$parkingPasses[] = $parkingPass;
 			} catch(Exception $exception) {
 				// if the row couldn't be converted, rethrow it
@@ -802,7 +802,7 @@ class ParkingPass {
 		}
 
 		// create query template
-		$query = "SELECT parkingPassId, parkingSpotId, vehicleId, adminId, uuId, startDateTime, endDateTime, issuedDateTime FROM parkingPass WHERE uuId = ?";
+		$query = "SELECT parkingPassId, adminId, parkingSpotId, vehicleId, endDateTime, issuedDateTime, startDateTime, uuId FROM parkingPass WHERE uuId = ?";
 		$statement = $mysqli->prepare($query);
 		if($statement === false) {
 			throw(new mysqli_sql_exception(" unable to prepare statement"));
@@ -829,7 +829,7 @@ class ParkingPass {
 		$parkingPasses = array();
 		while(($row = $result->fetch_assoc()) !== null) {
 			try {
-				$parkingPass = new ParkingPass($row["parkingPassId"], $row["parkingSpotId"], $row["vehicleId"], $row["adminId"], $row["uuId"], $row["startDateTime"], $row["endDateTime"], $row["issuedDateTime"]);
+				$parkingPass = new ParkingPass($row["parkingPassId"], $row["adminId"], $row["parkingSpotId"], $row["vehicleId"], $row["endDateTime"], $row["issuedDateTime"], $row["startDateTime"], $row["uuId"]);
 				$parkingPasses[] = $parkingPass;
 			} catch(Exception $exception) {
 				// if the row couldn't be converted, rethrow it
@@ -877,7 +877,7 @@ class ParkingPass {
 		}
 
 		// create query template
-		$query = "SELECT parkingPassId, parkingSpotId, vehicleId, adminId, uuId, startDateTime, endDateTime, issuedDateTime FROM parkingPass WHERE issuedDateTime >= ? AND issuedDateTime =< ?";
+		$query = "SELECT parkingPassId, adminId, parkingSpotId, vehicleId, endDateTime, issuedDateTime, startDateTime, uuId FROM parkingPass WHERE issuedDateTime >= ? AND issuedDateTime <= ?";
 		$statement = $mysqli->prepare($query);
 		if($statement === false) {
 			throw(new mysqli_sql_exception(" unable to prepare statement"));
@@ -905,7 +905,7 @@ class ParkingPass {
 		$parkingPasses = array();
 		while(($row = $result->fetch_assoc()) !== null) {
 			try {
-				$parkingPass = new ParkingPass($row["parkingPassId"], $row["parkingSpotId"], $row["vehicleId"], $row["adminId"], $row["uuId"], $row["startDateTime"], $row["endDateTime"], $row["issuedDateTime"]);
+				$parkingPass = new ParkingPass($row["parkingPassId"], $row["adminId"], $row["parkingSpotId"], $row["vehicleId"], $row["endDateTime"], $row["issuedDateTime"], $row["startDateTime"], $row["uuId"]);
 				$parkingPasses[] = $parkingPass;
 			} catch(Exception $exception) {
 				// if the row couldn't be converted, rethrow it
@@ -950,7 +950,7 @@ class ParkingPass {
 		}
 
 		// create query template
-		$query = "SELECT parkingPassId, parkingSpotId, vehicleId, adminId, uuId, startDateTime, endDateTime, issuedDateTime FROM parkingPass WHERE startDateTime >= ? AND endDateTime =< ?";
+		$query = "SELECT parkingPassId, adminId, parkingSpotId, vehicleId, endDateTime, issuedDateTime, startDateTime, uuId FROM parkingPass WHERE startDateTime >= ? AND endDateTime <= ?";
 		$statement = $mysqli->prepare($query);
 		if($statement === false) {
 			throw(new mysqli_sql_exception(" unable to prepare statement"));
@@ -978,7 +978,7 @@ class ParkingPass {
 		$parkingPasses = array();
 		while(($row = $result->fetch_assoc()) !== null) {
 			try {
-				$parkingPass = new ParkingPass($row["parkingPassId"], $row["parkingSpotId"], $row["vehicleId"], $row["adminId"], $row["uuId"], $row["startDateTime"], $row["endDateTime"], $row["issuedDateTime"]);
+				$parkingPass = new ParkingPass($row["parkingPassId"], $row["adminId"], $row["parkingSpotId"], $row["vehicleId"], $row["endDateTime"], $row["issuedDateTime"], $row["startDateTime"], $row["uuId"]);
 				$parkingPasses[] = $parkingPass;
 			} catch(Exception $exception) {
 				// if the row couldn't be converted, rethrow it
