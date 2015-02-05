@@ -388,7 +388,7 @@ class ParkingPass {
 		}
 
 		// create query template
-		$query = "INSERT INTO parkingPass(parkingSpotId, vehicleId, adminId, uuId, startDateTime, endDateTime, issueDateTime) VALUES(?, ?, ?, (uuid), ?, ?, ?)";
+		$query = "INSERT INTO parkingPass(parkingSpotId, vehicleId, adminId, uuId, startDateTime, endDateTime, issueDateTime) VALUES(?, ?, ?, uuid(), ?, ?, ?)";
 		$statement = $mysqli->prepare($query);
 		if($statement === false) {
 			throw(new mysqli_sql_exception("unable to prepare statement"));
