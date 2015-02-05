@@ -275,35 +275,35 @@ class Visitor {
 	 * @throws mysqli_sql_exception when mySQL related errors occur
 	 **/
 	public function delete(&$mysqli) {
-// handle degenerate cases
+		// handle degenerate cases
 		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
 			throw(new mysqli_sql_exception("input is not a mysqli object"));
 		}
 
-// enforce the visitorId is not null (i.e., don't delete a visitor that hasn't been inserted)
+		// enforce the visitorId is not null (i.e., don't delete a visitor that hasn't been inserted)
 		if($this->visitorId === null) {
 			throw(new mysqli_sql_exception("unable to delete a visitor that does not exist"));
 		}
 
-// create query template
+		// create query template
 		$query = "DELETE FROM visitor WHERE visitorId = ?";
 		$statement = $mysqli->prepare($query);
 		if($statement === false) {
 			throw(new mysqli_sql_exception("unable to prepare statement"));
 		}
 
-// bind the visitor variables to the place holder in the template
+		// bind the visitor variables to the place holder in the template
 		$wasClean = $statement->bind_param("i", $this->visitorId);
 		if($wasClean === false) {
 			throw(new mysqli_sql_exception("unable to bind parameters"));
 		}
 
-// execute the statement
+		// execute the statement
 		if($statement->execute() === false) {
 			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
 		}
 
-// clean up the statement
+		// clean up the statement
 		$statement->close();
 	}
 
@@ -314,35 +314,35 @@ class Visitor {
 	 * @throws mysqli_sql_exception when mySQL related errors occur
 	 **/
 	public function update(&$mysqli) {
-// handle degenerate cases
+		// handle degenerate cases
 		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
 			throw(new mysqli_sql_exception("input is not a mysqli object"));
 		}
 
-// enforce the visitorId is not null (i.e., don't update a visitor that hasn't been inserted)
+		// enforce the visitorId is not null (i.e., don't update a visitor that hasn't been inserted)
 		if($this->visitorId === null) {
 			throw(new mysqli_sql_exception("unable to update a visitor that does not exist"));
 		}
 
-// create query template
+		// create query template
 		$query = "UPDATE visitor SET visitorEmail = ?, visitorFirstName = ?, visitorLastName = ?, visitorPhone = ? WHERE visitorId = ?";
 		$statement = $mysqli->prepare($query);
 		if($statement === false) {
 			throw(new mysqli_sql_exception("unable to prepare statement"));
 		}
 
-// bind the visitor variables to the place holders in the template
+		// bind the visitor variables to the place holders in the template
 		$wasClean = $statement->bind_param("ssssi", $this->visitorEmail, $this->visitorFirstName, $this->visitorLastName, $this->visitorPhone, $this->visitorId);
 		if($wasClean === false) {
 			throw(new mysqli_sql_exception("unable to bind parameters"));
 		}
 
-// execute the statement
+		// execute the statement
 		if($statement->execute() === false) {
 			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
 		}
 
-// clean up the statement
+		// clean up the statement
 		$statement->close();
 	}
 
@@ -355,12 +355,12 @@ class Visitor {
 	 * @throws mysqli_sql_exception when mySQL related errors occur
 	 **/
 	public static function getVisitorByVisitorId(&$mysqli, $visitorId) {
-// handle degenerate cases
+		// handle degenerate cases
 		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
 			throw(new mysqli_sql_exception("input is not a mysqli object"));
 		}
 
-// sanitize the visitorId before searching
+		// sanitize the visitorId before searching
 		$visitorId = filter_var($visitorId, FILTER_VALIDATE_INT);
 		if($visitorId === false) {
 			throw(new mysqli_sql_exception("visitor id is not an integer"));
@@ -369,31 +369,31 @@ class Visitor {
 			throw(new mysqli_sql_exception("visitor id is not positive"));
 		}
 
-// create query template
+		// create query template
 		$query = "SELECT visitorId, visitorEmail, visitorFirstName, visitorLastName, visitorPhone FROM visitor WHERE visitorId= ?";
 		$statement = $mysqli->prepare($query);
 		if($statement === false) {
 			throw(new mysqli_sql_exception("unable to prepare statement"));
 		}
 
-// bind the visitor id to the place holder in the template
+		// bind the visitor id to the place holder in the template
 		$wasClean = $statement->bind_param("i", $visitorId);
 		if($wasClean === false) {
 			throw(new mysqli_sql_exception("unable to bind parameters"));
 		}
 
-// execute the statement
+		// execute the statement
 		if($statement->execute() === false) {
 			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
 		}
 
-// get result from the SELECT query
+		// get result from the SELECT query
 		$result = $statement->get_result();
 		if($result === false) {
 			throw(new mysqli_sql_exception("unable to get result set"));
 		}
 
-// grab the visitor from mySQL
+		// grab the visitor from mySQL
 		try {
 			$visitor = null;
 			$row = $result->fetch_assoc();
@@ -401,11 +401,11 @@ class Visitor {
 				$visitor = new Visitor($row["visitorId"], $row["visitorEmail"], $row["visitorFirstName"], $row["visitorLastName"], $row["visitorPhone"]);
 			}
 		} catch(Exception $exception) {
-// if the row couldn't be converted, rethrow it
+		// if the row couldn't be converted, rethrow it
 			throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
 		}
 
-// free up memory and return the result
+		// free up memory and return the result
 		$result->free();
 		$statement->close();
 		return ($visitor);
@@ -420,38 +420,38 @@ class Visitor {
 	 * @throws mysqli_sql_exception when mySQL related errors occur
 	 **/
 	public static function getVisitorByVisitorFirstName(&$mysqli, $visitorFirstName) {
-// handle degenerate cases
+		// handle degenerate cases
 		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
 			throw(new mysqli_sql_exception("input is not a mysqli object"));
 		}
 
-// sanitize the visitorFirstName before searching
+		// sanitize the visitorFirstName before searching
 		$visitorFirstName = trim($visitorFirstName);
 		$visitorFirstName = filter_var($visitorFirstName, FILTER_SANITIZE_STRING);
 		if(empty($visitorFirstName) === true) {
 			throw(new InvalidArgumentException("visitor first name is empty or insecure"));
 		}
 
-// create query template
+		// create query template
 		$query = "SELECT visitorId, visitorEmail, visitorFirstName, visitorLastName, visitorPhone FROM visitor WHERE visitorFirstName LIKE ?";
 		$statement = $mysqli->prepare($query);
 		if($statement === false) {
 			throw(new mysqli_sql_exception("unable to prepare statement"));
 		}
 
-// bind the visitorFirstName to the place holder in the template
+		// bind the visitorFirstName to the place holder in the template
 		$visitorFirstName = "%$visitorFirstName%";
 		$wasClean = $statement->bind_param("s", $visitorFirstName);
 		if($wasClean === false) {
 			throw(new mysqli_sql_exception("unable to bind parameters"));
 		}
 
-// execute the statement
+		// execute the statement
 		if($statement->execute() === false) {
 			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
 		}
 
-// get result from the SELECT query
+		// get result from the SELECT query
 		$result = $statement->get_result();
 		if($result === false) {
 			throw(new mysqli_sql_exception("unable to get result set"));
@@ -464,11 +464,11 @@ class Visitor {
 				$visitor = new Visitor($row["visitorId"], $row["visitorEmail"], $row["visitorFirstName"], $row["visitorLastName"], $row["visitorPhone"]);
 				$visitors[] = $visitor;
 			} catch(Exception $exception) {
-// if the row couldn't be converted, rethrow it
+		// if the row couldn't be converted, rethrow it
 				throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
 			}
 		}
-// count the results in the array and return:
+		// count the results in the array and return:
 		// 1) null if 0 results
 		// 2) the entire array if > 1 result
 		$numberOfVisitors = count($visitors);
@@ -488,38 +488,38 @@ class Visitor {
 	 * @throws mysqli_sql_exception when mySQL related errors occur
 	 **/
 	public static function getVisitorByVisitorLastName(&$mysqli, $visitorLastName) {
-// handle degenerate cases
+		// handle degenerate cases
 		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
 			throw(new mysqli_sql_exception("input is not a mysqli object"));
 		}
 
-// sanitize the visitorLastName before searching
+		// sanitize the visitorLastName before searching
 		$visitorLastName = trim($visitorLastName);
 		$visitorLastName = filter_var($visitorLastName, FILTER_SANITIZE_STRING);
 		if(empty($visitorLastName) === true) {
 			throw(new InvalidArgumentException("visitor last name is empty or insecure"));
 		}
 
-// create query template
+		// create query template
 		$query = "SELECT visitorId, visitorEmail, visitorFirstName, visitorLastName, visitorPhone FROM visitor WHERE visitorLastName LIKE ?";
 		$statement = $mysqli->prepare($query);
 		if($statement === false) {
 			throw(new mysqli_sql_exception("unable to prepare statement"));
 		}
 
-// bind the visitorLastName to the place holder in the template
+		// bind the visitorLastName to the place holder in the template
 		$visitorLastName = "%$visitorLastName%";
 		$wasClean = $statement->bind_param("s", $visitorLastName);
 		if($wasClean === false) {
 			throw(new mysqli_sql_exception("unable to bind parameters"));
 		}
 
-// execute the statement
+		// execute the statement
 		if($statement->execute() === false) {
 			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
 		}
 
-// get result from the SELECT query
+		// get result from the SELECT query
 		$result = $statement->get_result();
 		if($result === false) {
 			throw(new mysqli_sql_exception("unable to get result set"));
@@ -532,11 +532,11 @@ class Visitor {
 				$visitor = new Visitor($row["visitorId"], $row["visitorEmail"], $row["visitorFirstName"], $row["visitorLastName"], $row["visitorPhone"]);
 				$visitors[] = $visitor;
 			} catch(Exception $exception) {
-// if the row couldn't be converted, rethrow it
+		// if the row couldn't be converted, rethrow it
 				throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
 			}
 		}
-// count the results in the array and return:
+		// count the results in the array and return:
 		// 1) null if 0 results
 		// 2) the entire array if > 1 result
 		$numberOfVisitors = count($visitors);
