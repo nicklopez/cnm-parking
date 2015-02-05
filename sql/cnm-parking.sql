@@ -33,8 +33,8 @@ CREATE TABLE visitor (
 	visitorEmail VARCHAR(128) NOT NULL,
 	visitorFirstName VARCHAR(128) NOT NULL,
 	visitorLastName VARCHAR(128) NOT NULL,
--- for 10 digit phone number
-	visitorPhone VARCHAR(11) NOT NULL,
+-- for 24 digit phone number
+	visitorPhone VARCHAR(24) NOT NULL,
 	UNIQUE(visitorEmail),
 	PRIMARY KEY(visitorId)
 );
