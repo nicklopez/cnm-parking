@@ -515,7 +515,7 @@ class Vehicle {
 				$vehicle = new Vehicle($row["vehicleId"], $row["visitorId"], $row["vehicleColor"], $row["vehicleMake"], $row["vehicleModel"], $row["vehiclePlateNumber"], $row["vehiclePlateState"], $row["vehicleYear"]);
 			}
 		} catch(Exception $exception) {
-		// if the row couldn't be converted, rethrow it
+			// if the row couldn't be converted, rethrow it
 			throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
 		}
 
@@ -580,7 +580,7 @@ class Vehicle {
 				$vehicle = new Vehicle($row["vehicleId"], $row["visitorId"], $row["vehicleColor"], $row["vehicleMake"], $row["vehicleModel"], $row["vehiclePlateNumber"], $row["vehiclePlateState"], $row["vehicleYear"]);
 			}
 		} catch(Exception $exception) {
-		// if the row couldn't be converted, rethrow it
+			// if the row couldn't be converted, rethrow it
 			throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
 		}
 
@@ -643,7 +643,7 @@ class Vehicle {
 				$vehicle = new Vehicle($row["vehicleId"], $row["visitorId"], $row["vehicleColor"], $row["vehicleMake"], $row["vehicleModel"], $row["vehiclePlateNumber"], $row["vehiclePlateState"], $row["vehicleYear"]);
 				$vehicles[] = $vehicle;
 			} catch(Exception $exception) {
-		// if the row couldn't be converted, rethrow it
+				// if the row couldn't be converted, rethrow it
 				throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
 			}
 		}
