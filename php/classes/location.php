@@ -456,21 +456,25 @@ class Location {
 		}
 
 // grab the location from mySQL
-		try {
-			$location = null;
-			$row = $result->fetch_assoc();
-			if($row !== null) {
+		$locations = array();
+		while(($row = $result->fetch_assoc()) !== null) {
+			try {
 				$location = new Location($row["locationId"], $row["latitude"], $row["locationDescription"], $row["locationNote"], $row["longitude"]);
-			}
-		} catch(Exception $exception) {
+				$locations[] = $location;
+			} catch(Exception $exception) {
 // if the row couldn't be converted, rethrow it
-			throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
+				throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
+			}
 		}
-
-// free up memory and return the result
-		$result->free();
-		$statement->close();
-		return ($location);
-	}
+// count the results in the array and return:
+			// 1) null if 0 results
+			// 2) the entire array if > 1 result
+			$numberOfLocations = count($locations);
+			if($numberOfLocations === 0) {
+				return (null);
+			} else {
+				return ($locations);
+			}
+		}
 }
 ?>
