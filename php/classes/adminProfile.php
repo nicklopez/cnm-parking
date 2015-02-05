@@ -1,33 +1,38 @@
 <?php
 /**
- * Class creation of the Admin Profile table
+ * Creation of the CNM Parking Admin Profile
  *
- * Admin is the creation of admin profile
+ * This is where the admin profile information is stored
  *
  * @author David Fevig <davidfevig@davidfevig.com>
  **/
 class AdminProfile {
 	/**
-	 * id for admin profile; this is the primary key
+	 * id for CNM Parking admin profile; this is the primary key
 	 **/
 	private $adminProfileId;
 	/**
-	 * id for adminId; this is a foreign key
+	 * id for CNM Parking admin id; this is a foreign key
 	 **/
 	private $adminId;
 	/**
-	 * admin first name
+	 * CNM parking admin's first name
 	 **/
 	private $adminFirstName;
 	/**
-	 * admin last name
+	 * CNM parking admin's last name
 	 **/
 	private $adminLastName;
 
 	/**
-	 * constructor for Admin Profile
+	 * constructor for the Admin Profile
 	 *
-	 * place holder for constructor description
+	 * @param int $newAdminProfileId id of the new admin profile
+	 * @param int $newAdminId id containing the admin id
+	 * @param string $newAdminFirstName string containing the admin's first name
+	 * @param string $newAdminLastName string containing the admin's last name
+	 * @throws InvalidArgumentException if data types are not valid
+	 * @throws RangeException if data values are out of bounds (e.g., strings too long, negative integers
 	 *
 	 **/
 	public function __construct($newAdminProfileId, $newAdminId, $newAdminFirstName, $newAdminLastName) {
@@ -145,6 +150,7 @@ class AdminProfile {
 		if(empty($newAdminFirstName) === true) {
 			throw(new InvalidArgumentException("admin first name is empty or insecure"));
 		}
+		// verify the admin first name will fit in the database
 		if(strlen($newAdminFirstName) > 128) {
 			throw(new RangeException("admin first name too large"));
 		}
@@ -163,22 +169,23 @@ class AdminProfile {
 	/**
 	 * mutator method for the admin last name
 	 *
-	 * @param string $newAdminEmail new value of the admin last name
-	 * @throws InvalidArgumentException if $newLastName is not a string or insecure
+	 * @param string $newAdminLastName new value of the admin last name
+	 * @throws InvalidArgumentException if $newAdminLastName is not a string or insecure
 	 * @throws RangeException if $newAdminLastName is > 128 characters
 	 *
 	 **/
 	public function setAdminLastName($newAdminLastName) {
-		// verify the admin email is secure is secure
+		// verify the admin last name is secure is secure
 		$newAdminLastName = trim($newAdminLastName);
 		$newAdminLastName = filter_var($newAdminLastName, FILTER_SANITIZE_STRING);
 		if(empty($newAdminLastName) === true) {
 			throw(new InvalidArgumentException("the admin last name is empty or insecure"));
 		}
+		// verify the admin last name will fit in the database
 		if(strlen($newAdminLastName) > 128) {
 			throw(new RangeException("admin last name is too large"));
 		}
-		// store the admin email
+		// store the admin last name
 		$this->adminLastName = $newAdminLastName;
 	}
 		/**
@@ -199,14 +206,14 @@ class AdminProfile {
 		}
 
 		// create query template
-		$query	 = "INSERT INTO adminProfile(adminProfileId, adminId, adminFirstName, adminLastName) VALUES(?, ?, ?, ?)";
+		$query	 = "INSERT INTO adminProfile(adminId, adminFirstName, adminLastName) VALUES (?, ?, ?)";
 		$statement = $mysqli->prepare($query);
 		if($statement === false) {
 			throw(new mysqli_sql_exception("unable to prepare statement"));
 		}
 
 		// bind the member variables to the place holders in the template
-		$wasClean	  = $statement->bind_param("iiss", $this->adminProfileId, $this->adminId, $this->adminFirstName, $this->adminFirstName);
+		$wasClean	  = $statement->bind_param("iss", $this->adminId, $this->adminFirstName, $this->adminLastName);
 		if($wasClean === false) {
 			throw(new mysqli_sql_exception("unable to bind parameters"));
 		}
@@ -216,7 +223,7 @@ class AdminProfile {
 			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
 		}
 
-		// update the null adminId with what mySQL just gave us
+		// update the null admin profile id with what mySQL just gave us
 		$this->adminProfileId = $mysqli->insert_id;
 
 		// clean up the statement
@@ -235,9 +242,9 @@ class AdminProfile {
 			throw(new mysqli_sql_exception("input is not a mysqli object"));
 		}
 
-		// enforce the adminId is not null (i.e., don't delete an admin that hasn't been inserted)
+		// enforce the adminProfileId is not null (i.e., don't delete an admin profile that hasn't been inserted)
 		if($this->adminProfileId === null) {
-			throw(new mysqli_sql_exception("unable to delete an admin that does not exist"));
+			throw(new mysqli_sql_exception("unable to delete an admin profile that does not exist"));
 		}
 
 		// create query template
@@ -276,7 +283,7 @@ class AdminProfile {
 
 		// enforce the admin profile Id is not null (i.e., don't update an admin profile that hasn't been inserted)
 		if($this->adminProfileId === null) {
-			throw(new mysqli_sql_exception("unable to update an admin that does not exist"));
+			throw(new mysqli_sql_exception("unable to update an admin profile that does not exist"));
 		}
 
 		// create query template
@@ -316,11 +323,10 @@ class AdminProfile {
 		}
 
 		// validate the int before searching
-		$adminId = trim($adminId);
 		$adminId = filter_var($adminId, FILTER_VALIDATE_INT);
 
 		// create query template
-		$query	 = "SELECT adminProfileId, adminId, adminFirstName, adminLastName FROM adminProfile WHERE adminId LIKE ?";
+		$query = "SELECT adminProfileId, adminId, adminFirstName, adminLastName FROM adminProfile WHERE adminId = ?";
 		$statement = $mysqli->prepare($query);
 		if($statement === false) {
 			throw(new mysqli_sql_exception("unable to prepare statement"));
@@ -343,31 +349,22 @@ class AdminProfile {
 			throw(new mysqli_sql_exception("unable to get result set"));
 		}
 
-		// build an array of admin id
-		$adminIds = array();
-		while(($row = $result->fetch_assoc()) !== null) {
-			try {
-				$adminId	= new AdminProfile($row["newAdminProfileId"], $row["newAdminId"], $row["newAdminFirstName"], $row["newAdminLastName"]);
-				$adminIds[] = $adminId;
-			}
-			catch(Exception $exception) {
+		// build an array of admin profiles
+		try {
+		$adminProfile = null;
+		/**$adminProfiles = array();**/
+		$row = $result->fetch_assoc();
+		if($row !== null) {
+			$adminProfile = new AdminProfile($row["adminProfileId"], $row["AdminId"], $row["AdminFirstName"], $row["AdminLastName"]);
+		}
+		} catch(Exception $exception) {
 				// if the row couldn't be converted, rethrow it
 				throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
-			}
 		}
+			$result->free();
+			$statement->close();
+			return($adminProfile);
 
-		// count the results in the array and return:
-		// 1) null if 0 results
-		// 2) a single object if 1 result
-		// 3) the entire array if > 1 result
-		$numberOfAdminIds = count($adminIds);
-		if($numberOfAdminIds === 0) {
-			return(null);
-		} else if($numberOfAdminIds === 1) {
-			return($adminIds[0]);
-		} else {
-			return($adminIds);
-		}
 	}
 
 	/**
@@ -384,7 +381,7 @@ class AdminProfile {
 			throw(new mysqli_sql_exception("input is not a mysqli object"));
 		}
 
-		// sanitize the adminId before searching
+		// sanitize the admin profile Id before searching
 		$adminProfileId = filter_var($adminProfileId, FILTER_VALIDATE_INT);
 		if($adminProfileId === false) {
 			throw(new mysqli_sql_exception("admin profile id is not an integer"));
@@ -394,7 +391,7 @@ class AdminProfile {
 		}
 
 		// create query template
-		$query	 = "SELECT adminProfileId, adminId, adminFistName, adminLastName FROM adminProfile WHERE adminProfileId = ?";
+		$query	 = "SELECT adminProfileId, adminId, adminFirstName, adminLastName FROM adminProfile WHERE adminProfileId = ?";
 		$statement = $mysqli->prepare($query);
 		if($statement === false) {
 			throw(new mysqli_sql_exception("unable to prepare statement"));
@@ -442,14 +439,14 @@ class AdminProfile {
 	 * @return int array of AdminProfiles found or null if not found
 	 * @throws mysqli_sql_exception when mySQL related errors occur
 	 **/
-	public static function getAdminProfiles(&$mysqli) {
+	public static function getAllAdminProfiles(&$mysqli) {
 		// handle degenerate cases
 		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
 			throw(new mysqli_sql_exception("input is not a mysqli object"));
 		}
 
 		// create query template
-		$query	 = "SELECT adminProfileId, adminId, adminFistName, adminLastName FROM adminProfile";
+		$query	 = "SELECT adminProfileId, adminId, adminFirstName, adminLastName FROM adminProfile";
 		$statement = $mysqli->prepare($query);
 		if($statement === false) {
 			throw(new mysqli_sql_exception("unable to prepare statement"));
@@ -470,7 +467,7 @@ class AdminProfile {
 		$adminProfiles = array();
 		while(($row = $result->fetch_assoc()) !== null) {
 			try {
-				$adminProfiles	= new AdminProfile($row["adminProfileId"], $row["adminId"], $row["adminFirstName"], $row["adminLastName"]);
+				$adminProfile	= new AdminProfile($row["adminProfileId"], $row["adminId"], $row["adminFirstName"], $row["adminLastName"]);
 				$adminProfiles[] = $adminProfile;
 			}
 			catch(Exception $exception) {
@@ -479,15 +476,133 @@ class AdminProfile {
 			}
 		}
 
-		// count the results in the array and return:
-		// 1) null if 0 results
-		// 2) the entire array if >= 1 result
-		$numberOfAdminProfiles = count($adminProfiles);
-		if($numberOfAdminProfiles === 0) {
-			return(null);
-		} else {
-			return($adminProfiles);
+		$result->free();
+		$statement->close();
+		return($adminProfile);
 		}
+	/**
+	 * gets all Admin Profiles by Admin First Name
+	 *
+	 * @param resource $mysqli pointer to mySQL connection, by reference
+	 * @param string $adminFristName to search AdminProfile for first name
+	 * @return mixed array of $adminFirstName if not found or null if not found
+	 * @throws mysqli_sql_exception when mySQL related errors occur
+	 **/
+	public static function getAdminProfileByAdminFirstName(&$mysqli, $adminFirstName) {
+// handle degenerate cases
+		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
+			throw(new mysqli_sql_exception("input is not a mysqli object"));
+		}
+
+// sanitize the adminFirstName before searching
+		$adminFirstName = trim($adminFirstName);
+		$adminFirstName = filter_var($adminFirstName, FILTER_SANITIZE_STRING);
+		if(empty($adminFirstName) === true) {
+			throw(new InvalidArgumentException("admin first name is empty or insecure"));
+		}
+
+// create query template
+		$query = "SELECT adminProfileId, adminId, adminFirstName, adminLastName FROM adminProfile WHERE adminFirstName = ?";
+		$statement = $mysqli->prepare($query);
+		if($statement === false) {
+			throw(new mysqli_sql_exception("unable to prepare statement"));
+		}
+
+// bind the adminFirstName to the place holder in the template
+		$wasClean = $statement->bind_param("s", $adminFirstName);
+		if($wasClean === false) {
+			throw(new mysqli_sql_exception("unable to bind parameters"));
+		}
+
+// execute the statement
+		if($statement->execute() === false) {
+			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
+		}
+
+// get result from the SELECT query
+		$result = $statement->get_result();
+		if($result === false) {
+			throw(new mysqli_sql_exception("unable to get result set"));
+		}
+
+// grab the adminProfile from mySQL
+		try {
+			$adminProfile = null;
+			$row = $result->fetch_assoc();
+			if($row !== null) {
+				$adminProfile = new AdminProfile($row["adminProfileId"], $row["adminId"], $row["adminFirstName"], $row["adminLastName"]);
+			}
+		} catch(Exception $exception) {
+// if the row couldn't be converted, rethrow it
+			throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
+		}
+
+// free up memory and return the result
+		$result->free();
+		$statement->close();
+		return ($adminProfile);
+	}
+	/**
+	 * gets all Admin Profiles by Admin First Name
+	 *
+	 * @param resource $mysqli pointer to mySQL connection, by reference
+	 * @param string $adminLastName to search AdminProfile for first name
+	 * @return mixed array of $adminFirstName if not found or null if not found
+	 * @throws mysqli_sql_exception when mySQL related errors occur
+	 **/
+	public static function getAdminProfileByAdminLastName(&$mysqli, $adminLastName) {
+// handle degenerate cases
+		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
+			throw(new mysqli_sql_exception("input is not a mysqli object"));
+		}
+
+// sanitize the adminLastName before searching
+		$adminLastName = trim($adminLastName);
+		$adminLastName = filter_var($adminLastName, FILTER_SANITIZE_STRING);
+		if(empty($adminLastName) === true) {
+			throw(new InvalidArgumentException("admin first last is empty or insecure"));
+		}
+
+// create query template
+		$query = "SELECT adminProfileId, adminId, adminFirstName, adminLastName FROM adminProfile WHERE adminLastName = ?";
+		$statement = $mysqli->prepare($query);
+		if($statement === false) {
+			throw(new mysqli_sql_exception("unable to prepare statement"));
+		}
+
+// bind the adminFirstName to the place holder in the template
+		$wasClean = $statement->bind_param("s", $adminLastName);
+		if($wasClean === false) {
+			throw(new mysqli_sql_exception("unable to bind parameters"));
+		}
+
+// execute the statement
+		if($statement->execute() === false) {
+			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
+		}
+
+// get result from the SELECT query
+		$result = $statement->get_result();
+		if($result === false) {
+			throw(new mysqli_sql_exception("unable to get result set"));
+		}
+
+// grab the adminProfile from mySQL
+		try {
+			$adminProfile = null;
+			$row = $result->fetch_assoc();
+			if($row !== null) {
+				$adminProfile = new AdminProfile($row["adminProfileId"], $row["adminId"], $row["adminFirstName"], $row["adminLastName"]);
+			}
+		} catch(Exception $exception) {
+// if the row couldn't be converted, rethrow it
+			throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
+		}
+
+// free up memory and return the result
+		$result->free();
+		$statement->close();
+		return ($adminProfile);
 	}
 }
 ?>
