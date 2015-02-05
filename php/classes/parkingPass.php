@@ -62,52 +62,17 @@ class ParkingPass {
 	private $issuedDateTime;
 
 	/**
-	 * sanitizes a date either as a DateTime object or mySQL date string
+	 * constructor for the parkingPass class
 	 *
-	 * @param mixed $newDate date to sanitize (or null to just create the current date and time)
-	 * @return DateTime sanitized DateTime object
-	 * @throws InvalidArgumentException if the date is in an invalid format
-	 * @throws RangeException if the date is not a Gregorian date
-	 **/
-	public static function sanitizeDate($newDate) {
-		// base case: if the date is null, use the current date and time
-		if($newDate === null) {
-			$newDate = new DateTime();
-			return($newDate);
-		}
-
-		// base case: if the date is a DateTime object, there's no work to be done
-		if(is_object($newDate) === true && get_class($newDate) === "DateTime") {
-			return($newDate);
-		}
-
-		// treat the date as a mySQL date string: Y-m-d H:i:s
-		$newDate = trim($newDate);
-		if((preg_match("/^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})$/", $newDate, $matches)) !== 1) {
-			throw(new InvalidArgumentException("date is not a valid date"));
-		}
-
-		// verify the date is really a valid calendar date
-		$year   = intval($matches[1]);
-		$month  = intval($matches[2]);
-		$day    = intval($matches[3]);
-		$hour   = intval($matches[4]);
-		$minute = intval($matches[5]);
-		$second = intval($matches[6]);
-		if(checkdate($month, $day, $year) === false) {
-			throw(new RangeException("date $newDate is not a Gregorian date"));
-		}
-
-		// verify the time is really a valid wall clock time
-		if($hour < 0 || $hour >= 24 || $minute < 0 || $minute >= 60 || $second < 0  || $second >= 60) {
-			throw(new RangeException("date $newDate is not a valid time"));
-		}
-
-		// store the tweet date
-		$newDate = DateTime::createFromFormat("Y-m-d H:i:s", $newDate);
-		return($newDate);
-	}
-
+	 * @param $newParkingPassId
+	 * @param $newParkingSpotId
+	 * @param $newVehicleId
+	 * @param $newAdminId
+	 * @param $newUuId
+	 * @param $newStartDateTime
+	 * @param $newEndDateTime
+	 * @param $newIssuedDateTime
+	 */
 	public function __construct($newParkingPassId, $newParkingSpotId, $newVehicleId, $newAdminId, $newUuId, $newStartDateTime, $newEndDateTime, $newIssuedDateTime) {
 		try {
 			$this->setParkingPassId($newParkingPassId);
@@ -295,7 +260,7 @@ class ParkingPass {
 
 		// treat uuId as string : aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee
 		$newUuId = trim($newUuId);
-		if((preg_match("/^[\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12}$/", $newUuId, $matches)) !== 1) {
+		if((preg_match("/^[\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12}$/", $newUuId)) !== 1) {
 			throw(new InvalidArgumentException("uuId is not in proper format"));
 		}
 
@@ -423,7 +388,7 @@ class ParkingPass {
 		}
 
 		// create query template
-		$query = "INSERT INTO parkingPass(parkingSpotId, vehicleId, adminId, uuId, startDateTime, endDateTime, issueDateTime) VALUES(?, ?, ?, ?, ?, ?, ?)";
+		$query = "INSERT INTO parkingPass(parkingSpotId, vehicleId, adminId, uuId, startDateTime, endDateTime, issueDateTime) VALUES(?, ?, ?, (uuid), ?, ?, ?)";
 		$statement = $mysqli->prepare($query);
 		if($statement === false) {
 			throw(new mysqli_sql_exception("unable to prepare statement"));
@@ -433,7 +398,7 @@ class ParkingPass {
 		$formatStart = $this->startDateTime->format("Y-m-d H:i:s");
 		$formatEnd = $this->endDateTime->format("Y-m-d H:i:s");
 		$formatIssued = $this->issuedDateTime->format("Y-m-d H:i:s");
-		$wasClean = $statement->bind_param("iiiis", $this->parkingPassId, $this->parkingSpotId, $this->vehicleId, $this->adminId, $this->uuId, $formatStart, $formatEnd, $formatIssued);
+		$wasClean = $statement->bind_param("iiii", $this->parkingPassId, $this->parkingSpotId, $this->vehicleId, $this->adminId,  $formatStart, $formatEnd, $formatIssued);
 		if($wasClean === false) {
 			throw(new mysqli_sql_exception("unable to bind paramaters"));
 		}
@@ -1031,5 +996,53 @@ class ParkingPass {
 			return ($parkingPasses);
 		}
 	}
+
+	/**
+	 * sanitizes a date either as a DateTime object or mySQL date string
+	 *
+	 * @param mixed $newDate date to sanitize (or null to just create the current date and time)
+	 * @return DateTime sanitized DateTime object
+	 * @throws InvalidArgumentException if the date is in an invalid format
+	 * @throws RangeException if the date is not a Gregorian date
+	 **/
+	public static function sanitizeDate($newDate) {
+		// base case: if the date is null, use the current date and time
+		if($newDate === null) {
+			$newDate = new DateTime();
+			return($newDate);
+		}
+
+		// base case: if the date is a DateTime object, there's no work to be done
+		if(is_object($newDate) === true && get_class($newDate) === "DateTime") {
+			return($newDate);
+		}
+
+		// treat the date as a mySQL date string: Y-m-d H:i:s
+		$newDate = trim($newDate);
+		if((preg_match("/^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})$/", $newDate, $matches)) !== 1) {
+			throw(new InvalidArgumentException("date is not a valid date"));
+		}
+
+		// verify the date is really a valid calendar date
+		$year   = intval($matches[1]);
+		$month  = intval($matches[2]);
+		$day    = intval($matches[3]);
+		$hour   = intval($matches[4]);
+		$minute = intval($matches[5]);
+		$second = intval($matches[6]);
+		if(checkdate($month, $day, $year) === false) {
+			throw(new RangeException("date $newDate is not a Gregorian date"));
+		}
+
+		// verify the time is really a valid wall clock time
+		if($hour < 0 || $hour >= 24 || $minute < 0 || $minute >= 60 || $second < 0  || $second >= 60) {
+			throw(new RangeException("date $newDate is not a valid time"));
+		}
+
+		// store the DateTime value
+		$newDate = DateTime::createFromFormat("Y-m-d H:i:s", $newDate);
+		return($newDate);
+	}
+
 }
 ?>
