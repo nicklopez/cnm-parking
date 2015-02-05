@@ -83,7 +83,7 @@ class ParkingSpot {
 			throw(new RangeException("parkingSpotId is not positive"));
 		}
 		// convert and store
-		$this ->parkingSpotId = intval($newParkingSpotId);
+		$this->parkingSpotId = intval($newParkingSpotId);
 	}
 
 	/**
@@ -308,7 +308,7 @@ class ParkingSpot {
 		}
 
 		// bind the member variables to the place holders in the template
-		$wasClean = $statement->bind_param("is", $this->locationId, $this->placardNumber);
+		$wasClean = $statement->bind_param("i", $this->parkingSpotId);
 		if($wasClean === false) {
 			throw(new mysqli_sql_exception("unable to bind parameters"));
 		}
