@@ -61,18 +61,17 @@ class ParkingPass {
 	 */
 	private $uuId;
 
-
 	/**
 	 * constructor for the parkingPass class
 	 *
 	 * @param $newParkingPassId
+	 * @param $newAdminId
 	 * @param $newParkingSpotId
 	 * @param $newVehicleId
-	 * @param $newAdminId
-	 * @param $newUuId
-	 * @param $newStartDateTime
 	 * @param $newEndDateTime
 	 * @param $newIssuedDateTime
+	 * @param $newStartDateTime
+	 * @param $newUuId
 	 */
 	public function __construct($newParkingPassId, $newAdminId, $newParkingSpotId, $newVehicleId, $newEndDateTime, $newIssuedDateTime, $newStartDateTime, $newUuId = null) {
 		try {
@@ -129,6 +128,37 @@ class ParkingPass {
 		// convert and store the parkingPassId
 		$this->parkingPassId = intval(($newParkingPassId));
 		}
+
+	/**
+	 * accessor method for adminId
+	 *
+	 * @return int value of adminId
+	 */
+	public function getAdminId() {
+		return ($this->adminId);
+	}
+
+	/**
+	 * mutator method for adminId
+	 *
+	 * @param int $newAdminId new value of adminId
+	 * @throws InvalidArgumentException if $newAdminId is not an integer or is null
+	 * @throws RangeException if $newAdminId is not positive
+	 */
+	public function setAdminId($newAdminId) {
+		// verify that adminId is valid
+		$newAdminId = filter_var($newAdminId, FILTER_VALIDATE_INT);
+		if($newAdminId === false) {
+			throw(new InvalidArgumentException("adminId is not a valid integer or is null"));
+		}
+
+		// verify that adminId is positive
+		if($newAdminId <= 0) {
+			throw(new RangeException("adminId is not positive"));
+		}
+		// convert and store the adminId
+		$this->adminId = intval(($newAdminId));
+	}
 
 	/**
 	 * accessor method for parkingSpotId
@@ -193,80 +223,70 @@ class ParkingPass {
 	}
 
 	/**
-	 * accessor method for adminId
+	 * accessor method for endDateTime
 	 *
-	 * @return int value of adminId
+	 * @return DateTime value of endDateTime
 	 */
-	public function getAdminId() {
-		return ($this->adminId);
+	public function getEndDateTime() {
+		return($this->endDateTime);
 	}
 
 	/**
-	 * mutator method for adminId
+	 * mutator method for endDateTime
 	 *
-	 * @param int $newAdminId new value of adminId
-	 * @throws InvalidArgumentException if $newAdminId is not an integer or is null
-	 * @throws RangeException if $newAdminId is not positive
+	 * @param mixed $newEndDateTime endDateTime as DateTime or string
+	 * @throws InvalidArgumentException if $newEndDateTime is not a valid object or string
+	 * @throws RangeException if $newEndDateTime is a date that doesn't exist
 	 */
-	public function setAdminId($newAdminId) {
-		// verify that adminId is valid
-		$newAdminId = filter_var($newAdminId, FILTER_VALIDATE_INT);
-		if($newAdminId === false) {
-			throw(new InvalidArgumentException("adminId is not a valid integer or is null"));
+	public function setEndDateTime($newEndDateTime) {
+		// verify not null
+		if($newEndDateTime === null) {
+			throw(new InvalidArgumentException("endDateTime cannot be null"));
 		}
 
-		// verify that adminId is positive
-		if($newAdminId <= 0) {
-			throw(new RangeException("adminId is not positive"));
+		// store the endDateTime
+		try {
+			$newEndDateTime = self::sanitizeDate($newEndDateTime);
+			$this->endDateTime = $newEndDateTime;
+		} catch(InvalidArgumentException $invalidArgument) {
+			throw(new InvalidArgumentException($invalidArgument->getMessage(), 0, $invalidArgument));
+		} catch(RangeException $range) {
+			throw(new RangeException($range->getMessage(), 0, $range));
 		}
-		// convert and store the adminId
-		$this->adminId = intval(($newAdminId));
 	}
 
 	/**
-	 * accessor method for uuId
+	 * accessor method for issuedDateTime
 	 *
-	 * @return mixed value of uuId
+	 * @return DateTime value of issuedDateTime
 	 */
-	public function getUuId() {
-		return ($this->uuId);
+	public function getIssuedDateTime() {
+		return($this->issuedDateTime);
 	}
 
 	/**
-	 * mutator method for uuId
+	 * mutator method for issuedDateTime
 	 *
-	 * @param mixed $newUuId uuId as string (or null if new)
-	 * @throws InvalidArgumentException  if $newUuID is insecure or in improper format
-	 * @throws RangeException if $newUuID is of improper length
+	 * @param mixed $newIssuedDateTime issuedDateTime as DateTime or string(or current datetime if null)
+	 * @throws InvalidArgumentException if $newIssuedDateTime is not a valid object or string
+	 * @throws RangeException if $newIssuedDateTime is a date that doesn't exist
 	 */
-	// public function
-	public function setUuId($newUuId) {
-		// base case: if uuId is null, this is new object
-		if($newUuId === null) {
-			$this->uuId = null;
-				return;
-		}
-		
-		// verify is secure
-		$newUuId = trim($newUuId);
-		$newUuId = filter_var($newUuId, FILTER_SANITIZE_STRING);
-		if(empty($newUuId) === true) {
-			throw(new InvalidArgumentException("uuId is insecure"));
+	public function setIssuedDateTime($newIssuedDateTime) {
+		// base case: if issuedDateTime is null, use current DateTime(NOW)
+		if($newIssuedDateTime === null) {
+			$this->issuedDateTime = new DateTime();
+			return;
 		}
 
-		// verify string length
-		//if(strlen($newUuId) != 36) {
-		//	throw(new RangeException("uuId is improper length"));
-		//}
-
-		// treat uuId as string : aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee
-		$newUuId = trim($newUuId);
-		if((preg_match("/^[\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12}$/", $newUuId)) !== 1) {
-			throw(new InvalidArgumentException("uuId is not in proper format"));
+		// store the issuedDateTime
+		try {
+			$newIssuedDateTime = self::sanitizeDate($newIssuedDateTime);
+			$this->issuedDateTime = $newIssuedDateTime;
+		} catch(InvalidArgumentException $invalidArgument) {
+			throw(new InvalidArgumentException($invalidArgument->getMessage(), 0, $invalidArgument));
+		} catch(RangeException $range) {
+			throw(new RangeException($range->getMessage(), 0, $range));
 		}
-
-		// store the uuId
-		$this->uuId = $newUuId;
 	}
 
 	/**
@@ -302,73 +322,50 @@ class ParkingPass {
 		}
 	}
 
-
 	/**
-	 * accessor method for endDateTime
+	 * accessor method for uuId
 	 *
-	 * @return DateTime value of endDateTime
+	 * @return mixed value of uuId
 	 */
-	public function getEndDateTime() {
-		return($this->endDateTime);
+	public function getUuId() {
+		return ($this->uuId);
 	}
 
 	/**
-	 * mutator method for endDateTime
+	 * mutator method for uuId
 	 *
-	 * @param mixed $newEndDateTime endDateTime as DateTime or string
-	 * @throws InvalidArgumentException if $newEndDateTime is not a valid object or string
-	 * @throws RangeException if $newEndDateTime is a date that doesn't exist
+	 * @param mixed $newUuId uuId as string (or null if new)
+	 * @throws InvalidArgumentException  if $newUuID is insecure or in improper format
+	 * @throws RangeException if $newUuID is of improper length
 	 */
-	public function setEndDateTime($newEndDateTime) {
-		// verify not null
-		if($newEndDateTime === null) {
-			throw(new InvalidArgumentException("endDateTime cannot be null"));
-		}
-
-		// store the endDateTime
-		try {
-			$newEndDateTime = self::sanitizeDate($newEndDateTime);
-			$this->endDateTime = $newEndDateTime;
-		} catch(InvalidArgumentException $invalidArgument) {
-			throw(new InvalidArgumentException($invalidArgument->getMessage(), 0, $invalidArgument));
-		} catch(RangeException $range) {
-			throw(new RangeException($range->getMessage(), 0, $range));
-		}
-	}
-
-
-	/**
-	 * accessor method for issuedDateTime
-	 *
-	 * @return DateTime value of issuedDateTime
-	 */
-	public function getIssuedDateTime() {
-		return($this->issuedDateTime);
-	}
-
-	/**
-	 * mutator method for issuedDateTime
-	 *
-	 * @param mixed $newIssuedDateTime issuedDateTime as DateTime or string(or current datetime if null)
-	 * @throws InvalidArgumentException if $newIssuedDateTime is not a valid object or string
-	 * @throws RangeException if $newIssuedDateTime is a date that doesn't exist
-	 */
-	public function setIssuedDateTime($newIssuedDateTime) {
-		// base case: if issuedDateTime is null, use current DateTime(NOW)
-		if($newIssuedDateTime === null) {
-			$this->issuedDateTime = new DateTime();
+	// public function
+	public function setUuId($newUuId) {
+		// base case: if uuId is null, this is new object
+		if($newUuId === null) {
+			$this->uuId = null;
 			return;
 		}
 
-		// store the issuedDateTime
-		try {
-			$newIssuedDateTime = self::sanitizeDate($newIssuedDateTime);
-			$this->issuedDateTime = $newIssuedDateTime;
-		} catch(InvalidArgumentException $invalidArgument) {
-			throw(new InvalidArgumentException($invalidArgument->getMessage(), 0, $invalidArgument));
-		} catch(RangeException $range) {
-			throw(new RangeException($range->getMessage(), 0, $range));
+		// verify is secure
+		$newUuId = trim($newUuId);
+		$newUuId = filter_var($newUuId, FILTER_SANITIZE_STRING);
+		if(empty($newUuId) === true) {
+			throw(new InvalidArgumentException("uuId is insecure"));
 		}
+
+		// verify string length
+		//if(strlen($newUuId) != 36) {
+		//	throw(new RangeException("uuId is improper length"));
+		//}
+
+		// treat uuId as string : aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee
+		$newUuId = trim($newUuId);
+		if((preg_match("/^[\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12}$/", $newUuId)) !== 1) {
+			throw(new InvalidArgumentException("uuId is not in proper format"));
+		}
+
+		// store the uuId
+		$this->uuId = $newUuId;
 	}
 
 	/**
@@ -572,6 +569,77 @@ class ParkingPass {
 	}
 
 	/**
+	 * gets parkingPass by adminId
+	 *
+	 * @param resource $mysqli pointer to mySQL connection, by reference
+	 * @param int $adminId adminId to search for
+	 * @throws mixed array of adminId 's found or null if not found
+	 * @throws mysqli_sql_exception when mySQL related errors occur
+	 */
+	public function getParkingPassByAdminId(&$mysqli, $adminId) {
+		// handle degenerate cases
+		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
+			throw(new mysqli_sql_exception("input is not a mysqli object"));
+		}
+
+		// sanitize before searching
+		$adminId = trim($adminId);
+		$adminId = filter_var($adminId, FILTER_VALIDATE_INT);
+		if($adminId === false) {
+			throw(new mysqli_sql_exception("adminId is not an integer"));
+		}
+		if($adminId <= 0) {
+			throw(new mysqli_sql_exception("adminId is not positive"));
+		}
+
+		// create query template
+		$query = "SELECT parkingPassId, adminId, parkingSpotId, vehicleId, endDateTime, issuedDateTime, startDateTime, uuId FROM parkingPass WHERE adminId = ?";
+		$statement = $mysqli->prepare($query);
+		if($statement === false) {
+			throw(new mysqli_sql_exception(" unable to prepare statement"));
+		}
+
+		// bind the member variables to the place holders in the template
+		$wasClean = $statement->bind_param("i", $adminId);
+		if($wasClean === false) {
+			throw(new mysqli_sql_exception("unable to bind parameters"));
+		}
+
+		// execute the statement
+		if($statement->execute() === false) {
+			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
+		}
+
+		// get result from SELECT query
+		$result = $statement->get_result();
+		if($result === false) {
+			throw(new mysqli_sql_exception("unable to get result set"));
+		}
+
+		// build array of parkingPass
+		$parkingPasses = array();
+		while(($row = $result->fetch_assoc()) !== null) {
+			try {
+				$parkingPass = new ParkingPass($row["parkingPassId"], $row["adminId"], $row["parkingSpotId"], $row["vehicleId"], $row["endDateTime"], $row["issuedDateTime"], $row["startDateTime"], $row["uuId"]);
+				$parkingPasses[] = $parkingPass;
+			} catch(Exception $exception) {
+				// if the row couldn't be converted, rethrow it
+				throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
+			}
+		}
+
+		// count the results in array and return:
+		// 1) null if zero results
+		// 2) the entire array if > 1 result
+		$numberOfParkingPasses = count($parkingPasses);
+		if($numberOfParkingPasses === 0) {
+			return (null);
+		} else {
+			return ($parkingPasses);
+		}
+	}
+
+	/**
 	 * gets parkingPass by parkingSpotId
 	 *
 	 * @param resource $mysqli pointer to mySQL connection, by reference
@@ -714,145 +782,6 @@ class ParkingPass {
 	}
 
 	/**
-	 * gets parkingPass by adminId
-	 *
-	 * @param resource $mysqli pointer to mySQL connection, by reference
-	 * @param int $adminId adminId to search for
-	 * @throws mixed array of adminId 's found or null if not found
-	 * @throws mysqli_sql_exception when mySQL related errors occur
-	 */
-	public function getParkingPassByAdminId(&$mysqli, $adminId) {
-		// handle degenerate cases
-		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
-			throw(new mysqli_sql_exception("input is not a mysqli object"));
-		}
-
-		// sanitize before searching
-		$adminId = trim($adminId);
-		$adminId = filter_var($adminId, FILTER_VALIDATE_INT);
-		if($adminId === false) {
-			throw(new mysqli_sql_exception("adminId is not an integer"));
-		}
-		if($adminId <= 0) {
-			throw(new mysqli_sql_exception("adminId is not positive"));
-		}
-
-		// create query template
-		$query = "SELECT parkingPassId, adminId, parkingSpotId, vehicleId, endDateTime, issuedDateTime, startDateTime, uuId FROM parkingPass WHERE adminId = ?";
-		$statement = $mysqli->prepare($query);
-		if($statement === false) {
-			throw(new mysqli_sql_exception(" unable to prepare statement"));
-		}
-
-		// bind the member variables to the place holders in the template
-		$wasClean = $statement->bind_param("i", $adminId);
-		if($wasClean === false) {
-			throw(new mysqli_sql_exception("unable to bind parameters"));
-		}
-
-		// execute the statement
-		if($statement->execute() === false) {
-			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
-		}
-
-		// get result from SELECT query
-		$result = $statement->get_result();
-		if($result === false) {
-			throw(new mysqli_sql_exception("unable to get result set"));
-		}
-
-		// build array of parkingPass
-		$parkingPasses = array();
-		while(($row = $result->fetch_assoc()) !== null) {
-			try {
-				$parkingPass = new ParkingPass($row["parkingPassId"], $row["adminId"], $row["parkingSpotId"], $row["vehicleId"], $row["endDateTime"], $row["issuedDateTime"], $row["startDateTime"], $row["uuId"]);
-				$parkingPasses[] = $parkingPass;
-			} catch(Exception $exception) {
-				// if the row couldn't be converted, rethrow it
-				throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
-			}
-		}
-
-		// count the results in array and return:
-		// 1) null if zero results
-		// 2) the entire array if > 1 result
-		$numberOfParkingPasses = count($parkingPasses);
-		if($numberOfParkingPasses === 0) {
-			return (null);
-		} else {
-			return ($parkingPasses);
-		}
-	}
-
-	/**
-	 * gets parkingPass by uuId
-	 *
-	 * @param resource $mysqli pointer to mySQL connection, by reference
-	 * @param string $uuId uuId to search for
-	 * @throws mixed array of uuId 's found or null if not found
-	 * @throws mysqli_sql_exception when mySQL related errors occur
-	 */
-	public function getParkingPassByUuId(&$mysqli, $uuId) {
-		// handle degenerate cases
-		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
-			throw(new mysqli_sql_exception("input is not a mysqli object"));
-		}
-
-		// sanitize before searching
-		$uuId = trim($uuId);
-		$uuId = filter_var($uuId, FILTER_SANITIZE_STRING);
-		if($uuId === false ||  strlen($uuId) !== 36) {
-			throw(new mysqli_sql_exception("uuId is invalid or not secure"));
-		}
-
-		// create query template
-		$query = "SELECT parkingPassId, adminId, parkingSpotId, vehicleId, endDateTime, issuedDateTime, startDateTime, uuId FROM parkingPass WHERE uuId = ?";
-		$statement = $mysqli->prepare($query);
-		if($statement === false) {
-			throw(new mysqli_sql_exception(" unable to prepare statement"));
-		}
-
-		// bind the member variables to the place holders in the template
-		$wasClean = $statement->bind_param("i", $uuId);
-		if($wasClean === false) {
-			throw(new mysqli_sql_exception("unable to bind parameters"));
-		}
-
-		// execute the statement
-		if($statement->execute() === false) {
-			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
-		}
-
-		// get result from SELECT query
-		$result = $statement->get_result();
-		if($result === false) {
-			throw(new mysqli_sql_exception("unable to get result set"));
-		}
-
-		// build array of parkingPass
-		$parkingPasses = array();
-		while(($row = $result->fetch_assoc()) !== null) {
-			try {
-				$parkingPass = new ParkingPass($row["parkingPassId"], $row["adminId"], $row["parkingSpotId"], $row["vehicleId"], $row["endDateTime"], $row["issuedDateTime"], $row["startDateTime"], $row["uuId"]);
-				$parkingPasses[] = $parkingPass;
-			} catch(Exception $exception) {
-				// if the row couldn't be converted, rethrow it
-				throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
-			}
-		}
-
-		// count the results in array and return:
-		// 1) null if zero results
-		// 2) the entire array if > 1 result
-		$numberOfParkingPasses = count($parkingPasses);
-		if($numberOfParkingPasses === 0) {
-			return (null);
-		} else {
-			return ($parkingPasses);
-		}
-	}
-
-	/**
 	 * gets parkingPass by issuedDateTime
 	 *
 	 * @param resource $mysqli pointer to mySQL connection, by reference
@@ -928,7 +857,6 @@ class ParkingPass {
 		}
 	}
 
-
 	/**
 	 * gets parkingPass by DateTime range of startDateTime - endDateTime
 	 *
@@ -967,6 +895,74 @@ class ParkingPass {
 		if($wasClean === false) {
 			throw(new mysqli_sql_exception("unable to bind paramaters"));
 		}
+		// execute the statement
+		if($statement->execute() === false) {
+			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
+		}
+
+		// get result from SELECT query
+		$result = $statement->get_result();
+		if($result === false) {
+			throw(new mysqli_sql_exception("unable to get result set"));
+		}
+
+		// build array of parkingPass
+		$parkingPasses = array();
+		while(($row = $result->fetch_assoc()) !== null) {
+			try {
+				$parkingPass = new ParkingPass($row["parkingPassId"], $row["adminId"], $row["parkingSpotId"], $row["vehicleId"], $row["endDateTime"], $row["issuedDateTime"], $row["startDateTime"], $row["uuId"]);
+				$parkingPasses[] = $parkingPass;
+			} catch(Exception $exception) {
+				// if the row couldn't be converted, rethrow it
+				throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
+			}
+		}
+
+		// count the results in array and return:
+		// 1) null if zero results
+		// 2) the entire array if > 1 result
+		$numberOfParkingPasses = count($parkingPasses);
+		if($numberOfParkingPasses === 0) {
+			return (null);
+		} else {
+			return ($parkingPasses);
+		}
+	}
+
+	/**
+	 * gets parkingPass by uuId
+	 *
+	 * @param resource $mysqli pointer to mySQL connection, by reference
+	 * @param string $uuId uuId to search for
+	 * @throws mixed array of uuId 's found or null if not found
+	 * @throws mysqli_sql_exception when mySQL related errors occur
+	 */
+	public function getParkingPassByUuId(&$mysqli, $uuId) {
+		// handle degenerate cases
+		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
+			throw(new mysqli_sql_exception("input is not a mysqli object"));
+		}
+
+		// sanitize before searching
+		$uuId = trim($uuId);
+		$uuId = filter_var($uuId, FILTER_SANITIZE_STRING);
+		if($uuId === false ||  strlen($uuId) !== 36) {
+			throw(new mysqli_sql_exception("uuId is invalid or not secure"));
+		}
+
+		// create query template
+		$query = "SELECT parkingPassId, adminId, parkingSpotId, vehicleId, endDateTime, issuedDateTime, startDateTime, uuId FROM parkingPass WHERE uuId = ?";
+		$statement = $mysqli->prepare($query);
+		if($statement === false) {
+			throw(new mysqli_sql_exception(" unable to prepare statement"));
+		}
+
+		// bind the member variables to the place holders in the template
+		$wasClean = $statement->bind_param("i", $uuId);
+		if($wasClean === false) {
+			throw(new mysqli_sql_exception("unable to bind parameters"));
+		}
+
 		// execute the statement
 		if($statement->execute() === false) {
 			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
