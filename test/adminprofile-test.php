@@ -7,7 +7,7 @@ require_once("/usr/lib/php5/simpletest/autorun.php");
 require_once("/etc/apache2/capstone-mysql/encrypted-config.php");
 
 // next, require the class from the project under scrutiny
-require_once("../../php/classes/admin-profile.php");
+require_once("../php/classes/adminprofile.php");
 
 /**
  * Unit test for the Visitor class
