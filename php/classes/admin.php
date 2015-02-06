@@ -462,67 +462,71 @@ class Admin {
 		}
 	}
 	/**
-	 * gets all Admins by Admin Email
+	 * gets Admins by Admin Email
 	 *
 	 * @param resource $mysqli pointer to mySQL connection, by reference
 	 * @param string $adminEmail to search Admin for Admin Email
 	 * @return mixed array of $adminEmail if not found or null if not found
 	 * @throws mysqli_sql_exception when mySQL related errors occur
 	 **/
-	public static function getAdminProfileByAdminEmail(&$mysqli, $adminEmail) {
-// handle degenerate cases
+	public static function getAdminByAdminEmail(&$mysqli, $adminEmail) {
+		// handle degenerate cases
 		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
 			throw(new mysqli_sql_exception("input is not a mysqli object"));
 		}
 
-// sanitize the adminEmail before searching
+		// sanitize the adminEmail before searching
 		$adminEmail = trim($adminEmail);
 		$adminEmail = filter_var($adminEmail, FILTER_SANITIZE_STRING);
 		if(empty($adminEmail) === true) {
 			throw(new InvalidArgumentException("admin email is empty or insecure"));
 		}
 
-// create query template
-		$query = "SELECT adminId, activation, adminEmail, passHash, salt FROM admin WHERE adminEmail = ?";
+		// create query template
+		$query = "SELECT adminId, activation, adminEmail, passHash, salt FROM admin WHERE adminEmail LIKE ?";
 		$statement = $mysqli->prepare($query);
 		if($statement === false) {
 			throw(new mysqli_sql_exception("unable to prepare statement"));
 		}
 
-// bind the adminEmail to the place holder in the template
+		// bind the adminEmail to the place holder in the template
 		$adminEmail = "%$adminEmail%";
 		$wasClean = $statement->bind_param("s", $adminEmail);
 		if($wasClean === false) {
 			throw(new mysqli_sql_exception("unable to bind parameters"));
 		}
 
-// execute the statement
+		// execute the statement
 		if($statement->execute() === false) {
 			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
 		}
 
-// get result from the SELECT query
+		// get result from the SELECT query
 		$result = $statement->get_result();
 		if($result === false) {
 			throw(new mysqli_sql_exception("unable to get result set"));
 		}
 
-// grab the adminProfile from mySQL
-		try {
-			$admin = null;
-			$row = $result->fetch_assoc();
-			if($row !== null) {
-				$admin = new Admin($row["adminId"], $row["activation"], $row["adminEmail"], $row["passHash"], $row["salt"]);
+		// grab the adminProfile from mySQL
+		$admins = array();
+		while(($row = $result->fetch_Assoc()) !== null) {
+			try {
+				$admin	= new Admin($row["adminId"], $row["activation"], $row["adminEmail"], $row["passHash"], $row["salt"]);
+				$admins[] = $admin;
+			} catch(Exception $exception) {
+				// if the row couldn't be converted, rethrow it
+				throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
 			}
-		} catch(Exception $exception) {
-// if the row couldn't be converted, rethrow it
-			throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
 		}
-
-// free up memory and return the result
-		$result->free();
-		$statement->close();
-		return ($admin);
+		// count the results in the array and return:
+		// 1) null if 0 results
+		// 2) the entire array if > 1 result
+		$numberOfAdmins = count($admins);
+		if($numberOfAdmins === 0) {
+			return (null);
+		} else {
+			return ($admins);
+		}
 	}
 }
 ?>
