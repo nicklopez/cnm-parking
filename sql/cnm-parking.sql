@@ -68,7 +68,7 @@ CREATE TABLE parkingSpot (
 	parkingSpotId INT UNSIGNED AUTO_INCREMENT NOT NULL,
 	locationId INT UNSIGNED NOT NULL,
 	placardNumber VARCHAR(16) NOT NULL,
-	UNIQUE (placardNumber),
+	UNIQUE (locationId, placardNumber),
 	INDEX (locationId),
 	FOREIGN KEY(locationId) REFERENCES location(locationId),
 	PRIMARY KEY(parkingSpotId)
