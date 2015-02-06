@@ -183,7 +183,7 @@ class Location {
 			throw(new InvalidArgumentException("gps coordinates, latitude is empty or insecure"));
 		}
 
-		// verify gps coordinates, latitude value not between -90 and 90
+		// verify gps coordinates, latitude value between -90 and 90
 		if($newLatitude < -90 || $newLatitude > 90) {
 			throw(new RangeException("gps coordinates, latitude too large"));
 		}
@@ -215,7 +215,7 @@ class Location {
 			throw(new InvalidArgumentException("gps coordinates, longitude is empty or insecure"));
 		}
 
-		// verify gps coordinates, longitude value not between -180 and 80
+		// verify gps coordinates, longitude value between -180 and 80
 		if($newLongitude < -180 || $newLongitude > 180) {
 			throw(new RangeException("gps coordinates, longitude too large"));
 		}
