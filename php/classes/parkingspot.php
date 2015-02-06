@@ -99,8 +99,7 @@ class ParkingSpot {
 	 * mutator method for locationIdId
 	 *
 	 * @param int $newLocationId new value of locationIdId
-	 * @throws InvalidArgumentException if $newLocationId is null
-	 * @throws InvalidArgumentException if $newLocationId is not an integer
+	 * @throws InvalidArgumentException if data types are invalid
 	 * @throws RangeException if $newLocationId is not positive
 	 */
 	public function setLocationId($newLocationId) {
@@ -129,7 +128,7 @@ class ParkingSpot {
 	 * @return string value of placardNumber
 	 */
 	public function getPlacardNumber() {
-		return($this->placardNumber);
+		return ($this->placardNumber);
 	}
 
 	/**
@@ -146,7 +145,7 @@ class ParkingSpot {
 		if(empty($newPlacardNumber) === true) {
 			throw(new InvalidArgumentException("placardNumber is empty or insecure"));
 		}
-		
+
 		// verify string length
 		if(strlen($newPlacardNumber) > 16) {
 			throw(new RangeException("placardNumber is too long"));
@@ -164,7 +163,7 @@ class ParkingSpot {
 	 */
 	public function insert(&$mysqli) {
 		// handle degenerate cases
-		if(gettype($mysqli) !=="object" || get_class($mysqli) !=="mysqli") {
+		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
 			throw(new mysqli_sql_exception("input is not a mysqli object"));
 		}
 
@@ -174,13 +173,13 @@ class ParkingSpot {
 		}
 
 		// create query template
-		$query	="INSERT INTO parkingSpot(locationId, placardNumber) VALUES(?, ?)";
+		$query = "INSERT INTO parkingSpot(locationId, placardNumber) VALUES(?, ?)";
 		$statement = $mysqli->prepare($query);
 		if($statement === false) {
 			throw(new mysqli_sql_exception(" unable to prepare statement"));
 		}
 
-		// bind the member variables to the place holders in the template
+		// bind the parking spot variables to the place holders in the template
 		$wasClean = $statement->bind_param("is", $this->locationId, $this->placardNumber);
 		if($wasClean === false) {
 			throw(new mysqli_sql_exception("unable to bind parameters"));
@@ -206,7 +205,7 @@ class ParkingSpot {
 	 */
 	public function delete(&$mysqli) {
 		// handle degenerate cases
-		if(gettype($mysqli) !=="object" || get_class($mysqli) !=="mysqli") {
+		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
 			throw(new mysqli_sql_exception("input is not a mysqli object"));
 		}
 
@@ -216,13 +215,13 @@ class ParkingSpot {
 		}
 
 		// create query template
-		$query	="DELETE FROM parkingSpot WHERE parkingSpotId = ?";
+		$query = "DELETE FROM parkingSpot WHERE parkingSpotId = ?";
 		$statement = $mysqli->prepare($query);
 		if($statement === false) {
 			throw(new mysqli_sql_exception(" unable to prepare statement"));
 		}
 
-		// bind the member variables to the place holders in the template
+		// bind the parking spot variables to the place holders in the template
 		$wasClean = $statement->bind_param("i", $this->parkingSpotId);
 		if($wasClean === false) {
 			throw(new mysqli_sql_exception("unable to bind parameters"));
@@ -233,7 +232,7 @@ class ParkingSpot {
 			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
 		}
 
-	// clean up the statement
+		// clean up the statement
 		$statement->close();
 	}
 
@@ -245,7 +244,7 @@ class ParkingSpot {
 	 */
 	public function update(&$mysqli) {
 		// handle degenerate cases
-		if(gettype($mysqli) !=="object" || get_class($mysqli) !=="mysqli") {
+		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
 			throw(new mysqli_sql_exception("input is not a mysqli object"));
 		}
 
@@ -255,14 +254,14 @@ class ParkingSpot {
 		}
 
 		// create query template
-		$query	= "UPDATE parkingSpot SET parkingSpotId = ?, locationId = ?, placardNumber = ? WHERE parkingSpotId = ?";
+		$query = "UPDATE parkingSpot SET locationId = ?, placardNumber = ? WHERE parkingSpotId = ?";
 		$statement = $mysqli->prepare($query);
 		if($statement === false) {
 			throw(new mysqli_sql_exception(" unable to prepare statement"));
 		}
 
-		// bind the member variables to the place holders in the template
-		$wasClean = $statement->bind_param("is", $this->locationId, $this->placardNumber);
+		// bind the parking spot variables to the place holders in the template
+		$wasClean = $statement->bind_param("isi", $this->locationId, $this->placardNumber, $this->parkingSpotId);
 		if($wasClean === false) {
 			throw(new mysqli_sql_exception("unable to bind parameters"));
 		}
@@ -281,7 +280,7 @@ class ParkingSpot {
 	 *
 	 * @param resource $mysqli pointer to mySQL connection, by reference
 	 * @param int $parkingSpotId parkingSpotId to search for
-	 * @throws mixed array of parkingSpotId 's found or null if not found
+	 * @return mixed parking spot or null if not found
 	 * @throws mysqli_sql_exception when mySQL related errors occur
 	 */
 	public static function getParkingSpotByParkingSpotId(&$mysqli, $parkingSpotId) {
@@ -291,7 +290,6 @@ class ParkingSpot {
 		}
 
 		// sanitize before searching
-		//$parkingSpotId = trim($parkingSpotId);
 		$parkingSpotId = filter_var($parkingSpotId, FILTER_VALIDATE_INT);
 		if($parkingSpotId === false) {
 			throw(new mysqli_sql_exception("parkingSpotId is not an integer"));
@@ -307,7 +305,7 @@ class ParkingSpot {
 			throw(new mysqli_sql_exception(" unable to prepare statement"));
 		}
 
-		// bind the member variables to the place holders in the template
+		// bind the parking spot variables to the place holders in the template
 		$wasClean = $statement->bind_param("i", $parkingSpotId);
 		if($wasClean === false) {
 			throw(new mysqli_sql_exception("unable to bind parameters"));
@@ -324,68 +322,70 @@ class ParkingSpot {
 			throw(new mysqli_sql_exception("unable to get result set"));
 		}
 
-		// build array of parkingSpot
+		// grab the parking spot from mySQL
 		$parkingSpots = null;
-		//while(($row = $result->fetch_assoc()) !== null) {
-			try {
-				$row = $result->fetch_assoc();
-				if($row !== null) {
-					$parkingSpots = new ParkingSpot($row["parkingSpotId"], $row["locationId"], $row["placardNumber"]);
-				}//$parkingSpots[] = $parkingSpot;
-			} catch(Exception $exception) {
-				// if the row couldn't be converted, rethrow it
-				throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
+		try {
+			$row = $result->fetch_assoc();
+			if($row !== null) {
+				$parkingSpots = new ParkingSpot($row["parkingSpotId"], $row["locationId"], $row["placardNumber"]);
 			}
+		} catch(Exception $exception) {
+			// if the row couldn't be converted, rethrow it
+			throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
+		}
 		// free up memory and return the result
 		$result->free();
 		$statement->close();
-		return($parkingSpots);
-
-		}
-//
-//		// count the results in array and return:
-//		// 1) null if zero results
-//		// 2) the entire array if > 1 result
-//		$numberOfParkingSpots = count($parkingSpots);
-//		if($numberOfParkingSpots === 0) {
-//			return (null);
-//		} else {
-//			return ($parkingSpots);
-//		}
+		return ($parkingSpots);
+	}
 
 	/**
-	 * gets parkingSpot by placardNumber
+	 * gets parkingSpot by placardNumber and locationId
 	 *
 	 * @param resource $mysqli pointer to mySQL connection, by reference
+	 * @param int $locationId id of location for unique placard number
 	 * @param string $placardNumber placardNumber to search for
-	 * @throws mixed array of placardNumber 's found or null if not found
+	 * @return mixed placard number or null if not found
 	 * @throws mysqli_sql_exception when mySQL related errors occur
+	 * @throws InvalidArgumentException if data types are not valid
+	 * @throws RangeException if if data values are out of bounds (e.g., strings too long, negative integers)
+
 	 */
-	public static function getParkingSpotByPlacardNumber(&$mysqli, $placardNumber) {
+	public static function getParkingSpotByPlacardNumber(&$mysqli, $locationId, $placardNumber) {
 		// handle degenerate cases
 		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
 			throw(new mysqli_sql_exception("input is not a mysqli object"));
 		}
 
-		// sanitize before searching
-		$placardNumber = trim($placardNumber);
-		$placardNumber = filter_var($placardNumber, FILTER_SANITIZE_STRING);
-			if($placardNumber === false) {
-				throw(new mysqli_sql_exception("placardNumber is empty or not secure"));
-		}
-		if($placardNumber <= 0) {
-			throw(new mysqli_sql_exception("parkingSpotId is not positive"));
-		}
-		// create query template
-		$query = "SELECT parkingSpotId, locationId, placardNumber FROM parkingSpot WHERE placardNumber LIKE ?";
-		$statement = $mysqli->prepare($query);
-		if($statement === false) {
-				throw(new mysqli_sql_exception(" unable to prepare statement"));
+		// sanitize locationId and placardNumber before searching
+		$locationId = filter_var($locationId, FILTER_VALIDATE_INT);
+		if($locationId === false) {
+			throw(new InvalidArgumentException("locationId is not an integer"));
 		}
 
-		// bind the member variables to the place holders in the template
-		$placardNumber = "%$placardNumber%";
-		$wasClean = $statement->bind_param("s", $placardNumber);
+		if($locationId <= 0) {
+			throw(new RangeException("locationId is not positive"));
+		}
+
+		$placardNumber = trim($placardNumber);
+		$placardNumber = filter_var($placardNumber, FILTER_SANITIZE_STRING);
+		if($placardNumber === false) {
+			throw(new mysqli_sql_exception("placardNumber is empty or not secure"));
+		}
+
+		if(strlen($placardNumber) > 16) {
+			throw(new RangeException("placardNumber is too long"));
+		}
+
+		// create query template
+		$query = "SELECT parkingSpotId, locationId, placardNumber FROM parkingSpot WHERE locationId = ? AND placardNumber = ?";
+		$statement = $mysqli->prepare($query);
+		if($statement === false) {
+			throw(new mysqli_sql_exception(" unable to prepare statement"));
+		}
+
+		// bind the parking spot variables to the place holders in the template
+		$wasClean = $statement->bind_param("is", $locationId, $placardNumber);
 		if($wasClean === false) {
 			throw(new mysqli_sql_exception("unable to bind parameters"));
 		}
@@ -401,29 +401,21 @@ class ParkingSpot {
 			throw(new mysqli_sql_exception("unable to get result set"));
 		}
 
-		// build array of parkingSpot
-		$parkingSpots = array();
-		while(($row = $result->fetch_assoc()) !== null) {
+		// get placard number from mySQL
+		$parkingSpot = null;
+		$row = $result->fetch_assoc();
+		if ($row !== null) {
 			try {
 				$parkingSpot = new ParkingSpot($row["parkingSpotId"], $row["locationId"], $row["placardNumber"]);
-				$parkingSpots[] = $parkingSpot;
 			} catch(Exception $exception) {
 				// if the row couldn't be converted, rethrow it
 				throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
 			}
 		}
-
-		// count the results in array and return:
-		// 1) null if zero results
-		// 2) the entire array if > 1 result
-		$numberOfParkingSpots = count($parkingSpots);
-		if($numberOfParkingSpots === 0) {
-			return (null);
-		} else {
-			return ($parkingSpots);
-		}
-
-	// End of file. **Whew!!**
+		// free up memory and return the result
+		$result->free();
+		$statement->close();
+		return ($parkingSpot);
 	}
 }
 ?>
