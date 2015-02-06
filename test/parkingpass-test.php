@@ -155,7 +155,7 @@ class ParkingPassTest extends UnitTestCase {
 
 		//second, delete the parkingPass from mySQL and re-grab it from mySQL and assert id does not exist
 		$this->parkingPass->delete($this->mysqli);
-		$mysqlParkingPass= ParkingPass::getParkingPassByParkingPassId($this->mysqli, $this->parkingPass->getParkingPassId());
+		$mysqlParkingPass = ParkingPass::getParkingPassByParkingPassId($this->mysqli, $this->parkingPass->getParkingPassId());
 		$this->assertNull($mysqlParkingPass);
 
 		//third, set the parkingPass to null to prevent tearDown() from deleting a parkingPass that has already been deleted

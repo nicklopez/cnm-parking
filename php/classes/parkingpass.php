@@ -157,7 +157,7 @@ class ParkingPass {
 			throw(new RangeException("adminId is not positive"));
 		}
 		// convert and store the adminId
-		$this->adminId = intval(($newAdminId));
+		$this->adminId = intval($newAdminId);
 	}
 
 	/**
@@ -415,7 +415,6 @@ class ParkingPass {
 		// regrab from mySQl to store the generated uuId
 		$parkingPass = self::getParkingPassByParkingPassId($mysqli, $this->parkingPassId);
 		$this->setUuId($parkingPass->getUuId());
-		var_dump($this);
 
 	}
 
@@ -551,7 +550,9 @@ class ParkingPass {
 		// build parkingPass
 		try {
 			$row = $result->fetch_assoc();
-			$parkingPass = new ParkingPass($row["parkingPassId"], $row["adminId"], $row["parkingSpotId"], $row["vehicleId"], $row["endDateTime"], $row["issuedDateTime"], $row["startDateTime"], $row["uuId"]);
+			if($row !== null) {
+				$parkingPass = new ParkingPass($row["parkingPassId"], $row["adminId"], $row["parkingSpotId"], $row["vehicleId"], $row["endDateTime"], $row["issuedDateTime"], $row["startDateTime"], $row["uuId"]);
+			}
 		} catch(Exception $exception) {
 			// if the row couldn't be converted, rethrow it
 			throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
@@ -560,8 +561,7 @@ class ParkingPass {
 		// count the results in array and return:
 		// 1) null if zero results
 		// 2) the entire array if > 1 result
-		$numberOfParkingPasses = count($parkingPass);
-		if($numberOfParkingPasses === 0) {
+		if($row === null) {
 			return (null);
 		} else {
 			return ($parkingPass);
