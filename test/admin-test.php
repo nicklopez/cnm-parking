@@ -239,7 +239,7 @@ class AdminTest extends UnitTestCase {
 		$this->assertNotNull($this->mysqli);
 
 		// first, try to select an admin by adminId
-		$adminId = null;
+		$adminId = 0;
 
 		// exception is thrown
 		$this->expectException("mysqli_sql_exception");
@@ -250,9 +250,49 @@ class AdminTest extends UnitTestCase {
 	}
 
 	/**
-	 * test selecting an Admin by adminId from mySQL
+	 * test selecting an Admin by admin email
 	 **/
-	public function testSelect
+	public function testSelectValidEmail() {
+		// zeroth, ensure the Admin and mySQL class are sane
+		$this->assertNotNull($this->admin1);
+		$this->assertNotNull($this->admin2);
+		$this->assertNotNull($this->mysqli);
+
+		//first, insert the two test admin profiles
+		$this->admin1->insert($this->mysqli);
+		$this->admin2->insert($this->mysqli);
+
+		// second, grab an array of Admins from mySQL and assert we have an array
+		$email = "admin1@cnm.edu";
+		$mysqlAdmin = Admin::getAdminByAdminEmail($this->mysqli, $email);
+		$this->assertIsA($mysqlAdmin, "array");
+		$this->assertIdentical(count($mysqlAdmin), 2);
+
+		// third, verify each Admin by asserting by asserting the primary key and the select criteria
+		foreach($mysqlAdmin as $admin) {
+			$this->assertTrue($admin->getAdminId() > 0);
+			$this->assertTrue(strpos($admin->getAdminFirstName(), $email) >= 0);
+		}
+	}
+	/**
+	 * test selecting an Admin that does not exist in mySQL
+	**/
+	public function testSelectInvalidEmail() {
+		//zeroth, ensure the Admin and mySQL class are sane
+		$this->assertNotNull($this->admin1);
+		$this->assertNotNull($this->admin2);
+		$this->assertNotNull($this->mysqli);
+
+		//first, insert the two test admin profiles
+		$this->admin1->insert($this->mysqli);
+		$this->admin2->insert($this->mysqli);
+
+		//second, try to grab an array of admins from mySQL and assert null
+		$email = "NA";
+		$mysqlAdmin = Admin::getAdminByAdminEmail($this->mysqli, $email);
+		$this->assertNull($mysqlAdmin);
+	}
+
 }
 
 ?>
