@@ -508,7 +508,7 @@ class ParkingPass {
 	 * @throws mixed array of parkingPassId 's found or null if not found
 	 * @throws mysqli_sql_exception when mySQL related errors occur
 	 */
-	public function getParkingPassByParkingPassId(&$mysqli, $parkingPassId) {
+	public static function getParkingPassByParkingPassId(&$mysqli, $parkingPassId) {
 		// handle degenerate cases
 		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
 			throw(new mysqli_sql_exception("input is not a mysqli object"));
@@ -576,7 +576,7 @@ class ParkingPass {
 	 * @throws mixed array of adminId 's found or null if not found
 	 * @throws mysqli_sql_exception when mySQL related errors occur
 	 */
-	public function getParkingPassByAdminId(&$mysqli, $adminId) {
+	public static function getParkingPassByAdminId(&$mysqli, $adminId) {
 		// handle degenerate cases
 		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
 			throw(new mysqli_sql_exception("input is not a mysqli object"));
@@ -647,7 +647,7 @@ class ParkingPass {
 	 * @throws mixed array of parkingSpotId 's found or null if not found
 	 * @throws mysqli_sql_exception when mySQL related errors occur
 	 */
-	public function getParkingPassByParkingSpotId(&$mysqli, $parkingSpotId) {
+	public static function getParkingPassByParkingSpotId(&$mysqli, $parkingSpotId) {
 		// handle degenerate cases
 		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
 			throw(new mysqli_sql_exception("input is not a mysqli object"));
@@ -718,7 +718,7 @@ class ParkingPass {
 	 * @throws mixed array of vehicleId 's found or null if not found
 	 * @throws mysqli_sql_exception when mySQL related errors occur
 	 */
-	public function getParkingPassByVehicleId(&$mysqli, $vehicleId) {
+	public static function getParkingPassByVehicleId(&$mysqli, $vehicleId) {
 		// handle degenerate cases
 		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
 			throw(new mysqli_sql_exception("input is not a mysqli object"));
@@ -789,7 +789,7 @@ class ParkingPass {
 	 * @throws mixed array of issuedDateTime 's found or null if not found
 	 * @throws mysqli_sql_exception when mySQL related errors occur
 	 */
-	public function getParkingPassByIssuedDateTime(&$mysqli, $issuedDateTime) {
+	public static function getParkingPassByIssuedDateTime(&$mysqli, $issuedDateTime) {
 		// handle degenerate cases
 		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
 			throw(new mysqli_sql_exception("input is not a mysqli object"));
@@ -865,7 +865,7 @@ class ParkingPass {
 	 * @throws mixed array of DateTime Ranges found or null if not found
 	 * @throws mysqli_sql_exception when mySQL related errors occur
 	 */
-	public function getParkingPassByStartDateTimeEndDateTimeRange(&$mysqli, $startDateTime, $endDateTime) {
+	public static function getParkingPassByStartDateTimeEndDateTimeRange(&$mysqli, $startDateTime, $endDateTime) {
 		// handle degenerate cases
 		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
 			throw(new mysqli_sql_exception("input is not a mysqli object"));
@@ -937,7 +937,7 @@ class ParkingPass {
 	 * @throws mixed array of uuId 's found or null if not found
 	 * @throws mysqli_sql_exception when mySQL related errors occur
 	 */
-	public function getParkingPassByUuId(&$mysqli, $uuId) {
+	public static function getParkingPassByUuId(&$mysqli, $uuId) {
 		// handle degenerate cases
 		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
 			throw(new mysqli_sql_exception("input is not a mysqli object"));

@@ -8,7 +8,7 @@ require_once("/etc/apache2/capstone-mysql/encrypted-config.php");
 require_once("/usr/lib/php5/simpletest/autorun.php");
 
 // require the class from the project under scrutiny
-require_once("../php/classes/parkingSpot.php");
+require_once("../php/classes/parkingspot.php");
 
 /**
  * Unit test for the ParkingSpot class
