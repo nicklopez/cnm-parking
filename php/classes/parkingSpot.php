@@ -1,6 +1,6 @@
 <?php
 /**
- *Class file for parkingSpot
+ * Class file for parkingSpot
  *
  * @author Kyle Dozier <kyle@kedlogic.com
  */
