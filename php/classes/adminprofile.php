@@ -188,7 +188,7 @@ class AdminProfile {
 		// store the admin last name
 		$this->adminLastName = $newAdminLastName;
 	}
-		/**
+	/**
 	 * inserts the AdminProfile into mySQL
 	 *
 	 * @param resource $mysqli pointer to mySQL connection, by reference
@@ -287,14 +287,14 @@ class AdminProfile {
 		}
 
 		// create query template
-		$query	 = "UPDATE adminProfile SET adminProfileId = ?, adminId = ?, adminFirstName = ?, adminLastName = ? WHERE adminProfileId = ?";
+		$query	 = "UPDATE adminProfile SET adminFirstName = ?, adminLastName = ? WHERE adminProfileId = ?";
 		$statement = $mysqli->prepare($query);
 		if($statement === false) {
 			throw(new mysqli_sql_exception("unable to prepare statement"));
-		}
+	}
 
 		// bind the member variables to the place holders in the template
-		$wasClean = $statement->bind_param("iiss",  $this->adminProfileId, $this->adminId, $this->adminFirstName, $this->adminLastName);
+		$wasClean = $statement->bind_param("ssi", $this->adminFirstName, $this->adminLastName, $this->adminProfileId);
 		if($wasClean === false) {
 			throw(new mysqli_sql_exception("unable to bind parameters"));
 		}
@@ -357,21 +357,21 @@ class AdminProfile {
 
 		// build an array of admin profiles
 		try {
-		$adminProfile = null;
-		/**$adminProfiles = array();**/
-		$row = $result->fetch_assoc();
-		if($row !== null) {
-			$adminProfile = new AdminProfile($row["adminProfileId"], $row["AdminId"], $row["AdminFirstName"], $row["AdminLastName"]);
+			$adminProfile = null;
+			$adminProfiles = array();
+			$row = $result->fetch_assoc();
+			if($row !== null) {
+				$adminProfile = new AdminProfile($row["adminProfileId"], $row["AdminId"], $row["AdminFirstName"], $row["AdminLastName"]);
 			}
 		} catch(Exception $exception) {
-				// if the row couldn't be converted, rethrow it
-				throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
+			// if the row couldn't be converted, rethrow it
+			throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
 		}
 
 		// free up memory and return result
-			$result->free();
-			$statement->close();
-			return($adminProfile);
+		$result->free();
+		$statement->close();
+		return($adminProfile);
 
 	}
 
@@ -383,7 +383,7 @@ class AdminProfile {
 	 * @return mixed AdminProfile found or null if not found
 	 * @throws mysqli_sql_exception when mySQL related errors occur
 	 **/
-	public static function getAdminByAdminProfileId(&$mysqli, $adminProfileId) {
+	public static function getAdminProfileByAdminProfileId(&$mysqli, $adminProfileId) {
 		// handle degenerate cases
 		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
 			throw(new mysqli_sql_exception("input is not a mysqli object"));
@@ -469,7 +469,7 @@ class AdminProfile {
 		}
 
 		// bind the adminFirstName to the place holder in the template
-		$adminFirstName = "%adminFirstName%";
+		$adminFirstName = "%$adminFirstName%";
 		$wasClean = $statement->bind_param("s", $adminFirstName);
 		if($wasClean === false) {
 			throw(new mysqli_sql_exception("unable to bind parameters"));
