@@ -113,7 +113,7 @@ class VisitorTest extends UnitTestCase {
 	/**
 	 * test inserting a valid visitor into mySQL
 	 **/
-	public function testInsertValidVehicle() {
+	public function testInsertValidVisitor() {
 		// zeroth, ensure the Visitor and mySQL class are sane
 		$this->assertNotNull($this->visitor1);
 		$this->assertNotNull($this->mysqli);
