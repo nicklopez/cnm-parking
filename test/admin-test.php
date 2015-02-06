@@ -60,12 +60,15 @@ class AdminTest extends UnitTestCase {
 	 * sets up the mySQL connection for this test
 	 */
 	public function setUp() {
+		// now retrieve the configuration parameters
 		try {
-			$configFile = "etc/apache2/capstone-mysql/cnmparking.ini";
-			$configArray = readCongig($configFile);
-		} catch(InvalidArgumentException $invalidArgument) {
+			$configFile = "/etc/apache2/capstone-mysql/cnmparking.ini";
+			$configArray = readConfig($configFile);
+		} catch (InvalidArgumentException $invalidArgument) {
+			// re-throw the exception to the caller
 			throw(new InvalidArgumentException($invalidArgument->getMessage(), 0, $invalidArgument));
 		}
+
 		// connect to mysqli
 		mysqli_report(MYSQLI_REPORT_STRICT);
 		$this->mysqli = new mysqli($configArray["hostname"], $configArray["username"], $configArray["password"], $configArray["database"]);
@@ -263,7 +266,7 @@ class AdminTest extends UnitTestCase {
 		$this->admin2->insert($this->mysqli);
 
 		// second, grab an array of Admins from mySQL and assert we have an array
-		$email = "admin1@cnm.edu";
+		$email = "admin";
 		$mysqlAdmin = Admin::getAdminByAdminEmail($this->mysqli, $email);
 		$this->assertIsA($mysqlAdmin, "array");
 		$this->assertIdentical(count($mysqlAdmin), 2);
@@ -271,7 +274,7 @@ class AdminTest extends UnitTestCase {
 		// third, verify each Admin by asserting by asserting the primary key and the select criteria
 		foreach($mysqlAdmin as $admin) {
 			$this->assertTrue($admin->getAdminId() > 0);
-			$this->assertTrue(strpos($admin->getAdminFirstName(), $email) >= 0);
+			$this->assertTrue(strpos($admin->getAdminEmail(), $email) >= 0);
 		}
 	}
 	/**
