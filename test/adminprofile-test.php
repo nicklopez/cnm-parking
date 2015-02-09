@@ -8,6 +8,7 @@ require_once("/etc/apache2/capstone-mysql/encrypted-config.php");
 
 // next, require the class from the project under scrutiny
 require_once("../php/classes/adminprofile.php");
+require_once("../php/classes/admin.php");
 
 /**
  * Unit test for the Visitor class
@@ -33,29 +34,22 @@ class AdminProfileTest extends UnitTestCase {
 	/**
 	 * admin id of the test admin profile
 	 **/
-	private $adminId1 = 72;
+	private $adminId1 = null;
 	/**
 	 * admin id of the test admin profile
 	 **/
-	private $adminId2 = 73;
+	private $adminId2 = null;
 
 	// this section contains visitor variables with constants needed for creating a new admin profile
 	/**
 	 * first name of admin
 	 **/
-	private $adminFirstName1 = "Frank1";
+	private $adminFirstName = "Frank";
 	/**
 	 * last name of admin
 	 **/
-	private $adminLastName1 = "Ranger1";
-	/**
-	 * first name of admin
-	 **/
-	private $adminFirstName2 = "Frank2";
-	/**
-	 * last name of admin
-	 **/
-	private $adminLastName2 = "Ranger2";
+	private $adminLastName = "Ranger";
+
 
 
 
@@ -64,21 +58,21 @@ class AdminProfileTest extends UnitTestCase {
 	 */
 	public function setUp() {
 		// now retrieve the configuration parameters
-		try {
 			$configFile = "/etc/apache2/capstone-mysql/cnmparking.ini";
 			$configArray = readConfig($configFile);
-		} catch (InvalidArgumentException $invalidArgument) {
-			// re-throw the exception to the caller
-			throw(new InvalidArgumentException($invalidArgument->getMessage(), 0, $invalidArgument));
-		}
 
 		// first, connect to mysqli
 		mysqli_report(MYSQLI_REPORT_STRICT);
 		$this->mysqli = new mysqli($configArray["hostname"], $configArray["username"], $configArray["password"], $configArray["database"]);
 
-		// second, create an instance of the object under scrutiny
-		$this->adminProfile1 = new AdminProfile(null, $this->adminId1, $this->adminFirstName1, $this->adminLastName1);
-		$this->adminProfile2 = new AdminProfile(null, $this->adminId2, $this->adminFirstName2, $this->adminLastName2);
+		// first, create an instance of the admin
+		$this->adminId1 = new Admin(null, "12345678123456781234567812345678", "admin3@cnm.edu", "12345678123456781234567812345678123456781234567812345678123456781234567812345678123456781234567812345678123456781234567812345678", "1234567812345678123456781234567812345678123456781234567812345678");
+		$this->adminId1->insert($this->mysqli);
+		$this->adminProfile1 = new AdminProfile(null, $this->adminId1->getAdminId() , $this->adminFirstName, $this->adminLastName);
+
+		$this->adminId2 = new Admin(null, "12345678123456781234567812345678", "admin2@cnm.edu", "12345678123456781234567812345678123456781234567812345678123456781234567812345678123456781234567812345678123456781234567812345678", "1234567812345678123456781234567812345678123456781234567812345678");
+		$this->adminId2->insert($this->mysqli);
+		$this->adminProfile2 = new AdminProfile(null, $this->adminId2->getAdminId() , $this->adminFirstName, $this->adminLastName);
 	}
 
 	/**
@@ -94,6 +88,17 @@ class AdminProfileTest extends UnitTestCase {
 		if($this->adminProfile2 !== null && $this->adminProfile2->getAdminProfileId() !== null) {
 			$this->adminProfile2->delete($this->mysqli);
 			$this->adminProfile2 = null;
+		}
+
+		if($this->adminId1 !== null && $this->adminId1->getAdminId() !== null) {
+			$this->adminId1->delete($this->mysqli);
+			$this->adminId1 = null;
+		}
+
+
+		if($this->adminId2 !== null && $this->adminId2->getAdminId() !== null) {
+			$this->adminId2->delete($this->mysqli);
+			$this->adminId2= null;
 		}
 
 		// disconnect from mySQL
