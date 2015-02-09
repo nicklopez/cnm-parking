@@ -31,7 +31,7 @@ class ParkingPassTest extends UnitTestCase {
 	private $parkingPass1 = null;
 
 	/**
-	 * integer of adminId
+	 * integer of adminProfileId
 	 */
 	private $adminProfileId1 = 1;
 
@@ -72,7 +72,7 @@ class ParkingPassTest extends UnitTestCase {
 	private $parkingPass2 = null;
 
 	/**
-	 * integer of adminId
+	 * integer of adminProfileId
 	 */
 	private $adminProfileId2 = 2;
 
@@ -158,7 +158,7 @@ class ParkingPassTest extends UnitTestCase {
 
 		//third, assert the parkingPass1 created and mySQL's parkingPass1 are the same object
 		$this->assertIdentical($this->parkingPass1->getParkingPassId(), $mysqlParkingPass1->getParkingPassId());
-		$this->assertIdentical($this->parkingPass1->getAdminId(), $mysqlParkingPass1->getAdminId());
+		$this->assertIdentical($this->parkingPass1->getAdminProfileId(), $mysqlParkingPass1->getAdminProfileId());
 		$this->assertIdentical($this->parkingPass1->getParkingSpotId(), $mysqlParkingPass1->getParkingSpotId());
 		$this->assertIdentical($this->parkingPass1->getVehicleId(), $mysqlParkingPass1->getVehicleId());
 		$this->assertIdentical($this->parkingPass1->getEndDateTime(), $mysqlParkingPass1->getEndDateTime());
@@ -242,7 +242,7 @@ class ParkingPassTest extends UnitTestCase {
 
 		//third, assert the parkingPass1 created and mySQL's parkingPass1 are the same object
 		$this->assertIdentical($this->parkingPass1->getParkingPassId(), $mysqlParkingPass1->getParkingPassId());
-		$this->assertIdentical($this->parkingPass1->getAdminId(), $mysqlParkingPass1->getAdminId());
+		$this->assertIdentical($this->parkingPass1->getAdminProfileId(), $mysqlParkingPass1->getAdminProfileId());
 		$this->assertIdentical($this->parkingPass1->getParkingSpotId(), $mysqlParkingPass1->getParkingSpotId());
 		$this->assertIdentical($this->parkingPass1->getVehicleId(), $mysqlParkingPass1->getVehicleId());
 		$this->assertIdentical($this->parkingPass1->getEndDateTime(), $mysqlParkingPass1->getEndDateTime());
@@ -295,9 +295,9 @@ class ParkingPassTest extends UnitTestCase {
 	}
 
 	/**
-	 * test grabbing valid parkingPasses from mySQL by adminId
+	 * test grabbing valid parkingPasses from mySQL by adminProfileId
 	 **/
-	public function testSelectValidParkingPassesByAdminId() {
+	public function testSelectValidParkingPassesByAdminProfileId() {
 		// zeroth, ensure the ParkingPass and mySQL class are sane
 		$this->assertNotNull($this->parkingPass1);
 		$this->assertNotNull($this->parkingPass2);
@@ -306,26 +306,26 @@ class ParkingPassTest extends UnitTestCase {
 		// first, assert the ParkingPass is inserted into mySQL by grabbing it from mySQL and asserting the primary key
 		$this->parkingPass1->insert($this->mysqli);
 		$this->parkingPass2->insert($this->mysqli);
-		$mysqlParkingPassArray = ParkingPass::getParkingPassByAdminId($this->mysqli, $this->parkingPass1->getAdminId());
+		$mysqlParkingPassArray = ParkingPass::getParkingPassByAdminProfileId($this->mysqli, $this->parkingPass1->getAdminProfileId());
 		$this->assertIsA($mysqlParkingPassArray, "array");
 		$this->assertIdentical(count($mysqlParkingPassArray), 2);
 
 		// test each object in the array
 		foreach($mysqlParkingPassArray as $parkingPass) {
 			$this->assertTrue($parkingPass->getParkingPassId() > 0);
-			$this->assertTrue($parkingPass->getAdminId() === $this->parkingPass1->getAdminId());
+			$this->assertTrue($parkingPass->getAdminProfileId() === $this->parkingPass1->getAdminProfileId());
 		}
 	}
 
 	/**
-	 * test grabbing invalid parkingPass from mySQL by adminId
+	 * test grabbing invalid parkingPass from mySQL by adminProfileId
 	 */
-	public function testSelectInvalidParkingPassesByAdminId() {
+	public function testSelectInvalidParkingPassesByAdminProfileId() {
 		// zeroth, ensure that mySQL is sane
 		$this->assertNotNull($this->mysqli);
 
 		//attempt to grab invalid parkingPasses form mySQL
-		$mysqlParkingPass = ParkingPass::getParkingPassByAdminId($this->mysqli, PHP_INT_MAX);
+		$mysqlParkingPass = ParkingPass::getParkingPassByAdminProfileId($this->mysqli, PHP_INT_MAX);
 		$this->assertNull($mysqlParkingPass);
 	}
 
