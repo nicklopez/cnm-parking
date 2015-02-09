@@ -119,8 +119,12 @@ class Admin {
 			throw(new InvalidArgumentException("activation content is empty or insecure"));
 		}
 		// verify the activation will fit in the database
-		if(strlen($newActivation) > 32) {
-			throw(new RangeException("activation too large"));
+		if(strlen($newActivation) != 32) {
+			throw(new RangeException("activation is incorrect length"));
+		}
+		//verify the activation is a hex value
+		if (ctype_xdigit($newActivation) === false) {
+			throw(new InvalidArgumentException("activation is not a hex "));
 		}
 		// store the activation content
 		$this->activation = $newActivation;
@@ -181,12 +185,12 @@ class Admin {
 			throw(new InvalidArgumentException("password hash is empty or insecure"));
 		}
 		// verify the pass hash will fit in the database
-		if(strlen($newPassHash) > 128) {
-			throw(new RangeException("password hash too large"));
+		if(strlen($newPassHash) != 32) {
+			throw(new RangeException("password hash is incorrect length"));
 		}
 		//verify the pass hash is a hex value
 		if (ctype_xdigit($newPassHash) === false) {
-			throw(new InvalidArgumentException("pass hash is not a hex string"));
+			throw(new InvalidArgumentException("pass hash is not a hex "));
 		}
 		// store the activation content
 		$this->passHash = $newPassHash;
@@ -216,8 +220,12 @@ class Admin {
 			throw(new InvalidArgumentException("salt is empty or insecure"));
 		}
 		// verify the salt will fit in the database
-		if(strlen($newSalt) > 64) {
-			throw(new RangeException("salt too large"));
+		if(strlen($newSalt) != 64) {
+			throw(new RangeException("salt incorrect length"));
+		}
+		//verify the pass hash is a hex value
+		if (ctype_xdigit($newSalt) === false) {
+			throw(new InvalidArgumentException("salt is not a hex "));
 		}
 		// store the salt
 		$this->salt = $newSalt;
