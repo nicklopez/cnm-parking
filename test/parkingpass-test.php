@@ -365,4 +365,40 @@ class ParkingPassTest extends UnitTestCase {
 		$this->assertNull($mysqlParkingPass);
 	}
 
+	/**
+	 * test grabbing valid parkingPasses from mySQL by vehicleId
+	 **/
+	public function testSelectValidParkingPassesByVehicleId() {
+		// zeroth, ensure the ParkingPass and mySQL class are sane
+		$this->assertNotNull($this->parkingPass1);
+		$this->assertNotNull($this->parkingPass2);
+		$this->assertNotNull($this->mysqli);
+
+		// first, assert the ParkingPass is inserted into mySQL by grabbing it from mySQL and asserting the primary key
+		$this->parkingPass1->insert($this->mysqli);
+		$this->parkingPass2->insert($this->mysqli);
+		$mysqlParkingPassArray = ParkingPass::getParkingPassByVehicleId($this->mysqli, $this->parkingPass1->getVehicleId());
+		$this->assertIsA($mysqlParkingPassArray, "array");
+		$this->assertIdentical(count($mysqlParkingPassArray), 2);
+
+		// test each object in the array
+		foreach($mysqlParkingPassArray as $parkingPass) {
+			$this->assertTrue($parkingPass->getParkingPassId() > 0);
+			$this->assertTrue($parkingPass->getVehicleId() === $this->parkingPass1->getVehicleId());
+		}
+	}
+
+	/**
+	 * test grabbing invalid parkingPass from mySQL by vehicleId
+	 */
+	public function testSelectInvalidParkingPassesByVehicleId() {
+		// zeroth, ensure that mySQL is sane
+		$this->assertNotNull($this->mysqli);
+
+		//attempt to grab invalid parkingPasses form mySQL
+		$mysqlParkingPass = ParkingPass::getParkingPassByVehicleId($this->mysqli, PHP_INT_MAX);
+		$this->assertNull($mysqlParkingPass);
+	}
+
+
 }
