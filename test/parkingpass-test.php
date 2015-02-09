@@ -306,6 +306,7 @@ class ParkingPassTest extends UnitTestCase {
 		// first, assert the ParkingPass is inserted into mySQL by grabbing it from mySQL and asserting the primary key
 		$this->parkingPass1->insert($this->mysqli);
 		$this->parkingPass2->insert($this->mysqli);
+		$adminProfileId = 1;
 		$mysqlParkingPassArray = ParkingPass::getParkingPassByAdminProfileId($this->mysqli, $this->parkingPass1->getAdminProfileId());
 		$this->assertIsA($mysqlParkingPassArray, "array");
 		$this->assertIdentical(count($mysqlParkingPassArray), 2);
@@ -313,7 +314,7 @@ class ParkingPassTest extends UnitTestCase {
 		// test each object in the array
 		foreach($mysqlParkingPassArray as $parkingPass) {
 			$this->assertTrue($parkingPass->getParkingPassId() > 0);
-			$this->assertTrue($parkingPass->getAdminProfileId() === $this->parkingPass1->getAdminProfileId());
+			$this->assertTrue(strpos($parkingPass->getAdminProfileId(), $adminProfileId) >= 0);
 		}
 	}
 
