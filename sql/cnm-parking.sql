@@ -1,11 +1,11 @@
 -- table drops
+DROP TABLE IF EXISTS parkingPass;
 DROP TABLE IF EXISTS adminProfile;
 DROP TABLE IF EXISTS admin;
-DROP TABLE IF EXISTS parkingPass;
 DROP TABLE IF EXISTS parkingSpot;
 DROP TABLE IF EXISTS location;
-DROP TABLE IF EXISTS vehicle;
 DROP TABLE IF EXISTS visitor;
+DROP TABLE IF EXISTS vehicle;
 
 -- arbitrary use of character length as 128 for varchar.
 CREATE TABLE admin (
