@@ -244,7 +244,7 @@ class AdminProfileTest extends UnitTestCase {
 	}
 
 	/**
- * test selecting an AdminProfile that does not exist in mySQL
+ 	* test selecting an AdminProfile that does not exist in mySQL
 	 **/
 	public function testSelectInvalidAdminProfile() {
 		// zeroth, ensure the AdminProfile and mySQL class are sane
@@ -292,7 +292,7 @@ class AdminProfileTest extends UnitTestCase {
 	 * test selecting an AdminProfile that does not exist in mySQL
 	 **/
 	public function testSelectInvalidFirstName() {
-// zeroth, ensure the AdminProfile and mySQL class are sane
+		// zeroth, ensure the AdminProfile and mySQL class are sane
 		$this->assertNotNull($this->adminProfile1);
 		$this->assertNotNull($this->adminProfile2);
 		$this->assertNotNull($this->mysqli);

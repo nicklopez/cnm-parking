@@ -516,7 +516,7 @@ class AdminProfile {
 	 * @throws mysqli_sql_exception when mySQL related errors occur
 	 **/
 	public static function getAdminProfileByAdminLastName(&$mysqli, $adminLastName) {
-// handle degenerate cases
+		// handle degenerate cases
 		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
 			throw(new mysqli_sql_exception("input is not a mysqli object"));
 		}
