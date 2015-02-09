@@ -185,7 +185,7 @@ class Admin {
 			throw(new InvalidArgumentException("password hash is empty or insecure"));
 		}
 		// verify the pass hash will fit in the database
-		if(strlen($newPassHash) != 32) {
+		if(strlen($newPassHash) != 128) {
 			throw(new RangeException("password hash is incorrect length"));
 		}
 		//verify the pass hash is a hex value

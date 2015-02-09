@@ -38,7 +38,7 @@ class AdminTest extends UnitTestCase {
 	/**
 	 * content of the admin activation type
 	 **/
-	private $activation = "Admin Active";
+	private $activation = "12345678123456781234567812345678";
 	/**
 	 * admin1 email address
 	 */
@@ -50,11 +50,11 @@ class AdminTest extends UnitTestCase {
 	/**
 	 * content of the password hash
 	 */
-	private $passHash = "ab12bc99";
+	private $passHash = "12345678123456781234567812345678123456781234567812345678123456781234567812345678123456781234567812345678123456781234567812345678";
 	/**
 	 * content of the salt
 	 */
-	private $salt = "abc123";
+	private $salt = "1234567812345678123456781234567812345678123456781234567812345678";
 
 	/**
 	 * sets up the mySQL connection for this test
