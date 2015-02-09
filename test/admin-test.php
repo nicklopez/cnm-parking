@@ -266,16 +266,12 @@ class AdminTest extends UnitTestCase {
 		$this->admin2->insert($this->mysqli);
 
 		// second, grab an array of Admins from mySQL and assert we have an array
-		$email = "admin";
+		$email = "admin1@cnm.edu";
 		$mysqlAdmin = Admin::getAdminByAdminEmail($this->mysqli, $email);
-		$this->assertIsA($mysqlAdmin, "array");
-		$this->assertIdentical(count($mysqlAdmin), 2);
 
 		// third, verify each Admin by asserting by asserting the primary key and the select criteria
-		foreach($mysqlAdmin as $admin) {
-			$this->assertTrue($admin->getAdminId() > 0);
-			$this->assertTrue(strpos($admin->getAdminEmail(), $email) >= 0);
-		}
+		$this->assertNotNull($mysqlAdmin);
+
 	}
 	/**
 	 * test selecting an Admin that does not exist in mySQL
