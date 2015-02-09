@@ -125,7 +125,7 @@ class ParkingPass {
 		if($newParkingPassId <= 0) {
 			throw(new RangeException("parkingPassId is not positive"));
 		}
-		// convert and store the parkingPassId
+ 		// convert and store the parkingPassId
 		$this->parkingPassId = intval(($newParkingPassId));
 	}
 
