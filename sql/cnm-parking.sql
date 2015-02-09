@@ -4,8 +4,8 @@ DROP TABLE IF EXISTS adminProfile;
 DROP TABLE IF EXISTS admin;
 DROP TABLE IF EXISTS parkingSpot;
 DROP TABLE IF EXISTS location;
-DROP TABLE IF EXISTS visitor;
 DROP TABLE IF EXISTS vehicle;
+DROP TABLE IF EXISTS visitor;
 
 -- arbitrary use of character length as 128 for varchar.
 CREATE TABLE admin (
@@ -76,18 +76,18 @@ CREATE TABLE parkingSpot (
 
 CREATE TABLE parkingPass (
 	parkingPassId INT UNSIGNED AUTO_INCREMENT NOT NULL,
-	adminId INT UNSIGNED NOT NULL,
+	adminProfileId INT UNSIGNED NOT NULL,
 	parkingSpotId INT UNSIGNED NOT NULL,
 	vehicleId INT UNSIGNED NOT NULL,
 	endDateTime DATETIME NOT NULL,
 	issuedDateTime DATETIME NOT NULL,
 	startDateTime DATETIME NOT NULL,
 	uuId CHAR(36) NOT NULL,
-	INDEX(adminId),
+	INDEX(adminProfileId),
 	INDEX(parkingSpotId),
 	INDEX (vehicleId),
 	UNIQUE (uuId),
-	FOREIGN KEY(adminId) REFERENCES admin(adminId),
+	FOREIGN KEY(adminProfileId) REFERENCES adminProfile(adminProfileId),
 	FOREIGN KEY(parkingSpotId) REFERENCES parkingSpot(parkingSpotId),
 	FOREIGN KEY(vehicleId) REFERENCES vehicle(vehicleId),
 	PRIMARY KEY (parkingPassId)
