@@ -142,8 +142,8 @@ class ParkingPass {
 	 * mutator method for adminProfileId
 	 *
 	 * @param int $newAdminProfileId new value of adminProfileId
-	 * @throws InvalidArgumentException if $newAdminId is not an integer or is null
-	 * @throws RangeException if $newAdminId is not positive
+	 * @throws InvalidArgumentException if $newAdminProfileId is not an integer or is null
+	 * @throws RangeException if $newAdminProfileId is not positive
 	 */
 	public function setAdminProfileId($newAdminProfileId) {
 		// verify that adminProfileId is valid
@@ -576,7 +576,7 @@ class ParkingPass {
 	 * @throws mixed array of adminProfileId 's found or null if not found
 	 * @throws mysqli_sql_exception when mySQL related errors occur
 	 */
-	public static function getParkingPassByAdminId(&$mysqli, $adminProfileId) {
+	public static function getParkingPassByAdminProfileId(&$mysqli, $adminProfileId) {
 		// handle degenerate cases
 		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
 			throw(new mysqli_sql_exception("input is not a mysqli object"));
