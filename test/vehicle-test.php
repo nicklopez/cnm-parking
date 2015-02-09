@@ -8,6 +8,8 @@ require_once("/etc/apache2/capstone-mysql/encrypted-config.php");
 
 // next, require the class from the project under scrutiny
 require_once("../php/classes/vehicle.php");
+require_once("../php/classes/visitor.php");
+
 
 /**
  * Unit test for the Vehicle class
@@ -35,7 +37,7 @@ class VehicleTest extends UnitTestCase {
 	/**
 	 * id of the visitor (owner of vehicle); this is a foreign key
 	 **/
-	private $visitorId1 = 1;
+	private $visitor1 = null;
 	/**
 	 * color of vehicle
 	 **/
@@ -63,7 +65,7 @@ class VehicleTest extends UnitTestCase {
 	/**
 	 * id of the visitor (owner of vehicle); this is a foreign key
 	 **/
-	private $visitorId2 = 1;
+	private $visitor2 = null;
 	/**
 	 * color of vehicle
 	 **/
@@ -108,8 +110,12 @@ class VehicleTest extends UnitTestCase {
 		$this->mysqli = new mysqli($configArray["hostname"], $configArray["username"], $configArray["password"], $configArray["database"]);
 
 		// second, create an instance of the object under scrutiny
-		$this->vehicle1 = new Vehicle(null, $this->visitorId1, $this->vehicleColor1, $this->vehicleMake1, $this->vehicleModel1, $this->vehiclePlateNumber1, $this->vehiclePlateState1, $this->vehicleYear1);
-		$this->vehicle2 = new Vehicle(null, $this->visitorId2, $this->vehicleColor2, $this->vehicleMake2, $this->vehicleModel2, $this->vehiclePlateNumber2, $this->vehiclePlateState2, $this->vehicleYear2);
+		$this->visitor1 = new Visitor(null, "myfirstname@example.com", "John", "Doe", "9990001122");
+		$this->visitor2 = new Visitor(null, "mylastname@example.com", "Jane", "Doe", "9990001123");
+		$this->visitor1->insert($this->mysqli);
+		$this->visitor2->insert($this->mysqli);
+		$this->vehicle1 = new Vehicle(null, $this->visitor1->getVisitorId(), $this->vehicleColor1, $this->vehicleMake1, $this->vehicleModel1, $this->vehiclePlateNumber1, $this->vehiclePlateState1, $this->vehicleYear1);
+		$this->vehicle2 = new Vehicle(null, $this->visitor2->getVisitorId(), $this->vehicleColor2, $this->vehicleMake2, $this->vehicleModel2, $this->vehiclePlateNumber2, $this->vehiclePlateState2, $this->vehicleYear2);
 	}
 
 	/**
@@ -126,6 +132,17 @@ class VehicleTest extends UnitTestCase {
 			$this->vehicle2->delete($this->mysqli);
 			$this->vehicle2 = null;
 		}
+
+		if($this->visitor1 !== null && $this->visitor1->getVisitorId() !== null) {
+			$this->visitor1->delete($this->mysqli);
+			$this->visitor1 = null;
+		}
+
+		if($this->visitor2 !== null && $this->visitor2->getVisitorId() !== null) {
+			$this->visitor2->delete($this->mysqli);
+			$this->visitor2 = null;
+		}
+
 		// disconnect from mySQL
 		if($this->mysqli !== null) {
 			$this->mysqli->close();
