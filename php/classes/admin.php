@@ -483,14 +483,13 @@ class Admin {
 		}
 
 		// create query template
-		$query = "SELECT adminId, activation, adminEmail, passHash, salt FROM admin WHERE adminEmail LIKE ?";
+		$query = "SELECT adminId, activation, adminEmail, passHash, salt FROM admin WHERE adminEmail = ?";
 		$statement = $mysqli->prepare($query);
 		if($statement === false) {
 			throw(new mysqli_sql_exception("unable to prepare statement"));
 		}
 
 		// bind the adminEmail to the place holder in the template
-		$adminEmail = "%$adminEmail%";
 		$wasClean = $statement->bind_param("s", $adminEmail);
 		if($wasClean === false) {
 			throw(new mysqli_sql_exception("unable to bind parameters"));
@@ -508,25 +507,20 @@ class Admin {
 		}
 
 		// grab the adminProfile from mySQL
-		$admins = array();
-		while(($row = $result->fetch_Assoc()) !== null) {
-			try {
-				$admin	= new Admin($row["adminId"], $row["activation"], $row["adminEmail"], $row["passHash"], $row["salt"]);
-				$admins[] = $admin;
-			} catch(Exception $exception) {
-				// if the row couldn't be converted, rethrow it
-				throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
+		try {
+			$admin = null;
+			$row = $result->fetch_assoc();
+			if($row !== null) {
+				$admin = new Admin($row["adminId"], $row["activation"], $row["adminEmail"], $row["passHash"], $row["salt"]);
 			}
+		} catch(Exception $exception) {
+			// if the row couldn't be converted, rethrow it
+			throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
 		}
-		// count the results in the array and return:
-		// 1) null if 0 results
-		// 2) the entire array if > 1 result
-		$numberOfAdmins = count($admins);
-		if($numberOfAdmins === 0) {
-			return (null);
-		} else {
-			return ($admins);
-		}
+		// free up memory and return the result
+		$result->free();
+		$statement->close();
+		return($admin);
 	}
 }
 ?>
