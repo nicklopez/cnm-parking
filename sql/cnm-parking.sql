@@ -1,6 +1,6 @@
 -- table drops
-DROP TABLE IF EXISTS admin;
 DROP TABLE IF EXISTS adminProfile;
+DROP TABLE IF EXISTS admin;
 DROP TABLE IF EXISTS parkingPass;
 DROP TABLE IF EXISTS parkingSpot;
 DROP TABLE IF EXISTS location;
@@ -10,10 +10,10 @@ DROP TABLE IF EXISTS visitor;
 -- arbitrary use of character length as 128 for varchar.
 CREATE TABLE admin (
 	adminId INT UNSIGNED AUTO_INCREMENT NOT NULL,
-	activation VARCHAR(32),
+	activation CHAR(32),
 	adminEmail VARCHAR(128) NOT NULL,
-	passHash VARCHAR(128),
-	salt VARCHAR(64),
+	passHash CHAR(128),
+	salt CHAR(64),
 	UNIQUE(adminEmail),
 	PRIMARY KEY(adminId)
 );
@@ -45,8 +45,8 @@ CREATE TABLE vehicle (
 	vehicleColor VARCHAR(128) NOT NULL,
 	vehicleMake VARCHAR(128) NOT NULL,
 	vehicleModel VARCHAR(128) NOT NULL,
-	vehiclePlateNumber VARCHAR(128) NOT NULL,
-	vehiclePlateState VARCHAR(2),
+	vehiclePlateNumber VARCHAR(8) NOT NULL,
+	vehiclePlateState CHAR(2),
 	vehicleYear SMALLINT(4) NOT NULL,
 	INDEX (visitorId),
 	FOREIGN KEY(visitorId) REFERENCES visitor(visitorId),
