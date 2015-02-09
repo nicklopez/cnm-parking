@@ -83,12 +83,12 @@ class ParkingPass {
 			$this->setIssuedDateTime($newIssuedDateTime);
 			$this->setStartDateTime($newStartDateTime);
 			$this->setUuId($newUuId);
-			} catch(InvalidArgumentException $invalidArgument) {
-				// rethrow the exception to caller
+		} catch(InvalidArgumentException $invalidArgument) {
+			// rethrow the exception to caller
 			throw(new InvalidArgumentException($invalidArgument-> getMessage(), 0, $invalidArgument));
-			} catch(RangeException $range) {
-				// rethrow the exception to caller
-				throw(new RangeException($range->getMessage(), 0, $range));
+		} catch(RangeException $range) {
+			// rethrow the exception to caller
+			throw(new RangeException($range->getMessage(), 0, $range));
 		}
 	}
 
@@ -112,10 +112,10 @@ class ParkingPass {
 		// base case: if the parkingPassId is null, this is a new object
 		if($newParkingPassId === null) {
 			$this->parkingPassId = null;
-				return;
-			}
+			return;
+		}
 
-			// verify that parkingPassId is valid
+		// verify that parkingPassId is valid
 		$newParkingPassId = filter_var($newParkingPassId, FILTER_VALIDATE_INT);
 		if($newParkingPassId === false) {
 			throw(new InvalidArgumentException("parkingPassId is not a valid integer"));
@@ -127,7 +127,7 @@ class ParkingPass {
 		}
 		// convert and store the parkingPassId
 		$this->parkingPassId = intval(($newParkingPassId));
-		}
+	}
 
 	/**
 	 * accessor method for adminProfileId
@@ -418,7 +418,7 @@ class ParkingPass {
 
 	}
 
- 	/**
+	/**
 	 * delete parkingPass from mySQL
 	 *
 	 * @param resource $mysqli pointer to mySQL connection, by reference
@@ -671,10 +671,10 @@ class ParkingPass {
 		}
 
 		// bind the member variables to the place holders in the template
-			$wasClean = $statement->bind_param("i", $parkingSpotId);
-			if($wasClean === false) {
-				throw(new mysqli_sql_exception("unable to bind paramaters"));
-			}
+		$wasClean = $statement->bind_param("i", $parkingSpotId);
+		if($wasClean === false) {
+			throw(new mysqli_sql_exception("unable to bind paramaters"));
+		}
 
 		// execute the statement
 		if($statement->execute() === false) {
@@ -744,7 +744,7 @@ class ParkingPass {
 		// bind the member variables to the place holders in the template
 		$wasClean = $statement->bind_param("i", $vehicleId);
 		if($wasClean === false) {
-		throw(new mysqli_sql_exception("unable to bind paramaters"));
+			throw(new mysqli_sql_exception("unable to bind paramaters"));
 		}
 
 		// execute the statement
@@ -800,9 +800,9 @@ class ParkingPass {
 			$issuedDateTime = self::sanitizeDate($issuedDateTime);
 			// clone and assign sunrise/sunset to remove Time requirement
 			$sunrise = $issuedDateTime;
-				$sunrise->setTime(0, 0, 0);
+			$sunrise->setTime(0, 0, 0);
 			$sunset = $issuedDateTime;
-				$sunset->setTime(23, 59, 59);
+			$sunset->setTime(23, 59, 59);
 		} catch(InvalidArgumentException $invalidArgument) {
 			throw(new InvalidArgumentException($invalidArgument->getMessage(), 0, $invalidArgument));
 		} catch(RangeException $range) {
