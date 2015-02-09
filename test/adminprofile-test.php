@@ -85,7 +85,7 @@ class AdminProfileTest extends UnitTestCase {
 	 * tears down the connection to mySQL and deletes the test instance object
 	 **/
 	public function tearDown() {
-// destroy the object if it was created
+		// destroy the object if it was created
 		if($this->adminProfile1 !== null && $this->adminProfile1->getAdminProfileId() !== null) {
 			$this->adminProfile1->delete($this->mysqli);
 			$this->adminProfile1 = null;
@@ -335,7 +335,7 @@ class AdminProfileTest extends UnitTestCase {
 	 * test selecting an AdminProfile that does not exist in mySQL
 	 **/
 	public function testSelectInvalidLastName() {
-// zeroth, ensure the AdminProfile and mySQL class are sane
+		// zeroth, ensure the AdminProfile and mySQL class are sane
 		$this->assertNotNull($this->adminProfile1);
 		$this->assertNotNull($this->adminProfile2);
 		$this->assertNotNull($this->mysqli);
