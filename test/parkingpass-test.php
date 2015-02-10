@@ -9,8 +9,8 @@ require_once("/usr/lib/php5/simpletest/autorun.php");
 
 // require the class from the project under scrutiny
 require_once("../php/classes/parkingpass.php");
-require_once("../php/classes/parkingadmin.php");
-require_once("../php/classes/parkingadminprofile.php");
+require_once("../php/classes/admin.php");
+require_once("../php/classes/adminprofile.php");
 require_once("../php/classes/visitor.php");
 require_once("../php/classes/vehicle.php");
 require_once("../php/classes/location.php");
@@ -63,13 +63,13 @@ class ParkingPassTest extends UnitTestCase {
 		$this->admin->insert($this->mysqli);
 		$this->adminProfile = new AdminProfile(null, $this->admin->getAdminId(), "John", "Smith");
 		$this->adminProfile->insert($this->mysqli);
-		$this->visitor = new Visitor(null, '123@abc.com', "Joe", "Bob", 5051234567);
+		$this->visitor = new Visitor(null, '1234@abcd.com', "Joe", "Bob", 5051234567);
 		$this->visitor->insert($this->mysqli);
-		$this->vehicle = new Vehicle(null, $this->vehicle->getVehicleId(), "Black", "Ford", "F150", "abc-123", "NM", 2015);
+		$this->vehicle = new Vehicle(null, $this->visitor->getVisitorId(), "Black", "Ford", "F150", "abc-123", "NM", 2015);
 		$this->vehicle->insert($this->mysqli);
 		$this->location = new Location(null, 12.34, "Here", "Right Here",43.21);
 		$this->location->insert($this->mysqli);
-		$this->parkingSpot = new ParkingSpot(null, $this->parkingSpot->getParkingSpotId(), "101");
+		$this->parkingSpot = new ParkingSpot(null, $this->location->getLocationId(), "101");
 		$this->parkingSpot->insert($this->mysqli);
 
 		// create main object
@@ -126,7 +126,7 @@ class ParkingPassTest extends UnitTestCase {
 	/**
 	 * test inserting a valid parkingPass into mySQL
 	 */
-	public function testInsertValidParkingPass1() {
+	public function testInsertValidParkingPass() {
 		//zeroth, ensure the parkingPass and mySQL class are sane
 		$this->assertNotNull($this->parkingPass);
 		$this->assertNotNull($this->mysqli);
@@ -135,23 +135,23 @@ class ParkingPassTest extends UnitTestCase {
 		$this->parkingPass->insert($this->mysqli);
 
 		//second, grab an parkingPass from mySQL
-		$mysqlParkingPass1 = ParkingPass::getParkingPassByParkingPassId($this->mysqli, $this->parkingPass->getParkingPassId());
+		$mysqlParkingPass = ParkingPass::getParkingPassByParkingPassId($this->mysqli, $this->parkingPass->getParkingPassId());
 
 		//third, assert the parkingPass created and mySQL's parkingPass are the same object
-		$this->assertIdentical($this->parkingPass->getParkingPassId(), $mysqlParkingPass1->getParkingPassId());
-		$this->assertIdentical($this->parkingPass->getAdminProfileId(), $mysqlParkingPass1->getAdminProfileId());
-		$this->assertIdentical($this->parkingPass->getParkingSpotId(), $mysqlParkingPass1->getParkingSpotId());
-		$this->assertIdentical($this->parkingPass->getVehicleId(), $mysqlParkingPass1->getVehicleId());
-		$this->assertIdentical($this->parkingPass->getEndDateTime(), $mysqlParkingPass1->getEndDateTime());
-		$this->assertIdentical($this->parkingPass->getIssuedDateTime(), $mysqlParkingPass1->getIssuedDateTime());
-		$this->assertIdentical($this->parkingPass->getStartDateTime(), $mysqlParkingPass1->getStartDateTime());
-		$this->assertIdentical($this->parkingPass->getUuId(), $mysqlParkingPass1->getUuId());
+		$this->assertIdentical($this->parkingPass->getParkingPassId(), $mysqlParkingPass->getParkingPassId());
+		$this->assertIdentical($this->parkingPass->getAdminProfileId(), $mysqlParkingPass->getAdminProfileId());
+		$this->assertIdentical($this->parkingPass->getParkingSpotId(), $mysqlParkingPass->getParkingSpotId());
+		$this->assertIdentical($this->parkingPass->getVehicleId(), $mysqlParkingPass->getVehicleId());
+		$this->assertIdentical($this->parkingPass->getEndDateTime(), $mysqlParkingPass->getEndDateTime());
+		$this->assertIdentical($this->parkingPass->getIssuedDateTime(), $mysqlParkingPass->getIssuedDateTime());
+		$this->assertIdentical($this->parkingPass->getStartDateTime(), $mysqlParkingPass->getStartDateTime());
+		$this->assertIdentical($this->parkingPass->getUuId(), $mysqlParkingPass->getUuId());
 	}
 
 	/**
 	 * test inserting an invalid parkingPass into mySQL
 	 */
-	public function testInsertInvalidParkingPass1() {
+	public function testInsertInvalidParkingPass() {
 		//zeroth, ensure the parkingPass and mySQL class are the same
 		$this->assertNotNull($this->parkingPass);
 		$this->assertNotNull($this->mysqli);
@@ -170,20 +170,20 @@ class ParkingPassTest extends UnitTestCase {
 	/**
 	 * test deleting an parkingPass from mySQL
 	 */
-	public function testDeleteValidParkingPass1() {
+	public function testDeleteValidParkingPass() {
 		//zeroth, ensure the parkingPass and mySQL class are the sane
 		$this->assertNotNull($this->parkingPass);
 		$this->assertNotNull($this->mysqli);
 
 		//first, assert the parkingPass is inserted into mySQL by grabbing it from mySQL and asserting the primary key
 		$this->parkingPass->insert($this->mysqli);
-		$mysqlParkingPass1 = ParkingPass::getParkingPassByParkingPassId($this->mysqli, $this->parkingPass->getParkingPassId());
-		$this->assertIdentical($this->parkingPass->getParkingPassId(), $mysqlParkingPass1->getParkingPassId());
+		$mysqlParkingPass = ParkingPass::getParkingPassByParkingPassId($this->mysqli, $this->parkingPass->getParkingPassId());
+		$this->assertIdentical($this->parkingPass->getParkingPassId(), $mysqlParkingPass->getParkingPassId());
 
 		//second, delete the parkingPass from mySQL and re-grab it from mySQL and assert id does not exist
 		$this->parkingPass->delete($this->mysqli);
-		$mysqlParkingPass1 = ParkingPass::getParkingPassByParkingPassId($this->mysqli, $this->parkingPass->getParkingPassId());
-		$this->assertNull($mysqlParkingPass1);
+		$mysqlParkingPass = ParkingPass::getParkingPassByParkingPassId($this->mysqli, $this->parkingPass->getParkingPassId());
+		$this->assertNull($mysqlParkingPass);
 
 		//third, set the parkingPass to null to prevent tearDown() from deleting a parkingPass that has already been deleted
 		$this->parkingPass = null;
@@ -192,7 +192,7 @@ class ParkingPassTest extends UnitTestCase {
 	/**
 	 * test deleting an parkingPass from mySQL that does not exist
 	 */
-	public function testDeleteInvalidParkingPass1() {
+	public function testDeleteInvalidParkingPass() {
 		//zeroth, ensure the parkingPass and mySQL class are the sane
 		$this->assertNotNull($this->parkingPass);
 		$this->assertNotNull($this->mysqli);
@@ -208,35 +208,35 @@ class ParkingPassTest extends UnitTestCase {
 	/**
 	 * test updating an parkingPass from mySQL
 	 */
-	public function testUpdateValidParkingPass1() {
+	public function testUpdateValidParkingPass() {
 		//zeroth, ensure the parkingPass and mySQL class are the sane
 		$this->assertNotNull($this->parkingPass);
 		$this->assertNotNull($this->mysqli);
 
 		//first, assert the parkingPass is inserted into mySQL by grabbing it from mySQL and asserting the primary key
 		$this->parkingPass->insert($this->mysqli);
-		$mysqlParkingPass1 = ParkingPass::getParkingPassByParkingPassId($this->mysqli, $this->parkingPass->getParkingPassId());
-		$this->assertIdentical($this->parkingPass->getParkingPassId(), $mysqlParkingPass1->getParkingPassId());
+		$mysqlParkingPass = ParkingPass::getParkingPassByParkingPassId($this->mysqli, $this->parkingPass->getParkingPassId());
+		$this->assertIdentical($this->parkingPass->getParkingPassId(), $mysqlParkingPass->getParkingPassId());
 
 		//second, grab an parkingPass from mySQL
-		$mysqlParkingPass1 = ParkingPass::getParkingPassByParkingPassId($this->mysqli, $this->parkingPass->getParkingPassId());
+		$mysqlParkingPass = ParkingPass::getParkingPassByParkingPassId($this->mysqli, $this->parkingPass->getParkingPassId());
 
 		//third, assert the parkingPass created and mySQL's parkingPass are the same object
-		$this->assertIdentical($this->parkingPass->getParkingPassId(), $mysqlParkingPass1->getParkingPassId());
-		$this->assertIdentical($this->parkingPass->getAdminProfileId(), $mysqlParkingPass1->getAdminProfileId());
-		$this->assertIdentical($this->parkingPass->getParkingSpotId(), $mysqlParkingPass1->getParkingSpotId());
-		$this->assertIdentical($this->parkingPass->getVehicleId(), $mysqlParkingPass1->getVehicleId());
-		$this->assertIdentical($this->parkingPass->getEndDateTime(), $mysqlParkingPass1->getEndDateTime());
-		$this->assertIdentical($this->parkingPass->getIssuedDateTime(), $mysqlParkingPass1->getIssuedDateTime());
-		$this->assertIdentical($this->parkingPass->getStartDateTime(), $mysqlParkingPass1->getStartDateTime());
-		$this->assertIdentical($this->parkingPass->getUuId(), $mysqlParkingPass1->getUuId());
+		$this->assertIdentical($this->parkingPass->getParkingPassId(), $mysqlParkingPass->getParkingPassId());
+		$this->assertIdentical($this->parkingPass->getAdminProfileId(), $mysqlParkingPass->getAdminProfileId());
+		$this->assertIdentical($this->parkingPass->getParkingSpotId(), $mysqlParkingPass->getParkingSpotId());
+		$this->assertIdentical($this->parkingPass->getVehicleId(), $mysqlParkingPass->getVehicleId());
+		$this->assertIdentical($this->parkingPass->getEndDateTime(), $mysqlParkingPass->getEndDateTime());
+		$this->assertIdentical($this->parkingPass->getIssuedDateTime(), $mysqlParkingPass->getIssuedDateTime());
+		$this->assertIdentical($this->parkingPass->getStartDateTime(), $mysqlParkingPass->getStartDateTime());
+		$this->assertIdentical($this->parkingPass->getUuId(), $mysqlParkingPass->getUuId());
 	}
 
 
 	/**
 	 * test updating an parkingPass from mySQL that does not exist
 	 */
-	public function testUpdateInvalidParkingPass1() {
+	public function testUpdateInvalidParkingPass() {
 		//zeroth, ensure the parkingPass and mySQL class are the sane
 		$this->assertNotNull($this->parkingPass);
 		$this->assertNotNull($this->mysqli);
