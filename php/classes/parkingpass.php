@@ -475,7 +475,7 @@ class ParkingPass {
 		}
 
 		// create query template
-		$query	= "UPDATE parkingPass SET parkingPassId = ?, adminProfileId = ?, parkingSpotId = ?, vehicleId  = ?, endDateTime = ?, issuedDateTime = ?, startDateTime = ?, uuId = ? WHERE parkingPassId = ?";
+		$query	= "UPDATE parkingPass SET adminProfileId = ?, parkingSpotId = ?, vehicleId  = ?, endDateTime = ?, issuedDateTime = ?, startDateTime = ?, uuId = ? WHERE parkingPassId = ?";
 		$statement = $mysqli->prepare($query);
 		if($statement === false) {
 			throw(new mysqli_sql_exception(" unable to prepare statement"));
@@ -485,7 +485,7 @@ class ParkingPass {
 		$formatEnd = $this->endDateTime->format("Y-m-d H:i:s");
 		$formatIssued = $this->issuedDateTime->format("Y-m-d H:i:s");
 		$formatStart = $this->startDateTime->format("Y-m-d H:i:s");
-		$wasClean = $statement->bind_param("iiiissss", $this->parkingPassId, $this->adminProfileId, $this->parkingSpotId, $this->vehicleId, $formatEnd, $formatIssued, $formatStart, $this->uuId);
+		$wasClean = $statement->bind_param("iiissssi", $this->adminProfileId, $this->parkingSpotId, $this->vehicleId, $formatEnd, $formatIssued, $formatStart, $this->uuId, $this->parkingPassId);
 		if($wasClean === false) {
 			throw(new mysqli_sql_exception("unable to bind paramaters"));
 		}

@@ -35,6 +35,7 @@ class ParkingPassTest extends UnitTestCase {
 	 * instance of the object parkingPass
 	 */
 	private $parkingPass = null;
+	private $parkingPass2 = null;
 
 	/**
 	 * instance of each dependent entity(a.k.a all of them X{ )
@@ -73,7 +74,8 @@ class ParkingPassTest extends UnitTestCase {
 		$this->parkingSpot->insert($this->mysqli);
 
 		// create main object
-		$this->parkingPass = new ParkingPass(null, $this->adminProfile->getAdminProfileId(), $this->parkingSpot->getParkingSpotId(), $this->vehicle->getVehicleId(), $this->getEndDateTime(), $this->getIssuedDateTime(), $this->getStartDateTime(), null);
+		$this->parkingPass  = new ParkingPass(null, $this->adminProfile->getAdminProfileId(), $this->parkingSpot->getParkingSpotId(), $this->vehicle->getVehicleId(), "2015-02-10 12:00:00", "2015-02-10 08:00:00", "2015-02-10 10:00:00");
+		$this->parkingPass2 = new ParkingPass(null, $this->adminProfile->getAdminProfileId(), $this->parkingSpot->getParkingSpotId(), $this->vehicle->getVehicleId(), "2015-02-11 12:00:00", "2015-02-11 08:00:00", "2015-02-11 10:00:00");
 	}
 
 
@@ -82,29 +84,19 @@ class ParkingPassTest extends UnitTestCase {
 	 **/
 	public function tearDown() {
 		// destroy created objects
-		if($this->parkingPass !== null && $this->parkingPass->isInserted()) {
+		if($this->parkingPass !== null && $this->parkingPass->getParkingPassId() !== null) {
 			$this->parkingPass->delete($this->mysqli);
 			$this->parkingPass = null;
 		}
-		
-		if($this->admin !== null) {
-			$this->admin->delete($this->mysqli);
-			$this->admin = null;
+
+		if($this->parkingPass2 !== null && $this->parkingPass2->getParkingPassId() !== null) {
+			$this->parkingPass2->delete($this->mysqli);
+			$this->parkingPass2 = null;
 		}
 
-		if($this->adminProfile !== null) {
-			$this->adminProfile->delete($this->mysqli);
-			$this->adminProfile = null;
-		}
-
-		if($this->visitor !== null) {
-			$this->visitor->delete($this->mysqli);
-			$this->visitor = null;
-		}
-
-		if($this->vehicle !== null) {
-			$this->vehicle->delete($this->mysqli);
-			$this->vehicle = null;
+		if($this->parkingSpot !== null) {
+			$this->parkingSpot->delete($this->mysqli);
+			$this->parkingSpot = null;
 		}
 
 		if($this->location !== null) {
@@ -112,9 +104,24 @@ class ParkingPassTest extends UnitTestCase {
 			$this->location = null;
 		}
 
-		if($this->parkingSpot !== null) {
-			$this->parkingSpot->delete($this->mysqli);
-			$this->parkingSpot = null;
+		if($this->vehicle !== null) {
+			$this->vehicle->delete($this->mysqli);
+			$this->vehicle = null;
+		}
+
+		if($this->visitor !== null) {
+			$this->visitor->delete($this->mysqli);
+			$this->visitor = null;
+		}
+
+		if($this->adminProfile !== null) {
+			$this->adminProfile->delete($this->mysqli);
+			$this->adminProfile = null;
+		}
+
+		if($this->admin !== null) {
+			$this->admin->delete($this->mysqli);
+			$this->admin = null;
 		}
 
 		//disconnect from mySQL
@@ -218,8 +225,14 @@ class ParkingPassTest extends UnitTestCase {
 		$mysqlParkingPass = ParkingPass::getParkingPassByParkingPassId($this->mysqli, $this->parkingPass->getParkingPassId());
 		$this->assertIdentical($this->parkingPass->getParkingPassId(), $mysqlParkingPass->getParkingPassId());
 
-		//second, grab an parkingPass from mySQL
+		// second, change the parkingPass, update it mySQL
+		$newUuId = "a67570f4-6d37-4395-b1ff-32e55c8192c1";
+		$this->parkingPass->setUuId($newUuId);
+		$this->parkingPass->update($this->mysqli);
+
+		// third, re-grab the ParkingPass from mySQL
 		$mysqlParkingPass = ParkingPass::getParkingPassByParkingPassId($this->mysqli, $this->parkingPass->getParkingPassId());
+		$this->assertNotNull($mysqlParkingPass);
 
 		//third, assert the parkingPass created and mySQL's parkingPass are the same object
 		$this->assertIdentical($this->parkingPass->getParkingPassId(), $mysqlParkingPass->getParkingPassId());
@@ -273,6 +286,8 @@ class ParkingPassTest extends UnitTestCase {
 		// attempt to grab an invalid parkingPassId from mySQL
 		$mysqlParkingPass = ParkingPass::getParkingPassByParkingPassId($this->mysqli, PHP_INT_MAX);
 		$this->assertNull($mysqlParkingPass);
+
+		$this->parkingPass = null;
 	}
 
 	/**
@@ -287,7 +302,6 @@ class ParkingPassTest extends UnitTestCase {
 		// first, assert the ParkingPass is inserted into mySQL by grabbing it from mySQL and asserting the primary key
 		$this->parkingPass->insert($this->mysqli);
 		$this->parkingPass2->insert($this->mysqli);
-		$parkingSpotId = 1;
 		$mysqlParkingPassArray = ParkingPass::getParkingPassByParkingSpotId($this->mysqli, $this->parkingPass->getParkingSpotId());
 		$this->assertIsA($mysqlParkingPassArray, "array");
 		$this->assertIdentical(count($mysqlParkingPassArray), 2);
@@ -295,7 +309,7 @@ class ParkingPassTest extends UnitTestCase {
 		// test each object in the array
 		foreach($mysqlParkingPassArray as $parkingPass) {
 			$this->assertTrue($parkingPass->getParkingPassId() > 0);
-			$this->assertTrue(strpos($parkingPass->getParkingSpotId(), $parkingSpotId) >= 0);
+			$this->assertIdentical($parkingPass->getParkingSpotId(), $this->parkingPass->getParkingSpotId());
 		}
 	}
 
@@ -324,7 +338,7 @@ class ParkingPassTest extends UnitTestCase {
 		// first, assert the ParkingPass is inserted into mySQL by grabbing it from mySQL and asserting the primary key
 		$this->parkingPass->insert($this->mysqli);
 		$this->parkingPass2->insert($this->mysqli);
-		$vehicleId = 1;
+
 		$mysqlParkingPassArray = ParkingPass::getParkingPassByVehicleId($this->mysqli, $this->parkingPass->getVehicleId());
 		$this->assertIsA($mysqlParkingPassArray, "array");
 		$this->assertIdentical(count($mysqlParkingPassArray), 2);
@@ -332,13 +346,13 @@ class ParkingPassTest extends UnitTestCase {
 		// test each object in the array
 		foreach($mysqlParkingPassArray as $parkingPass) {
 			$this->assertTrue($parkingPass->getParkingPassId() > 0);
-			$this->assertTrue(strpos($parkingPass->getVehicleId(), $vehicleId) >= 0);
+			$this->assertIdentical($parkingPass->getVehicleId(), $this->parkingPass->getVehicleId());
 		}
 	}
 
 	/**
 	 * test grabbing invalid parkingPass from mySQL by vehicleId
-	 */
+	 **/
 	public function testSelectInvalidParkingPassesByVehicleId() {
 		// zeroth, ensure that mySQL is sane
 		$this->assertNotNull($this->mysqli);
@@ -347,7 +361,6 @@ class ParkingPassTest extends UnitTestCase {
 		$mysqlParkingPass = ParkingPass::getParkingPassByVehicleId($this->mysqli, PHP_INT_MAX);
 		$this->assertNull($mysqlParkingPass);
 	}
-
 
 
 }
