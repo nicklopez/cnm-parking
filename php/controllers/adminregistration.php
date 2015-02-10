@@ -1,26 +1,29 @@
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet">
+		<link type="text/css" href="/lib/bootcamp-coders.css" rel="stylesheet">
+		<link type="text/css" href="/images/favicon.ico" rel="shortcut icon">
+		<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery.form/3.51/jquery.form.min.js"></script>
+		<script type="text/javascript" src="//ajax.aspnetcdn.com/ajax/jquery.validate/1.12.0/jquery.validate.min.js"></script>
+		<script type="text/javascript" src="//ajax.aspnetcdn.com/ajax/jquery.validate/1.12.0/additional-methods.min.js"></script>
+		<script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>		<title>Controller: Tweets</title>
+		<style type="text/css"></style></head>
+	<body>
+		<h1>CNM Parking Admin Registration</h1>
+		<form method="regis" action="adminregistration-post.php.php">
+			<label for="adminFirstName">First Name</label>
+			<input type="text" id="adminFirstName" name="adminFirstName"><br>
+			<label for="adminLastName">Last Name</label>
+			<input type="text" id="adminLastName" name="adminLastName"><br>
+			<label for="adminEmail">Email</label>
+			<input type="text" id="adminEmail" name="adminEmail"><br>
+			<label for="password">Password</label>
+			<input type="text" id="password" name="password"><br>
+			<button id="submit" type="submit">Register</button>
+		</form>
 
-
-<?php
-require_once("/etc/apache2/capstone-mysql/encrypted-config.php");
-require_once("../php/classes/admin.php");
-require_once("../php/classes/adminProfile.php");
-
-// verify the form values have been submitted
-if(@isset($_POST["adminFirstName"]) === false || @isset($_POST["adminLastName"]) === false || @isset($_POST["adminEmail"]) || @isset($_POST["password"])) {
-	echo "<p class=\"alert alert-danger\">form values not complete. verify the form and try again.</p>";
-}
-try {
-	//
-	mysqli_report(MYSQLI_REPORT_STRICT);
-	$configArray = readConfig("/etc/apache2/capstone-mysql/cnmparking.ini");
-	$mysqli = new mysqli($configArray['hostname'], $configArray['username'], $configArray['password'], $configArray['database']);
-	$admin = new Admin(null, "12345678123456781234567812345678", $_POST["adminEmail"], "12345678123456781234567812345678123456781234567812345678123456781234567812345678123456781234567812345678123456781234567812345678", "1234567812345678123456781234567812345678123456781234567812345678");
-	$admin->insert($mysqli);
-	$adminProfile = new AdminProfile(null, $this->adminId->getAdminId(), $_POST["adminFirstName"], $_POST["adminLastName"]);
-	$adminProfile->insert($mysqli);
-
-	echo "<p class=\"alert alert-success\">Admin(id = " . $admin->getAdminId() . ") added!</p>";
-} catch(Exception $exception) {
-	echo "<p class=\"alert alert-danger\">Exception: " . $exception->getMessage() . "</p>";
-}
-?>
+	</body>
+</html>
