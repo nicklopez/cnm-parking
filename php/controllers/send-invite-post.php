@@ -1,7 +1,6 @@
 <?php
-
 // verify the form values have been submitted
-if(isset($_POST["emailAddress"]) == FALSE) {
+if(isset($_POST["emailAddress"]) === FALSE || empty($_POST["emailAddress"])) {
 	echo "<p class=\"alert alert-danger\">Please enter or verify the email address.</p>";
 }
 
@@ -34,7 +33,6 @@ try {
 } catch(Exception $exception) {
 	throw (new Exception($exception->getMessage(),0,$exception));
 }
-//echo "<p class=\"alert alert-danger\">Exception: " . $exception->getMessage() . "</p>";
 
 echo "<p class=\"alert alert-success\">Invite sent!</p>";
 
