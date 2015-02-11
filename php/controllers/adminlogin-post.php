@@ -2,10 +2,10 @@
 
 require_once("/etc/apache2/capstone-mysql/encrypted-config.php");
 require_once("../classes/admin.php");
-require_once("../classes/adminprofile.php");
+require_once("../classes/adminProfile.php");
 
 // verify the form values have been submitted
-if(@isset($_POST["adminFirstName"]) === false || @isset($_POST["adminLastName"]) === false || @isset($_POST["adminEmail"]) || @isset($_POST["password"])) {
+if(@isset($_POST["adminEmail"]) === false || @isset($_POST["password"])) {
 	echo "<p class=\"alert alert-danger\">form values not complete. verify the form and try again.</p>";
 }
 try {
@@ -18,7 +18,7 @@ try {
 	$adminProfile = new AdminProfile(null, $this->adminId->getAdminId(), $_POST["adminFirstName"], $_POST["adminLastName"]);
 	$adminProfile->insert($mysqli);
 
-	echo "<p class=\"alert alert-success\">Admin(id = " . $admin->getAdminId() . ") added!</p>";
+	echo "<p class=\"alert alert-success\">Admin(id = " . $admin->getAdminId() . ") logged on!</p>";
 } catch(Exception $exception) {
 	echo "<p class=\"alert alert-danger\">Exception: " . $exception->getMessage() . "</p>";
 }
