@@ -362,5 +362,74 @@ class ParkingPassTest extends UnitTestCase {
 		$this->assertNull($mysqlParkingPass);
 	}
 
+	/**
+	 * test grabbing valid parkingPasses from mySQL by StartDateTimeEndDateTimeRange
+	 **/
+	public function testSelectValidParkingPassesByStartDateTimeEndDateTimeRange() {
+		// zeroth, ensure the ParkingPass and mySQL class are sane
+		$this->assertNotNull($this->parkingPass);
+		$this->assertNotNull($this->parkingPass2);
+		$this->assertNotNull($this->mysqli);
 
+		// first, assert the ParkingPass is inserted into mySQL by grabbing it from mySQL and asserting the primary key
+		$this->parkingPass->insert($this->mysqli);
+		$this->parkingPass2->insert($this->mysqli);
+
+		$sunrise = DateTime::createFromFormat("Y-m-d H:i:s", "2015-02-10 10:00:00");
+		$sunset  = DateTime::createFromFormat("Y-m-d H:i:s", "2015-02-11 12:00:00");
+
+		$mysqlParkingPassArray = ParkingPass::getParkingPassByStartDateTimeEndDateTimeRange($this->mysqli, $sunrise, $sunset);
+		$this->assertIsA($mysqlParkingPassArray, "array");
+		$this->assertIdentical(count($mysqlParkingPassArray), 2);
+
+		// test each object in the array
+		foreach($mysqlParkingPassArray as $parkingPass) {
+			$this->assertTrue($parkingPass->getParkingPassId() > 0);
+			$this->assertTrue($parkingPass->getStartDateTime() >= $sunrise);
+			$this->assertTrue($parkingPass->getEndDateTime() <= $sunset);
+		}
+	}
+
+
+	/**
+	 * test grabbing valid parkingPasses from mySQL by IssuedDateTime
+	 **/
+	public function testSelectValidParkingPassesByIssuedDateTime() {
+		// zeroth, ensure the ParkingPass and mySQL class are sane
+		$this->assertNotNull($this->parkingPass);
+		$this->assertNotNull($this->parkingPass2);
+		$this->assertNotNull($this->mysqli);
+
+		// first, assert the ParkingPass is inserted into mySQL by grabbing it from mySQL and asserting the primary key
+		$this->parkingPass->insert($this->mysqli);
+		$this->parkingPass2->insert($this->mysqli);
+
+		$sunrise = DateTime::createFromFormat("Y-m-d H:i:s", "2015-02-10 00:00:00");
+		$sunset  = DateTime::createFromFormat("Y-m-d H:i:s", "2015-02-10 23:59:59");
+
+		$mysqlParkingPassArray = ParkingPass::getParkingPassByIssuedDateTime($this->mysqli, $sunrise);
+		$this->assertIsA($mysqlParkingPassArray, "array");
+		$this->assertIdentical(count($mysqlParkingPassArray), 1);
+
+		// test each object in the array
+		foreach($mysqlParkingPassArray as $parkingPass) {
+			$this->assertTrue($parkingPass->getParkingPassId() > 0);
+			$this->assertTrue($parkingPass->getIssuedDateTime() >= $sunrise);
+			$this->assertTrue($parkingPass->getIssuedDateTime() <= $sunset);
+		}
+	}
+
+	/**
+	 * test grabbing invalid parkingPass from mySQL by IssuedDateTime
+	 **/
+	public function testSelectInvalidParkingPassesByIssuedDateTime() {
+		// zeroth, ensure that mySQL is sane
+		$this->assertNotNull($this->mysqli);
+
+		//attempt to grab invalid parkingPasses form mySQL
+		$mysqlParkingPass = ParkingPass::getParkingPassByIssuedDateTime($this->mysqli, "1979-01-01 00:00:00", "1979-01-02 00:00:00");
+		$this->assertNull($mysqlParkingPass);
+	}
 }
+
+?>

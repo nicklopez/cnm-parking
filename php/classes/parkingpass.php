@@ -799,9 +799,9 @@ class ParkingPass {
 		try {
 			$issuedDateTime = self::sanitizeDate($issuedDateTime);
 			// clone and assign sunrise/sunset to remove Time requirement
-			$sunrise = $issuedDateTime;
+			$sunrise = clone $issuedDateTime;
 			$sunrise->setTime(0, 0, 0);
-			$sunset = $issuedDateTime;
+			$sunset = clone $issuedDateTime;
 			$sunset->setTime(23, 59, 59);
 		} catch(InvalidArgumentException $invalidArgument) {
 			throw(new InvalidArgumentException($invalidArgument->getMessage(), 0, $invalidArgument));
@@ -889,11 +889,11 @@ class ParkingPass {
 		}
 
 		// bind the member variables to the place holders in the template
-		$sunrise = $startDateTime->format("Y-m-d H:i:s");
-		$sunset = $endDateTime->format("Y-m-d H:i:s");
+		$sunrise = $sunrise->format("Y-m-d H:i:s");
+		$sunset = $sunset->format("Y-m-d H:i:s");
 		$wasClean = $statement->bind_param("ss", $sunrise, $sunset);
 		if($wasClean === false) {
-			throw(new mysqli_sql_exception("unable to bind paramaters"));
+			throw(new mysqli_sql_exception("unable to bind parameters"));
 		}
 		// execute the statement
 		if($statement->execute() === false) {
@@ -930,7 +930,7 @@ class ParkingPass {
 	}
 
 	/**
-	 * gets parkingPass by uuId
+	 * gets parkingPass 	by uuId
 	 *
 	 * @param resource $mysqli pointer to mySQL connection, by reference
 	 * @param string $uuId uuId to search for
