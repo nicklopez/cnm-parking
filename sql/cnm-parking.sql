@@ -1,11 +1,13 @@
 -- table drops
 DROP TABLE IF EXISTS parkingPass;
+DROP TABLE IF EXISTS invite;
 DROP TABLE IF EXISTS adminProfile;
 DROP TABLE IF EXISTS admin;
 DROP TABLE IF EXISTS parkingSpot;
 DROP TABLE IF EXISTS location;
 DROP TABLE IF EXISTS vehicle;
 DROP TABLE IF EXISTS visitor;
+
 
 -- arbitrary use of character length as 128 for varchar.
 CREATE TABLE admin (
@@ -37,6 +39,21 @@ CREATE TABLE visitor (
 	visitorPhone VARCHAR(24) NOT NULL,
 	UNIQUE(visitorEmail),
 	PRIMARY KEY(visitorId)
+);
+
+CREATE TABLE invite (
+	inviteId INT UNSIGNED AUTO_INCREMENT NOT NULL ,
+	actionDateTime DATETIME,
+	activation CHAR(32),
+	adminProfileId INT,
+	approved BOOLEAN,
+	createDateTime DATETIME NOT NULL,
+	visitorId INT,
+	INDEX(adminProfileId),
+	INDEX(visitorId),
+	FOREIGN KEY(adminProfileId) REFERENCES adminProfile(adminProfileId),
+	FOREIGN KEY(visitorId) REFERENCES visitor(visitorId),
+	PRIMARY KEY(inviteId)
 );
 
 CREATE TABLE vehicle (
@@ -91,14 +108,4 @@ CREATE TABLE parkingPass (
 	FOREIGN KEY(parkingSpotId) REFERENCES parkingSpot(parkingSpotId),
 	FOREIGN KEY(vehicleId) REFERENCES vehicle(vehicleId),
 	PRIMARY KEY (parkingPassId)
-
-CREATE TABLE invite {
-		inviteId INT UNSIGNED AUTO_INCREMENT NOT NULL,
-		createDateTime DATETIME
-		actionDateTime DATETIME
-		approved BOOLEAN
-		visitorId int
-		adminProfileId int
-		activation
-		}
 );
