@@ -91,4 +91,14 @@ CREATE TABLE parkingPass (
 	FOREIGN KEY(parkingSpotId) REFERENCES parkingSpot(parkingSpotId),
 	FOREIGN KEY(vehicleId) REFERENCES vehicle(vehicleId),
 	PRIMARY KEY (parkingPassId)
+
+CREATE TABLE invite {
+		inviteId INT UNSIGNED AUTO_INCREMENT NOT NULL,
+		createDateTime DATETIME
+		actionDateTime DATETIME
+		approved BOOLEAN
+		visitorId int
+		adminProfileId int
+		activation
+		}
 );
