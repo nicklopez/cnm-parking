@@ -13,5 +13,5 @@ setcookie(session_name(), "", 1, $params["path"], $params["domain"], $params["se
 session_destroy();
 
 // redirect to login page
-header("Location: adminlogin.php"); // Redirecting To Home Page
+header("Location: admin-login.php"); // Redirecting To Home Page
 ?>

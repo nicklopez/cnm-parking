@@ -1,5 +1,5 @@
 <?php
-require_once("adminregistration.php");
+require_once("admin-registration.php");
 require_once("/etc/apache2/capstone-mysql/encrypted-config.php");
 require_once("../classes/admin.php");
 require_once("../classes/adminprofile.php");
