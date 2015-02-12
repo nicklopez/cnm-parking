@@ -14,14 +14,19 @@
 	<body>
 		<h1>CNM Parking Admin Registration</h1>
 		<form method="post" action="adminregistration-post.php">
+
 			<label for="adminFirstName">First Name</label>
 			<input type="text" id="adminFirstName" name="adminFirstName"><br>
+
 			<label for="adminLastName">Last Name</label>
 			<input type="text" id="adminLastName" name="adminLastName"><br>
+
 			<label for="adminEmail">Email</label>
 			<input type="text" id="adminEmail" name="adminEmail"><br>
+
 			<label for="password">Password</label>
 			<input type="text" id="password" name="password"><br>
+
 			<button id="submit" type="submit">Register</button>
 		</form>
 
