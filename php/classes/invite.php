@@ -535,5 +535,68 @@ class Invite {
 		$statement->close();
 		return ($invite);
 	}
+
+	/**
+	 * gets the invite by activation (token)
+	 *
+	 * @param resource $mysqli pointer to mySQL connection, by reference
+	 * @param int $activation invite to search for by activation (token)
+	 * @return mixed invite found or null if not found
+	 * @throws mysqli_sql_exception when mySQL related errors occur
+	 **/
+	public static function getInviteByActivation(&$mysqli, $activation) {
+		// handle degenerate cases
+		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
+			throw(new mysqli_sql_exception("input is not a mysqli object"));
+		}
+
+		// sanitize activation (token) before searching
+		$activation = trim($activation);
+		$activation = filter_var($activation, FILTER_SANITIZE_STRING);
+		if(empty($activation) === true) {
+			throw(new InvalidArgumentException("activation is empty or insecure"));
+		}
+
+		// create query template
+		$query = "SELECT inviteId, actionDateTime, activation, adminProfileId, approved, createDateTime, visitorId FROM invite WHERE activation = ?";
+		$statement = $mysqli->prepare($query);
+		if($statement === false) {
+			throw(new mysqli_sql_exception("unable to prepare statement"));
+		}
+
+		// bind the activation (token) to the place holder in the template
+		$wasClean = $statement->bind_param("s", $activation);
+		if($wasClean === false) {
+			throw(new mysqli_sql_exception("unable to bind parameters"));
+		}
+
+		// execute the statement
+		if($statement->execute() === false) {
+			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
+		}
+
+		// get result from the SELECT query
+		$result = $statement->get_result();
+		if($result === false) {
+			throw(new mysqli_sql_exception("unable to get result set"));
+		}
+
+		// grab the invite from mySQL
+		try {
+			$invite = null;
+			$row = $result->fetch_assoc();
+			if($row !== null) {
+				$invite = new Invite($row["inviteId"], $row["actionDateTime"], $row["activation"], $row["adminProfileId"], $row["approved"], $row["createDateTime"], $row["visitorId"]);
+			}
+		} catch(Exception $exception) {
+			// if the row couldn't be converted, rethrow it
+			throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
+		}
+
+		// free up memory and return the result
+		$result->free();
+		$statement->close();
+		return ($invite);
+	}
 }
 ?>

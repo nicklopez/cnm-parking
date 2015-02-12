@@ -30,25 +30,22 @@ class InviteTest extends UnitTestCase {
 	 */
 	private $invite1 = null;
 	private $admin1 = null;
+	private $adminProfileId1 = null;
+	private $visitorId1 = null;
 	/**
 	 * second instance of the object we are testing with
 	 */
 	private $invite2 = null;
-	private $admin2 = null;
 
 	// this section contains invite variables with constants needed for creating a new invite
 	/**
 	 * datetime the invite was approved or declined
 	 **/
-	private $actionDateTime1 = null;
+	private $actionDateTime1 = "2015-02-15 00:00:00";
 	/**
 	 * token generated for end requester (visitor)
 	 **/
 	private $activation1 = "1234";
-	/**
-	 * id of adminProfile approving or declining invite; this is a foreign key
-	 **/
-	private $adminProfileId1 = null;
 	/**
 	 * boolean; invite approved or declined
 	 **/
@@ -56,23 +53,15 @@ class InviteTest extends UnitTestCase {
 	/**
 	 * datetime the invite was generated
 	 **/
-	private $createDateTime1 = null;
-	/**
-	 * id of visitor if visitor exists; this is a foreign key
-	 **/
-	private $visitorId1 = null;
+	private $createDateTime1 = "2015-02-15 00:00:00";
 	/**
 	 * datetime the invite was approved or declined
 	 **/
-	private $actionDateTime2 = null;
+	private $actionDateTime2 = "2015-02-15 00:00:00";
 	/**
 	 * token generated for end requester (visitor)
 	 **/
 	private $activation2 = "5678";
-	/**
-	 * id of adminProfile approving or declining invite; this is a foreign key
-	 **/
-	private $adminProfileId2 = null;
 	/**
 	 * boolean; invite approved or declined
 	 **/
@@ -80,11 +69,7 @@ class InviteTest extends UnitTestCase {
 	/**
 	 * datetime the invite was generated
 	 **/
-	private $createDateTime2 = null;
-	/**
-	 * id of visitor if visitor exists; this is a foreign key
-	 **/
-	private $visitorId2 = null;
+	private $createDateTime2 = "2015-02-15 00:00:00";
 
 	/**
 	 * setup the mySQL connection for this test
@@ -105,26 +90,20 @@ class InviteTest extends UnitTestCase {
 
 		// second, create an instance of the object under scrutiny
 		$this->visitorId1 = new Visitor(null, "myfirstname@example.com", "John", "Doe", "9990001122");
-		//$this->visitorId2 = new Visitor(null, "mylastname@example.com", "Jane", "Doe", "9990001123");
 		$this->visitorId1->insert($this->mysqli);
-		//$this->visitorId2->insert($this->mysqli);
 		$this->admin1 = new Admin(null, "12345678123456781234567812345678", "admin@cnm.edu", "12345678123456781234567812345678123456781234567812345678123456781234567812345678123456781234567812345678123456781234567812345678", "1234567812345678123456781234567812345678123456781234567812345678");
-		//$this->admin2 = new Admin(null, "12345678123456781234567812345678", "newperson@cnm.edu", "12345678123456781234567812345678123456781234567812345678123456781234567812345678123456781234567812345678123456781234567812345671", "1234567812345678123456781234567812345678123456781234567812345671");
 		$this->admin1->insert($this->mysqli);
-		//$this->admin2->insert($this->mysqli);
 		$this->adminProfileId1 = new AdminProfile(null, $this->admin1->getAdminId(), "CNM Admin", "Jones");
-		//$this->adminProfileId2 = new AdminProfile(null, $this->admin2->getAdminId(), "New", "Person");
 		$this->adminProfileId1->insert($this->mysqli);
-		//$this->adminProfileId2->insert($this->mysqli);
 		$this->invite1 = new Invite(null, $this->actionDateTime1, $this->activation1, $this->adminProfileId1->getAdminProfileId(), $this->approved1, $this->createDateTime1, $this->visitorId1->getVisitorId());
-		$this->invite2 = new Invite(null, $this->actionDateTime1, $this->activation2, $this->adminProfileId1->getAdminProfileId(), $this->approved2, $this->createDateTime1, $this->visitorId1->getVisitorId());
+		$this->invite2 = new Invite(null, $this->actionDateTime2, $this->activation2, $this->adminProfileId1->getAdminProfileId(), $this->approved2, $this->createDateTime2, $this->visitorId1->getVisitorId());
 	}
 
 	/**
 	 * tears down the connection to mySQL and deletes the test instance object
 	 **/
 	public function tearDown() {
-// destroy the object if it was created
+		// destroy the object if it was created
 		if($this->invite1 !== null && $this->invite1->getInviteId() !== null) {
 			$this->invite1->delete($this->mysqli);
 			$this->invite1 = null;
@@ -140,30 +119,15 @@ class InviteTest extends UnitTestCase {
 			$this->adminProfileId1 = null;
 		}
 
-//		if($this->adminProfileId2 !== null && $this->adminProfileId2->getAdminProfileId() !== null) {
-//			$this->adminProfileId2->delete($this->mysqli);
-//			$this->adminProfileId2 = null;
-//		}
-
 		if($this->admin1 !== null && $this->admin1->getAdminId() !== null) {
-		$this->admin1->delete($this->mysqli);
-		$this->admin1 = null;
-	}
-
-//		if($this->admin2 !== null && $this->admin2->getAdminId() !== null) {
-//			$this->admin2->delete($this->mysqli);
-//			$this->admin2 = null;
-//		}
+			$this->admin1->delete($this->mysqli);
+			$this->admin1 = null;
+		}
 
 		if($this->visitorId1 !== null && $this->visitorId1->getVisitorId() !== null) {
 			$this->visitorId1->delete($this->mysqli);
 			$this->visitorId1 = null;
 		}
-
-//		if($this->visitorId2 !== null && $this->visitorId2->getVisitorId() !== null) {
-//			$this->visitorId2->delete($this->mysqli);
-//			$this->visitorId2 = null;
-//		}
 
 		// disconnect from mySQL
 		if($this->mysqli !== null) {
@@ -255,7 +219,7 @@ class InviteTest extends UnitTestCase {
 	}
 
 	/**
-	 * test updating a Invite from mySQL
+	 * test updating an Invite from mySQL
 	 **/
 	public function testUpdateValidInvite() {
 		// zeroth, ensure the Invite and mySQL class are sane
@@ -267,7 +231,7 @@ class InviteTest extends UnitTestCase {
 		$mysqlInvite = Invite::getInviteByInviteId($this->mysqli, $this->invite1->getInviteId());
 		$this->assertIdentical($this->invite1->getInviteId(), $mysqlInvite->getInviteId());
 
-		// second, change the Invite, update it mySQL
+		// second, change the Invite and update it in mySQL
 		$newContent = 0;
 		$this->invite1->setApproved($newContent);
 		$this->invite1->update($this->mysqli);
@@ -301,6 +265,74 @@ class InviteTest extends UnitTestCase {
 
 		// second, set the Invite to null to prevent tearDown() from deleting an Invite that has already been deleted
 		$this->invite1 = null;
+	}
+
+	/**
+	 * test selecting an invite by inviteId from mySQL
+	 **/
+	public function testSelectValidInviteByInviteId() {
+		// zeroth, ensure the invite and mySQL class are sane
+		$this->assertNotNull($this->invite1);
+		$this->assertNotNull($this->mysqli);
+
+		// first, insert the invite into mySQL
+		$this->invite1->insert($this->mysqli);
+		$mysqlInvite = Invite::getInviteByInviteId($this->mysqli, $this->invite1->getInviteId());
+
+		// second, assert the query returned a result
+		$this->assertNotNull($mysqlInvite);
+	}
+
+	/**
+	 * test selecting an invite that does not exist in mySQL
+	 **/
+	public function testSelectInvalidInviteByInviteId() {
+		// zeroth, ensure the invite and mySQL class are sane
+		$this->assertNotNull($this->invite1);
+		$this->assertNotNull($this->mysqli);
+
+		// first, try selecting an invite by inviteId
+		$invite = 0;
+
+		// ensure the exception is thrown
+		$this->expectException("mysqli_sql_exception");
+		$mysqlInvite = Invite::getInviteByInviteId($this->mysqli, $invite);
+
+		// second, assert the query returned no results
+		$this->assertNull($mysqlInvite);
+	}
+
+	/**
+	 * test selecting an invite by activation (token) from mySQL
+	 **/
+	public function testSelectValidInviteByActivation() {
+		// zeroth, ensure the invite and mySQL class are sane
+		$this->assertNotNull($this->invite1);
+		$this->assertNotNull($this->mysqli);
+
+		// first, insert the invite into mySQL
+		$this->invite1->insert($this->mysqli);
+		$mysqlInvite = Invite::getInviteByActivation($this->mysqli, $this->invite1->getActivation());
+
+		// second, assert the query returned a result
+		$this->assertNotNull($mysqlInvite);
+	}
+
+	/**
+	 * test selecting an invite with an activation (token) that does not exist in mySQL
+	 **/
+	public function testSelectInvalidInviteByActivation() {
+		// zeroth, ensure the invite and mySQL class are sane
+		$this->assertNotNull($this->invite1);
+		$this->assertNotNull($this->mysqli);
+
+		// first, insert an invite and try selecting by activation (token)
+		$this->invite1->insert($this->mysqli);
+		$activation = "NA";
+		$mysqlInvite = Invite::getInviteByActivation($this->mysqli, $activation);
+
+		// second, assert the query returned no results
+		$this->assertNull($mysqlInvite);
 	}
 }
 ?>
