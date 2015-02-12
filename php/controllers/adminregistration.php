@@ -27,7 +27,7 @@
 			<label for="password">Password</label>
 			<input type="text" id="password" name="password"><br>
 
-			<button id="submit" type="submit">Register</button>
+			<button id="register" type="submit">Register</button>
 		</form>
 
 	</body>
