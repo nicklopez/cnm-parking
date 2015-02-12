@@ -25,7 +25,7 @@ if(@isset($_POST["visitorFirstName"]) === false || @isset($_POST["visitorLastNam
 	echo "<p class=\"alert alert-danger\">form values not complete. verify the form and try again.</p>";
 }
 
-	echo "<p class=\"alert alert-success\">Visitor vehicle info(id = " . $visitor->getVisitorId() . ") added!</p>";
+	echo "<p class=\"alert alert-success\">Visitor(id = " . $visitor->getVisitorId() . ") added!</p>";
 } catch(Exception $exception) {
 	echo "<p class=\"alert alert-danger\">Exception: " . $exception->getMessage() . "</p>";
 }

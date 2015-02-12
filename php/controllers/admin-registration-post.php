@@ -4,10 +4,7 @@ require_once("/etc/apache2/capstone-mysql/encrypted-config.php");
 require_once("../classes/admin.php");
 require_once("../classes/adminprofile.php");
 
-// verify the form values have been submitted
-if(@isset($_POST["adminFirstName"]) === false || @isset($_POST["adminLastName"]) === false || @isset($_POST["adminEmail"]) || @isset($_POST["password"])) {
-	echo "<p class=\"alert alert-danger\">form values not complete. verify the form and try again.</p>";
-}
+
 try {
 	//
 	mysqli_report(MYSQLI_REPORT_STRICT);
