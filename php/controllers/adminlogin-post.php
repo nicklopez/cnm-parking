@@ -2,7 +2,8 @@
 
 require_once("/etc/apache2/capstone-mysql/encrypted-config.php");
 require_once("../classes/admin.php");
-require_once("../classes/adminProfile.php");
+require_once("../classes/adminprofile.php");
+session_start();
 
 // verify the form values have been submitted
 if(@isset($_POST["adminEmail"]) === false || @isset($_POST["password"])) {
