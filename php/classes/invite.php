@@ -40,7 +40,7 @@ class Invite {
 	 * constructor for the site invite
 	 *
 	 * @param mixed $newInviteId id of the site invite
-	 * @param mixed $newActionDateTime datetime the invite was approved or declined
+	 * @param mixed $newActionDateTime datetime the invite was approved or declined; can be null
 	 * @param string $newActivation string containing token for site invite
 	 * @param int $newAdminProfileId id of adminProfile approving or declining invite
 	 * @param boolean $newApproved boolean invite approved or declined
@@ -73,7 +73,7 @@ class Invite {
 	 * @return mixed value of invite Id
 	 **/
 	public function getInviteId() {
-		return($this->inviteId);
+		return ($this->inviteId);
 	}
 
 	/**
@@ -111,7 +111,7 @@ class Invite {
 	 * @return datetime value of action date time
 	 **/
 	public function getActionDateTime() {
-		return($this->actionDateTime);
+		return ($this->actionDateTime);
 	}
 
 	/**
@@ -122,16 +122,43 @@ class Invite {
 	 * @throws RangeException if $newActionDateTime is a date that doesn't exist
 	 */
 	public function setActionDateTime($newActionDateTime) {
-
-		// store the actionDateTime
-		try {
-			$newActionDateTime = self::sanitizeDate($newActionDateTime);
-			$this->actionDateTime = $newActionDateTime;
-		} catch(InvalidArgumentException $invalidArgument) {
-			throw(new InvalidArgumentException($invalidArgument->getMessage(), 0, $invalidArgument));
-		} catch(RangeException $range) {
-			throw(new RangeException($range->getMessage(), 0, $range));
+		// base case: if the date is null, use the current date and time
+		if($newActionDateTime === null) {
+			$this->actionDateTime = new DateTime();
+			return;
 		}
+
+		// base case: if the date is a DateTime object, there's no work to be done
+		if(is_object($newActionDateTime) === true && get_class($newActionDateTime) === "DateTime") {
+			$this->actionDateTime = $newActionDateTime;
+			return;
+		}
+
+		// treat the date as a mySQL date string: Y-m-d H:i:s
+		$newActionDateTime = trim($newActionDateTime);
+		if((preg_match("/^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})$/", $newActionDateTime, $matches)) !== 1) {
+			throw(new InvalidArgumentException("action date is not a valid date"));
+		}
+
+		// verify the date is really a valid calendar date
+		$year = intval($matches[1]);
+		$month = intval($matches[2]);
+		$day = intval($matches[3]);
+		$hour = intval($matches[4]);
+		$minute = intval($matches[5]);
+		$second = intval($matches[6]);
+		if(checkdate($month, $day, $year) === false) {
+			throw(new RangeException("action date $newActionDateTime is not a Gregorian date"));
+		}
+
+		// verify the time is really a valid wall clock time
+		if($hour < 0 || $hour >= 24 || $minute < 0 || $minute >= 60 || $second < 0 || $second >= 60) {
+			throw(new RangeException("action date $newActionDateTime is not a valid time"));
+		}
+
+		// store the action date
+		$newActionDateTime = DateTime::createFromFormat("Y-m-d H:i:s", $newActionDateTime);
+		$this->actionDateTime = $newActionDateTime;
 	}
 
 	/**
@@ -140,7 +167,7 @@ class Invite {
 	 * @return string value of activation (token)
 	 **/
 	public function getActivation() {
-		return($this->activation);
+		return ($this->activation);
 	}
 
 	/**
@@ -173,7 +200,7 @@ class Invite {
 	 * @return int value of admin profile Id
 	 **/
 	public function getAdminProfileId() {
-		return($this->adminProfileId);
+		return ($this->adminProfileId);
 	}
 
 	/**
@@ -206,7 +233,7 @@ class Invite {
 	 * @return boolean value of approved or declined
 	 **/
 	public function getApproved() {
-		return($this->approved);
+		return ($this->approved);
 	}
 
 	/**
@@ -218,18 +245,18 @@ class Invite {
 	 **/
 	public function setApproved($newApproved) {
 		// verify approved is valid
-		$newApproved = filter_var($newApproved, FILTER_VALIDATE_BOOLEAN);
+		$newApproved = filter_var($newApproved, FILTER_VALIDATE_INT);
 		if($newApproved === false) {
-			throw(new InvalidArgumentException("approved is not boolean"));
+			throw(new InvalidArgumentException("approved is not a boolean"));
 		}
 
 		// verify approved is 0 or 1
-		if($newApproved !== 0 || $newApproved !== 1) {
-			throw(new RangeException("approved must be 0 or 1"));
-		}
+		//if($newApproved !== 0 || $newApproved !== 1) {
+//			throw(new RangeException("approved must be 0 or 1"));
+//		 }
 
 		// store approved
-		$this->approved = $newApproved;
+		$this->approved = intval($newApproved);
 	}
 
 	/**
@@ -238,7 +265,7 @@ class Invite {
 	 * @return datetime value of invite create date time
 	 **/
 	public function getCreateDateTime() {
-		return($this->createDateTime);
+		return ($this->createDateTime);
 	}
 
 	/**
@@ -249,20 +276,43 @@ class Invite {
 	 * @throws RangeException if $newCreateDateTime is a date that doesn't exist
 	 */
 	public function setCreateDateTime($newCreateDateTime) {
-		// verify not null
+		// base case: if the date is null, use the current date and time
 		if($newCreateDateTime === null) {
-			throw(new InvalidArgumentException("createDateTime cannot be null"));
+			$this->createDateTime = new DateTime();
+			return;
 		}
 
-		// store the createDateTime
-		try {
-			$newCreateDateTime = self::sanitizeDate($newCreateDateTime);
+		// base case: if the date is a DateTime object, there's no work to be done
+		if(is_object($newCreateDateTime) === true && get_class($newCreateDateTime) === "DateTime") {
 			$this->createDateTime = $newCreateDateTime;
-		} catch(InvalidArgumentException $invalidArgument) {
-			throw(new InvalidArgumentException($invalidArgument->getMessage(), 0, $invalidArgument));
-		} catch(RangeException $range) {
-			throw(new RangeException($range->getMessage(), 0, $range));
+			return;
 		}
+
+		// treat the date as a mySQL date string: Y-m-d H:i:s
+		$newCreateDateTime = trim($newCreateDateTime);
+		if((preg_match("/^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})$/", $newCreateDateTime, $matches)) !== 1) {
+			throw(new InvalidArgumentException("action date is not a valid date"));
+		}
+
+		// verify the date is really a valid calendar date
+		$year = intval($matches[1]);
+		$month = intval($matches[2]);
+		$day = intval($matches[3]);
+		$hour = intval($matches[4]);
+		$minute = intval($matches[5]);
+		$second = intval($matches[6]);
+		if(checkdate($month, $day, $year) === false) {
+			throw(new RangeException("create date $newCreateDateTime is not a Gregorian date"));
+		}
+
+		// verify the time is really a valid wall clock time
+		if($hour < 0 || $hour >= 24 || $minute < 0 || $minute >= 60 || $second < 0 || $second >= 60) {
+			throw(new RangeException("create date $newCreateDateTime is not a valid time"));
+		}
+
+		// store the create date
+		$newCreateDateTime = DateTime::createFromFormat("Y-m-d H:i:s", $newCreateDateTime);
+		$this->createDateTime = $newCreateDateTime;
 	}
 
 	/**
@@ -271,7 +321,7 @@ class Invite {
 	 * @return int value of visitor id
 	 **/
 	public function getVisitorId() {
-		return($this->visitorId);
+		return ($this->visitorId);
 	}
 
 	/**
@@ -311,19 +361,19 @@ class Invite {
 		}
 
 		// enforce the inviteId is null (i.e., don't insert an invite that already exists)
-		if($this->inviteId!== null) {
+		if($this->inviteId !== null) {
 			throw(new mysqli_sql_exception("not a new invite"));
 		}
 
 		// create query template
-		$query	 = "INSERT INTO invite(inviteId, actionDateTime, activation, adminProfileId, approved, createDateTime, visitorId) VALUES(?, ?, ?, ?, ?, ?, ?)";
+		$query = "INSERT INTO invite(inviteId, inviteActionDateTime, activation, adminProfileId, approved, inviteCreateDateTime, visitorId) VALUES(?, ?, ?, ?, ?, ?, ?)";
 		$statement = $mysqli->prepare($query);
 		if($statement === false) {
 			throw(new mysqli_sql_exception("unable to prepare statement"));
 		}
 
 		// bind the invite variables to the place holders in the template
-		$wasClean	  = $statement->bind_param("ississi", $this->inviteId, $this->actionDateTime, $this->activation, $this->adminProfileId, $this->approved, $this->createDateTime, $this->visitorId);
+		$wasClean = $statement->bind_param("issiisi", $this->inviteId, $this->actionDateTime, $this->activation, $this->adminProfileId, $this->approved, $this->createDateTime, $this->visitorId);
 		if($wasClean === false) {
 			throw(new mysqli_sql_exception("unable to bind parameters"));
 		}
@@ -334,7 +384,7 @@ class Invite {
 		}
 
 		// update the null inviteId with what mySQL just gave us
-		$this->inviteId= $mysqli->insert_id;
+		$this->inviteId = $mysqli->insert_id;
 
 		// clean up the statement
 		$statement->close();
@@ -353,12 +403,12 @@ class Invite {
 		}
 
 		// enforce the inviteId is not null (i.e., don't delete an invite that hasn't been inserted)
-		if($this->inviteId=== null) {
+		if($this->inviteId === null) {
 			throw(new mysqli_sql_exception("unable to delete an invite that does not exist"));
 		}
 
 		// create query template
-		$query	 = "DELETE FROM invite WHERE inviteId = ?";
+		$query = "DELETE FROM invite WHERE inviteId = ?";
 		$statement = $mysqli->prepare($query);
 		if($statement === false) {
 			throw(new mysqli_sql_exception("unable to prepare statement"));
@@ -392,19 +442,19 @@ class Invite {
 		}
 
 		// enforce the inviteId is not null (i.e., don't update an invite that hasn't been inserted)
-		if($this->inviteId=== null) {
+		if($this->inviteId === null) {
 			throw(new mysqli_sql_exception("unable to update an invite that does not exist"));
 		}
 
 		// create query template
-		$query	 = "UPDATE invite SET actionDateTime = ?, activation = ?, adminProfileId = ?, approved = ?, createDateTime = ?, visitorId = ? WHERE inviteId = ?";
+		$query = "UPDATE invite SET inviteActionDateTime = ?, activation = ?, adminProfileId = ?, approved = ?, inviteCreateDateTime = ?, visitorId = ? WHERE inviteId = ?";
 		$statement = $mysqli->prepare($query);
 		if($statement === false) {
 			throw(new mysqli_sql_exception("unable to prepare statement"));
 		}
 
 		// bind the invite variables to the place holders in the template
-		$wasClean = $statement->bind_param("ssissii", $this->actionDateTime, $this->activation, $this->adminProfileId, $this->approved, $this->createDateTime, $this->visitorId, $this->inviteId);
+		$wasClean = $statement->bind_param("ssiisii", $this->actionDateTime, $this->activation, $this->adminProfileId, $this->approved, $this->createDateTime, $this->visitorId, $this->inviteId);
 		if($wasClean === false) {
 			throw(new mysqli_sql_exception("unable to bind parameters"));
 		}
@@ -419,50 +469,68 @@ class Invite {
 	}
 
 	/**
-	 * sanitizes a date either as a DateTime object or mySQL date string
+	 * gets the invite by invite Id
 	 *
-	 * @param mixed $newDate date to sanitize (or null to just create the current date and time)
-	 * @return DateTime sanitized DateTime object
-	 * @throws InvalidArgumentException if the date is in an invalid format
-	 * @throws RangeException if the date is not a Gregorian date
+	 * @param resource $mysqli pointer to mySQL connection, by reference
+	 * @param int $inviteId invite to search for by invite id
+	 * @return mixed invite found or null if not found
+	 * @throws mysqli_sql_exception when mySQL related errors occur
 	 **/
-	public static function sanitizeDate($newDate) {
-		// base case: if the date is null, use the current date and time
-		if($newDate === null) {
-			$newDate = new DateTime();
-			return($newDate);
+	public static function getInviteByInviteId(&$mysqli, $inviteId) {
+		// handle degenerate cases
+		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
+			throw(new mysqli_sql_exception("input is not a mysqli object"));
 		}
 
-		// base case: if the date is a DateTime object, there's no work to be done
-		if(is_object($newDate) === true && get_class($newDate) === "DateTime") {
-			return($newDate);
+		// sanitize the inviteId before searching
+		$inviteId = filter_var($inviteId, FILTER_VALIDATE_INT);
+		if($inviteId === false) {
+			throw(new mysqli_sql_exception("invite id is not an integer"));
+		}
+		if($inviteId <= 0) {
+			throw(new mysqli_sql_exception("invite id is not positive"));
 		}
 
-		// treat the date as a mySQL date string: Y-m-d H:i:s
-		$newDate = trim($newDate);
-		if((preg_match("/^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})$/", $newDate, $matches)) !== 1) {
-			throw(new InvalidArgumentException("date is not a valid date"));
+		// create query template
+		$query = "SELECT inviteId, inviteActionDateTime, activation, adminProfileId, approved, inviteCreateDateTime, visitorId FROM invite WHERE inviteId= ?";
+		$statement = $mysqli->prepare($query);
+		if($statement === false) {
+			throw(new mysqli_sql_exception("unable to prepare statement"));
 		}
 
-		// verify the date is really a valid calendar date
-		$year   = intval($matches[1]);
-		$month  = intval($matches[2]);
-		$day    = intval($matches[3]);
-		$hour   = intval($matches[4]);
-		$minute = intval($matches[5]);
-		$second = intval($matches[6]);
-		if(checkdate($month, $day, $year) === false) {
-			throw(new RangeException("date $newDate is not a Gregorian date"));
+		// bind the invite id to the place holder in the template
+		$wasClean = $statement->bind_param("i", $inviteId);
+		if($wasClean === false) {
+			throw(new mysqli_sql_exception("unable to bind parameters"));
 		}
 
-		// verify the time is really a valid wall clock time
-		if($hour < 0 || $hour >= 24 || $minute < 0 || $minute >= 60 || $second < 0  || $second >= 60) {
-			throw(new RangeException("date $newDate is not a valid time"));
+		// execute the statement
+		if($statement->execute() === false) {
+			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
 		}
 
-		// store the DateTime value
-		$newDate = DateTime::createFromFormat("Y-m-d H:i:s", $newDate);
-		return($newDate);
+		// get result from the SELECT query
+		$result = $statement->get_result();
+		if($result === false) {
+			throw(new mysqli_sql_exception("unable to get result set"));
+		}
+
+		// grab the invite from mySQL
+		try {
+			$invite = null;
+			$row = $result->fetch_assoc();
+			if($row !== null) {
+				$invite = new Invite($row["inviteId"], $row["inviteActionDateTime"], $row["activation"], $row["adminProfileId"], $row["approved"], $row["inviteCreateDateTime"], $row["visitorId"]);
+			}
+		} catch(Exception $exception) {
+			// if the row couldn't be converted, rethrow it
+			throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
+		}
+
+		// free up memory and return the result
+		$result->free();
+		$statement->close();
+		return ($invite);
 	}
 }
 ?>
