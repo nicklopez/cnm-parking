@@ -239,7 +239,7 @@ class Invite {
 	/**
 	 * mutator method for approved (or declined)
 	 *
-	 * @param string $newApproved new value of approved (approved or declined)
+	 * @param boolean $newApproved new value of approved (approved or declined)
 	 * @throws InvalidArgumentException if $newApproved is not a string or insecure
 	 * @throws RangeException if $newApproved is not 0 or 1
 	 **/
@@ -250,13 +250,12 @@ class Invite {
 			throw(new InvalidArgumentException("approved is not a boolean"));
 		}
 
-		// verify approved is 0 or 1
-		//if($newApproved !== 0 || $newApproved !== 1) {
-//			throw(new RangeException("approved must be 0 or 1"));
-//		 }
+		if($newApproved < 0 || $newApproved > 1) {
+			throw(new RangeException("approved must be 0 or 1"));
+	}
 
 		// store approved
-		$this->approved = intval($newApproved);
+		$this->approved = boolval($newApproved);
 	}
 
 	/**
@@ -271,7 +270,7 @@ class Invite {
 	/**
 	 * mutator method for createDateTime
 	 *
-	 * @param mixed $newCreateDateTime actionDateTime as DateTime or string
+	 * @param datetime $newCreateDateTime actionDateTime as DateTime or string
 	 * @throws InvalidArgumentException if $newCreateDateTime is not a valid object or string
 	 * @throws RangeException if $newCreateDateTime is a date that doesn't exist
 	 */
@@ -366,14 +365,16 @@ class Invite {
 		}
 
 		// create query template
-		$query = "INSERT INTO invite(inviteId, inviteActionDateTime, activation, adminProfileId, approved, inviteCreateDateTime, visitorId) VALUES(?, ?, ?, ?, ?, ?, ?)";
+		$query = "INSERT INTO invite(inviteId, actionDateTime, activation, adminProfileId, approved, createDateTime, visitorId) VALUES(?, ?, ?, ?, ?, ?, ?)";
 		$statement = $mysqli->prepare($query);
 		if($statement === false) {
 			throw(new mysqli_sql_exception("unable to prepare statement"));
 		}
 
 		// bind the invite variables to the place holders in the template
-		$wasClean = $statement->bind_param("issiisi", $this->inviteId, $this->actionDateTime, $this->activation, $this->adminProfileId, $this->approved, $this->createDateTime, $this->visitorId);
+		$formattedActionDate = $this->actionDateTime->format("Y-m-d H:i:s");
+		$formattedCreateDate = $this->createDateTime->format("Y-m-d H:i:s");
+		$wasClean = $statement->bind_param("issiisi", $this->inviteId, $formattedActionDate, $this->activation, $this->adminProfileId, $this->approved, $formattedCreateDate, $this->visitorId);
 		if($wasClean === false) {
 			throw(new mysqli_sql_exception("unable to bind parameters"));
 		}
@@ -447,14 +448,16 @@ class Invite {
 		}
 
 		// create query template
-		$query = "UPDATE invite SET inviteActionDateTime = ?, activation = ?, adminProfileId = ?, approved = ?, inviteCreateDateTime = ?, visitorId = ? WHERE inviteId = ?";
+		$query = "UPDATE invite SET actionDateTime = ?, activation = ?, adminProfileId = ?, approved = ?, createDateTime = ?, visitorId = ? WHERE inviteId = ?";
 		$statement = $mysqli->prepare($query);
 		if($statement === false) {
 			throw(new mysqli_sql_exception("unable to prepare statement"));
 		}
 
 		// bind the invite variables to the place holders in the template
-		$wasClean = $statement->bind_param("ssiisii", $this->actionDateTime, $this->activation, $this->adminProfileId, $this->approved, $this->createDateTime, $this->visitorId, $this->inviteId);
+		$formattedActionDate = $this->actionDateTime->format("Y-m-d H:i:s");
+		$formattedCreateDate = $this->createDateTime->format("Y-m-d H:i:s");
+		$wasClean = $statement->bind_param("ssiisii", $formattedActionDate, $this->activation, $this->adminProfileId, $this->approved, $formattedCreateDate, $this->visitorId, $this->inviteId);
 		if($wasClean === false) {
 			throw(new mysqli_sql_exception("unable to bind parameters"));
 		}
@@ -492,7 +495,7 @@ class Invite {
 		}
 
 		// create query template
-		$query = "SELECT inviteId, inviteActionDateTime, activation, adminProfileId, approved, inviteCreateDateTime, visitorId FROM invite WHERE inviteId= ?";
+		$query = "SELECT inviteId, actionDateTime, activation, adminProfileId, approved, createDateTime, visitorId FROM invite WHERE inviteId= ?";
 		$statement = $mysqli->prepare($query);
 		if($statement === false) {
 			throw(new mysqli_sql_exception("unable to prepare statement"));
@@ -520,7 +523,7 @@ class Invite {
 			$invite = null;
 			$row = $result->fetch_assoc();
 			if($row !== null) {
-				$invite = new Invite($row["inviteId"], $row["inviteActionDateTime"], $row["activation"], $row["adminProfileId"], $row["approved"], $row["inviteCreateDateTime"], $row["visitorId"]);
+				$invite = new Invite($row["inviteId"], $row["actionDateTime"], $row["activation"], $row["adminProfileId"], $row["approved"], $row["createDateTime"], $row["visitorId"]);
 			}
 		} catch(Exception $exception) {
 			// if the row couldn't be converted, rethrow it
