@@ -17,7 +17,7 @@ try {
 	$admin = new Admin(null, "12345678123456781234567812345678", $_POST["adminEmail"], "12345678123456781234567812345678123456781234567812345678123456781234567812345678123456781234567812345678123456781234567812345678", "1234567812345678123456781234567812345678123456781234567812345678");
 	$admin->insert($mysqli);
 
-	$adminProfile = new AdminProfile(null, $adminId->getAdminId(), $_POST["adminFirstName"], $_POST["adminLastName"]);
+	$adminProfile = new AdminProfile(null, $admin->getAdminId(), $_POST["adminFirstName"], $_POST["adminLastName"]);
 	$adminProfile->insert($mysqli);
 
 // verify the form values have been submitted
