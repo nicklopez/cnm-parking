@@ -213,6 +213,11 @@ class Invite {
 	public function setAdminProfileId($newAdminProfileId) {
 
 		// verify the admin profile id is valid
+		if($newAdminProfileId === null) {
+			$this->adminProfileId = null;
+			return;
+		}
+
 		$newAdminProfileId = filter_var($newAdminProfileId, FILTER_VALIDATE_INT);
 		if($newAdminProfileId === false) {
 			throw(new InvalidArgumentException("admin profile id is not a valid integer"));
