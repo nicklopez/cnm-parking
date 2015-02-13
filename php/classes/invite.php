@@ -245,8 +245,8 @@ class Invite {
 	 **/
 	public function setApproved($newApproved) {
 		// verify approved is valid
-		$newApproved = filter_var($newApproved, FILTER_VALIDATE_INT);
-		if($newApproved === false) {
+		$newApproved = filter_var($newApproved, FILTER_VALIDATE_BOOLEAN);
+		if($newApproved === NULL) {
 			throw(new InvalidArgumentException("approved is not a boolean"));
 		}
 
@@ -255,7 +255,7 @@ class Invite {
 	}
 
 		// store approved
-		$this->approved = boolval($newApproved);
+		$this->approved = $newApproved;
 	}
 
 	/**
