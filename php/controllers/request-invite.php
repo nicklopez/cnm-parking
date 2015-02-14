@@ -5,7 +5,7 @@
 		session_start();
 		// require CSRF protection
 		require_once("../lib/csrf.php");
-?>
+		?>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet">
@@ -14,18 +14,23 @@
 		<script type="text/javascript" src="//ajax.aspnetcdn.com/ajax/jquery.validate/1.12.0/jquery.validate.min.js"></script>
 		<script type="text/javascript" src="//ajax.aspnetcdn.com/ajax/jquery.validate/1.12.0/additional-methods.min.js"></script>
 		<script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="../js/controller.js"></script>
 		<title>Controller: Request Invite</title>
 	</head>
 	<body>
 		<h1>Controller: Request a parking pass invite</h1>
-		<form method="post" action="request-invite-post.php">
+		<form id="request-invite" method="post" action="request-invite-post.php" novalidate="novalidate">
 			<?php echo generateInputTags(); ?>
 			<label for="emailAddress">Email:</label>
 			<input type="text" id="emailAddress" name="emailAddress" size="128" maxlength="128" placeholder="name@example.com"><br>
+			<label for="firstName">First Name:</label>
 			<input type="text" id="firstName" name="firstName" size="128" maxlength="128" placeholder="First Name"><br>
+			<label for="lastName">Last Name:</label>
 			<input type="text" id="lastName" name="lastName" size="128" maxlength="128" placeholder="Last Name"><br>
+			<label for="phone">Phone:</label>
 			<input type="text" id="phone" name="phone" size="128" maxlength="128" placeholder="Phone Number"><br>
 			<button id="sendRequest" type="submit">Send Request</button>
 		</form>
+		<p id="outputArea"></p>
 	</body>
 </html>
