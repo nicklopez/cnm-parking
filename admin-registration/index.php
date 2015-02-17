@@ -23,7 +23,7 @@
 //			}
 //		}
 //
-//		if (empty($erros) === true) {
+//		if (empty($errors) === true) {
 //			if (userExists($_POST['adminFirstName']) === true) {
 //
 //			}
