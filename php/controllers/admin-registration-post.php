@@ -1,9 +1,11 @@
 <?php
-require_once("../../../lib/csrf.php");
+// require_once("../../../lib/csrf.php");
 require_once("admin-registration.php");
 require_once("/etc/apache2/capstone-mysql/encrypted-config.php");
 require_once("../classes/admin.php");
 require_once("../classes/adminprofile.php");
+
+
 
 try {
 
@@ -12,9 +14,9 @@ try {
 	}
 
 	// verify the CSRF tokens
-	if(verifyCsrf($_POST["csrfName"], $_POST["csrfToken"]) === false) {
-		throw(new RuntimeException("CSRF tokens incorrect or missing. Make sure cookies are enabled."));
-	}
+	// if(verifyCsrf($_POST["csrfName"], $_POST["csrfToken"]) === false) {
+		// throw(new RuntimeException("CSRF tokens incorrect or missing. Make sure cookies are enabled."));
+	// }
 
 	// create a new salt and hash
 	$salt = bin2hex(openssl_random_pseudo_bytes(32));
