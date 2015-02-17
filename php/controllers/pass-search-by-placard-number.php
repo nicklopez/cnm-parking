@@ -16,7 +16,7 @@
 	</head>
 	<body>
 		<h1>Search for parking pass by user</h1>
-		<form id="placardSearchForm" method="post" action="pass-search-by-placard-number-post.php">
+		<form id="placardSearchForm" method="post" action="visitor-search-by-placard-post.php">
 			<label for="placard">Email</label>
 			<input type="text" id="placard" name="placard"/><br />
 			<button id="placardSubmit" type="submit">Search</button>
