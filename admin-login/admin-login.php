@@ -4,7 +4,7 @@
 			<title>Login to CNM Parking Admin</title>
 		</head>
 	   <body>
-			<form method="post" action="admin-login-post.php">
+			<form method="post" action="../php/controllers/admin-login-post.php">
 				<fieldset>
 					<legend>CNM Parking Admin Credential</legend>
 						<p>
