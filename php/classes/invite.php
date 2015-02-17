@@ -257,7 +257,7 @@ class Invite {
 
 		if($newApproved < 0 || $newApproved > 1) {
 			throw(new RangeException("approved must be 0 or 1"));
-	}
+		}
 
 		// store approved
 		$this->approved = $newApproved;
@@ -602,6 +602,61 @@ class Invite {
 		$result->free();
 		$statement->close();
 		return ($invite);
+	}
+
+	/**
+	 * retrieves all invite requests for review
+	 *
+	 * @param resource $mysqli pointer to mySQL connection, by reference
+	 * @return mixed invite found or null if not found
+	 * @throws mysqli_sql_exception when mySQL related errors occur
+	 **/
+	public static function getPendingInvite(&$mysqli) {
+		// handle degenerate cases
+		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
+			throw(new mysqli_sql_exception("input is not a mysqli object"));
+		}
+
+		// create query template
+		$query = "SELECT inviteId, actionDateTime, activation, adminProfileId, approved, createDateTime, visitorId FROM invite WHERE approved IS NULL";
+		$statement = $mysqli->prepare($query);
+		if($statement === false) {
+			throw(new mysqli_sql_exception("unable to prepare statement"));
+		}
+
+		// execute the statement
+		if($statement->execute() === false) {
+			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
+		}
+
+		// get result from the SELECT query
+		$result = $statement->get_result();
+		if($result === false) {
+			throw(new mysqli_sql_exception("unable to get result set"));
+		}
+
+		// grab all pending invites from mySQL
+		$invites = array();
+		while(($row = $result->fetch_assoc()) !== null)
+			try {
+				$invite = new Invite($row["inviteId"], $row["actionDateTime"], $row["activation"], $row["adminProfileId"], $row["approved"], $row["createDateTime"], $row["visitorId"]);
+				$invites[] = $invite;
+
+			} catch(Exception $exception) {
+				// if the row couldn't be converted, rethrow it
+				throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
+			}
+
+		// free up memory and return the results
+		$result->free();
+		$statement->close();
+
+		$numberOfInvites = count($invites);
+		if($numberOfInvites === 0) {
+			return(null);
+		} else {
+			return ($invites);
+		}
 	}
 }
 ?>
