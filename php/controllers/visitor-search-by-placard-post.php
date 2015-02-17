@@ -13,8 +13,7 @@ require_once("/etc/apache2/capstone-mysql/encrypted-config.php");
 /**
  * require the form
  */
-require_once("pass-search-by-placard-number");
-
+require_once("../../visitor-search/index.php");
 
 try {
 	/**
