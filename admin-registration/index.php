@@ -13,29 +13,29 @@
 		<style type="text/css"></style></head>
 
 	<?php
-
-	if (empty($_POST) === false) {
-		$requiredFields = array('adminUserName', 'adminLastName', 'adminEmail', 'password');
-		foreach($_POST as $key->$value) {
-			if (empty($value) && in_array($key, $requiredFields) === true) {
-				$errors[] = 'Fields cannot be empty';
-				break 1;
-			}
-		}
-
-		if (empty($erros) === true) {
-			if (userExists($_POST['adminFirstName']) === true) {
-
-			}
-		}
-	}
+//
+//	if (empty($_POST) === false) {
+//		$requiredFields = array('adminUserName', 'adminLastName', 'adminEmail', 'password');
+//		foreach($_POST as $key->$value) {
+//			if (empty($value) && in_array($key, $requiredFields) === true) {
+//				$errors[] = 'Fields cannot be empty';
+//				break 1;
+//			}
+//		}
+//
+//		if (empty($erros) === true) {
+//			if (userExists($_POST['adminFirstName']) === true) {
+//
+//			}
+//		}
+//	}
 
 
 
 	?>
 	<body>
 		<h1>CNM Parking Admin Registration</h1>
-		<form method="post" action="../php/controllers/admin-registration-post.php">
+		<form method="post" action="../../php/controllers/admin-registration-post.php">
 
 			<label for="adminFirstName">First Name</label>
 			<input type="text" id="adminFirstName" name="adminFirstName"><br>
