@@ -35,7 +35,7 @@
 	?>
 	<body>
 		<h1>CNM Parking Admin Registration</h1>
-		<form method="post" action="../../php/controllers/admin-registration-post.php">
+		<form method="post" action="../php/controllers/admin-registration-post.php">
 
 			<label for="adminFirstName">First Name</label>
 			<input type="text" id="adminFirstName" name="adminFirstName"><br>

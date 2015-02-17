@@ -8,9 +8,7 @@ require_once("../classes/adminprofile.php");
 
 // create new admin
 try {
-	if(@isset($_POST["adminFirstName"]) === false || @isset($_POST["adminLastName"]) === false || @isset($_POST["adminEmail"]) || @isset($_POST["password"])) {
-		throw(new InvalidArgumentException("<p class=\"alert alert-danger\">form values not complete. verify the form and try again.</p>"));
-	}
+
 	// create a new salt and hash
 	$salt = bin2hex(openssl_random_pseudo_bytes(32));
 	$hash = hash_pbkdf2("sha512", $_POST["password"], $salt, 2048, 128);
@@ -21,7 +19,7 @@ try {
 	$activation = bin2hex(openssl_random_pseudo_bytes(16));
 	$mysqli = new mysqli($configArray['hostname'], $configArray['username'], $configArray['password'], $configArray['database']);
 
-	$admin = new Admin(null, $activation, $_POST["adminEmail"], $_POST["hash"], $salt);
+	$admin = new Admin(null, $activation, $_POST["adminEmail"], $hash, $salt);
 	$admin->insert($mysqli);
 
 	$adminProfile = new AdminProfile(null, $admin->getAdminId(), $_POST["adminFirstName"], $_POST["adminLastName"]);
@@ -32,6 +30,9 @@ try {
 //	$to = $user->getEmail();
 //	$from = "admin@cnm.edu";
 
+	if(@isset($_POST["adminFirstName"]) === false || @isset($_POST["adminLastName"]) === false || @isset($_POST["adminEmail"]) || @isset($_POST["password"])) {
+		throw(new InvalidArgumentException("<p class=\"alert alert-danger\">form values not complete. verify the form and try again.</p>"));
+	}
 
 		echo "<p class=\"alert alert-success\">Admin(id = " . $admin->getAdminId() . ") added!</p>";
 	} catch(Exception $exception) {
