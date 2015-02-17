@@ -16,7 +16,7 @@
 	</head>
 	<body>
 		<h1>Search for parking pass by user</h1>
-		<form id="emailSearchForm" method="post" action="pass-search-by-visitor-email-post.php">
+		<form id="emailSearchForm" method="post" action="visitor-search-by-email-post.php">
 			<label for="email">Email</label>
 			<input type="text" id="email" name="email"/><br />
 			<button id="emailSubmit" type="submit">Search</button>
