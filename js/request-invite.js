@@ -57,7 +57,7 @@ $(document).ready(
 					// GET or POST
 					type: "POST",
 					// where to submit data
-					url: "../controllers/request-invite-post.php",
+					url: "../php/controllers/request-invite-post.php",
 					// reformat POST data
 					data: $(form).serialize(),
 					// success is an event that happens when the server replies

@@ -78,7 +78,7 @@ EOF;
 	}
 	else
 	{
-		echo "<div class=\"alert alert-success\" role=\"alert\"><strong>Sign up successful!</strong> You will receive an email with additional info soon.</div>";
+		echo "<div class=\"alert alert-success\" role=\"alert\"><strong>Request sent successfully!</strong> You will receive an email with additional details shortly.</div>";
 	}
 
 } catch(Exception $exception) {

@@ -6,7 +6,7 @@
 		session_start();
 
 		// require CSRF protection
-		require_once("../lib/csrf.php");
+		require_once("../php/lib/csrf.php");
 		?>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
