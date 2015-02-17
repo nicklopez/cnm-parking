@@ -23,12 +23,12 @@
 		<script type="text/javascript" src="//ajax.aspnetcdn.com/ajax/jquery.validate/1.12.0/jquery.validate.min.js"></script>
 		<script type="text/javascript" src="//ajax.aspnetcdn.com/ajax/jquery.validate/1.12.0/additional-methods.min.js"></script>
 		<script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
-		<script type="text/javascript" src="../../js/request-invite.js"></script>
+		<script type="text/javascript" src="../js/request-invite.js"></script>
 		<title>Controller: Send Invite</title>
 	</head>
 	<body>
 		<h1>Controller: Send a parking pass invite</h1>
-		<form id="send-invite" method="post" action="send-invite-post.php" novalidate="novalidate">
+		<form id="send-invite" method="post" action="../php/controllers/send-invite-post.php" novalidate="novalidate">
 			<?php echo generateInputTags();
 
 			try {
