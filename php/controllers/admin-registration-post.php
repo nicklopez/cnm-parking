@@ -1,6 +1,6 @@
 <?php
 // require_once("../../../lib/csrf.php");
-require_once("admin-registration.php");
+require_once("index.php");
 require_once("/etc/apache2/capstone-mysql/encrypted-config.php");
 require_once("../classes/admin.php");
 require_once("../classes/adminprofile.php");

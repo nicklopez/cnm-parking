@@ -1,7 +1,7 @@
 // open a new window with the form under scrutiny
 module("tabs", {
 	setup: function() {
-		F.open("../../php/controllers/admin-registration.php");
+		F.open("../../php/controllers/index.php");
 	}
 });
 

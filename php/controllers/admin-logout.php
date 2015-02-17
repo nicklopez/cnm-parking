@@ -18,5 +18,5 @@ session_destroy();
 var_dump($_SESSION['login user']);
 
 // redirect to login page
-header("Location: admin-login.php"); // Redirecting To Home Page
+header("Location: index.php"); // Redirecting To Home Page
 ?>
