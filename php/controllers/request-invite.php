@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<?php // start a PHP session for CSRF protection
+		<?php
+		// start a PHP session for CSRF protection
 		session_start();
+
 		// require CSRF protection
 		require_once("../lib/csrf.php");
 		?>
@@ -14,7 +16,7 @@
 		<script type="text/javascript" src="//ajax.aspnetcdn.com/ajax/jquery.validate/1.12.0/jquery.validate.min.js"></script>
 		<script type="text/javascript" src="//ajax.aspnetcdn.com/ajax/jquery.validate/1.12.0/additional-methods.min.js"></script>
 		<script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
-		<script type="text/javascript" src="../js/controller.js"></script>
+		<script type="text/javascript" src="../js/request-invite.js"></script>
 		<title>Controller: Request Invite</title>
 	</head>
 	<body>
