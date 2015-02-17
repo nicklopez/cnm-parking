@@ -15,6 +15,11 @@ require_once("/etc/apache2/capstone-mysql/encrypted-config.php");
  */
 require_once("../../visitor-search/index.php");
 
+require_once("../classes/visitor.php");
+
+/**
+ * split fullName into First and Last names. Then search
+ */
 try {
 	/**
 	 * verify the form values have been submitted
@@ -33,7 +38,7 @@ try {
 	/**
 	 * sanitize input string
 	 */
-	$fullName = filter_var($fullName, FILTER_SANITIZE_STRING);
+	$fullName = filter_input (INPUT_POST, "fullName", FILTER_SANITIZE_STRING);
 	if(empty($fullName) === true) {
 		throw(new InvalidArgumentException("Input contains hostile code"));
 	}
@@ -41,10 +46,10 @@ try {
 	/**
 	 * split the phrase by any number of commas or spaces, which include " ", \r, \t, \n and \v
 	 */
-	$keywords = preg_split("/[\s,]+/", $_POST["fullName"]);
+	$keywords = preg_split("/[\s,]+/", $_POST["fullName"], -1, PREG_SPLIT_NO_EMPTY);
 	// check if a comma was used
 	$hasComma = strpos($fullName, ',');
-	if($hasComma >= 0) {
+	if($hasComma !==false) {
 		$hasComma = true;
 	}
 
@@ -56,6 +61,9 @@ try {
 	if($hasComma === false) {
 		$visitorFirstName = $keywords[0];
 		$visitorLastName  = end($keywords);
+	} else if(count($keywords) === 1) {
+		$visitorFirstName = $keywords[0];
+		$visitorLastName = $keywords[0];
 	} else {
 		$visitorFirstName = $keywords[1];
 		$visitorLastName  = $keywords[0];
@@ -81,11 +89,12 @@ try {
 		$results = Visitor::getVisitorByVisitorLastName($mysqli, $visitorLastName);
 		if($results !== null) {
 			foreach($results as $result) {
-				if(stripos($result->getVisitorFirstName(), $visitorFirstName) >= 0) {
+				if(stripos($result->getVisitorFirstName(), $visitorFirstName) !== false) {
 					$searchResults[] = $result;
 				}
 			}
 		}
+
 		/**
 		 * if case 1 returns null then assume case 2 (Last, First)
 		 */
@@ -93,7 +102,7 @@ try {
 			$results = Visitor::getVisitorByVisitorLastName($mysqli, $visitorFirstName);
 			if($results !== null) {
 				foreach($results as $result) {
-					if(stripos($result->getVisitorFirstName(), $visitorLastNameName) >= 0) {
+					if(stripos($result->getVisitorFirstName(), $visitorLastNameName) !== false) {
 						$searchResults[] = $result;
 					}
 				}
@@ -104,14 +113,23 @@ try {
 	/**
 	 * echo results to html form
 	 */
-	// Preamble
+
+	/**
+	 * preamble
+	*/
 	echo "<table class='table table-striped table-hover table-responsive'>";
 	echo "<tr><th>First Name</th><th>Last Name</th><th>Email</th><th>Phone</th></tr>";
-	// body
+
+	/**
+	 * body
+	 */
 	foreach($searchResults as $searchResult) {
 		echo "<tr><td>" . $searchResult->getVisitorFirstName() . "</td><td>" . $searchResult->getVisitorLastName() . "</td><td>" . $searchResult->getVisitorEmail() . "</td><td>" . $searchResult->getVisitorPhone() . "</td></tr>";
 	}
-	// postamble
+
+	/**
+	 * postamble
+	 */
 	echo "</table>";
 
 } catch(mysqli_sql_exception $mysqlException){

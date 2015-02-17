@@ -33,7 +33,7 @@ $(document).ready(
 					// GET or POST
 					type: "POST",
 					// where to submit data
-					url: "../controllers/pass-search-by-visitor-name.php",
+					url: "../visitor-search/index.php",
 					// reformat POST data
 					data: $(form).serialize(),
 					// success is an event that happens when the server replies
