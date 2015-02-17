@@ -1,6 +1,6 @@
 <?php
 // require_once("../../../lib/csrf.php");
-require_once("index.php");
+require_once("../../admin-registration/index.php");
 require_once("/etc/apache2/capstone-mysql/encrypted-config.php");
 require_once("../classes/admin.php");
 require_once("../classes/adminprofile.php");
@@ -29,8 +29,8 @@ try {
 
 
 	// email the user with an activation message
-	$to = $user->getEmail();
-	$from = "admin@cnm.edu";
+//	$to = $user->getEmail();
+//	$from = "admin@cnm.edu";
 
 
 		echo "<p class=\"alert alert-success\">Admin(id = " . $admin->getAdminId() . ") added!</p>";
