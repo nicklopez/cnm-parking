@@ -19,7 +19,6 @@ try {
 	echo "<p class=\"alert alert-danger\">Exception: " . $exception->getMessage() . "</p>";
 
 
-
 // create a new salt and hash
 	$salt = bin2hex(openssl_random_pseudo_bytes(32));
 	$hash = hash_pbkdf2("sha512", $_POST["password"], $salt, 2048, 128);
