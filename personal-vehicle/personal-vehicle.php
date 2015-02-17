@@ -13,7 +13,7 @@
 		<style type="text/css"></style></head>
 	<body>
 		<h1>CNM Visitor Vehicle Parking Information</h1>
-		<form method="post" action="personal-vehicle-post.php">
+		<form method="post" action="../php/controllers/personal-vehicle-post.php">
 
 			<label for="visitorFirstName">First Name</label>
 			<input type="text" id="visitorFirstName" name="visitorFirstName"><br>
