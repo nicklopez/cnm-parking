@@ -1,5 +1,5 @@
 <?php
-require_once("personal-vehicle.php");
+require_once("index.php");
 require_once("/etc/apache2/capstone-mysql/encrypted-config.php");
 require_once("../classes/visitor.php");
 require_once("../classes/vehicle.php");

@@ -56,7 +56,7 @@ try {
 	// build message
 	$pageName = end(explode("/", $_SERVER["PHP_SELF"]));
 	$url = "http://" . $_SERVER["SERVER_NAME"] . $_SERVER["PHP_SELF"];
-	$url = str_replace($pageName, "personal-vehicle.php", $url);
+	$url = str_replace($pageName, "index.php", $url);
 	$url = "$url?activation=$activation";
 	$message = <<< EOF
 <html>
