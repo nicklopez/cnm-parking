@@ -50,16 +50,13 @@ try {
 
 	/**
 	 * case 1: assign First and Last Name values from Keywords assuming (First Last)
+	 * else
+	 * case 2: assign First and Last Name values from Keywords assuming (Last, First)
 	 */
 	if($hasComma === false) {
 		$visitorFirstName = $keywords[0];
 		$visitorLastName  = end($keywords);
-	}
-
-	/**
-	 * case 2: assign First and Last Name values from Keywords assuming (Last, First)
-	 */
-	if($hasComma === true) {
+	} else {
 		$visitorFirstName = $keywords[1];
 		$visitorLastName  = $keywords[0];
 	}

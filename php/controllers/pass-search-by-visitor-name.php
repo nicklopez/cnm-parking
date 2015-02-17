@@ -16,9 +16,9 @@
 	</head>
 	<body>
 		<h1>Search for parking pass by user</h1>
-		<form id="fullNameSearchForm" method="post" action="pass-search-by-visitor-name-post.php">
+		<form class="" id="fullNameSearchForm" method="post" action="pass-search-by-visitor-name-post.php">
 			<label for="fullName">Full Name</label>
-			<input type="text" id="fullName" name="fullName"/><br />
+			<input class="form-control" type="text" id="fullName" name="fullName"/><br />
 			<button id="fullNameSubmit" type="submit">Search</button>
 		</form>
 		<div id="outputArea"></div>
