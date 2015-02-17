@@ -5,6 +5,8 @@ require_once("../classes/admin.php");
 require_once("../classes/adminprofile.php");
 session_start();
 
+$_SESSION["login user"] = $_POST["adminEmail"];
+
 // verify the form values have been submitted
 if(@isset($_POST["adminEmail"]) === false || @isset($_POST["password"])) {
 	echo "<p class=\"alert alert-danger\">form values not complete. verify the form and try again.</p>";
@@ -16,8 +18,7 @@ try {
 	$mysqli = new mysqli($configArray['hostname'], $configArray['username'], $configArray['password'], $configArray['database']);
 	$admin = new Admin(null, "12345678123456781234567812345678", $_POST["adminEmail"], "12345678123456781234567812345678123456781234567812345678123456781234567812345678123456781234567812345678123456781234567812345678", "1234567812345678123456781234567812345678123456781234567812345678");
 	$admin->insert($mysqli);
-	$adminProfile = new AdminProfile(null, $this->adminId->getAdminId(), $_POST["adminFirstName"], $_POST["adminLastName"]);
-	$adminProfile->insert($mysqli);
+
 
 	echo "<p class=\"alert alert-success\">Admin(id = " . $admin->getAdminId() . ") logged on!</p>";
 } catch(Exception $exception) {

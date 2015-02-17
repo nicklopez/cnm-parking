@@ -6,13 +6,6 @@ require_once("../classes/admin.php");
 require_once("../classes/adminprofile.php");
 
 
-
-try {
-
-	if(@isset($_POST["adminFirstName"]) === false || @isset($_POST["adminLastName"]) === false || @isset($_POST["adminEmail"]) || @isset($_POST["password"])) {
-		echo "<p class=\"alert alert-danger\">form values not complete. verify the form and try again.</p>";
-	}
-
 	// verify the CSRF tokens
 	// if(verifyCsrf($_POST["csrfName"], $_POST["csrfToken"]) === false) {
 		// throw(new RuntimeException("CSRF tokens incorrect or missing. Make sure cookies are enabled."));
@@ -33,6 +26,12 @@ try {
 
 	$adminProfile = new AdminProfile(null, $admin->getAdminId(), $_POST["adminFirstName"], $_POST["adminLastName"]);
 	$adminProfile->insert($mysqli);
+
+try {
+
+	if(@isset($_POST["adminFirstName"]) === false || @isset($_POST["adminLastName"]) === false || @isset($_POST["adminEmail"]) || @isset($_POST["password"])) {
+		echo "<p class=\"alert alert-danger\">form values not complete. verify the form and try again.</p>";
+	}
 
 	// email the user with an activation message
 	$to = $user->getEmail();

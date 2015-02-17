@@ -45,7 +45,14 @@
 			<label for="vehiclePlateState">Plate State Issued</label>
 			<input type="text" id="vehiclePlateState" name="vehiclePlateState"><br>
 
-			<button id="submit" type="Submit">Submit</button>
+			<label for="startDateTime">Start Date/Time</label>
+			<input type="text" id="startDateTime" name="startDateTime"><br>
+
+			<label for="endDateTime">End Date/Time</label>
+			<input type="text" id="vehiclePlateState" name="vehiclePlateState"><br>
+
+
+			<button id="submit" type="submit">Submit</button>
 		</form>
 
 	</body>
