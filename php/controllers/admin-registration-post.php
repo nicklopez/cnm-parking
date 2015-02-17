@@ -28,13 +28,9 @@ try {
 	$adminProfile->insert($mysqli);
 
 
-
-
 	// email the user with an activation message
 	$to = $user->getEmail();
 	$from = "admin@cnm.edu";
-
-
 
 
 		echo "<p class=\"alert alert-success\">Admin(id = " . $admin->getAdminId() . ") added!</p>";

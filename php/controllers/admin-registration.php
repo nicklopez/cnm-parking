@@ -11,6 +11,7 @@
 		<script type="text/javascript" src="//ajax.aspnetcdn.com/ajax/jquery.validate/1.12.0/additional-methods.min.js"></script>
 		<script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>		<title>Controller: Admin Registration</title>
 		<style type="text/css"></style></head>
+
 	<?php
 
 	if (empty($_POST) === false) {
