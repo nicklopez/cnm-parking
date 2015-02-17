@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<meta charset="UTF-8" />
+		<meta> charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 
 		<link type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet" />
@@ -16,10 +16,10 @@
 	</head>
 	<body>
 		<h1>Search for parking pass by user</h1>
-		<form id="fullNameSearchForm" method="post" action="pass-search-by-visitor-name-post.php">
-			<label for="fullName">Full Name</label>
-			<input type="text" id="fullName" name="fullName"/><br />
-			<button id="fullNameSubmit" type="submit">Search</button>
+		<form id="placardSearchForm" method="post" action="pass-search-by-placard-number-post.php">
+			<label for="placard">Email</label>
+			<input type="text" id="placard" name="placard"/><br />
+			<button id="placardSubmit" type="submit">Search</button>
 		</form>
 		<div id="outputArea"></div>
 	</body>

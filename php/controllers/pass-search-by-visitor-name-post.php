@@ -15,14 +15,14 @@ require_once("/etc/apache2/capstone-mysql/encrypted-config.php");
  */
 require_once("pass-search-by-visitor-name.php");
 
-/**
- * verify the form values have been submitted
- */
-if(@isset($_POST["fullName"]) === false) {
-	echo"<p class=\"alert alert-danger\"> Search field empty. Please insert search criteria and try again.</p>";
-}
-
 try {
+	/**
+	 * verify the form values have been submitted
+	 */
+	if(@isset($_POST["fullName"]) === false) {
+		throw(new InvalidArgumentException("Search field empty."));
+	}
+
 	/**
 	 * connect to mySQL
 	 */
