@@ -76,7 +76,7 @@ try {
 		 */
 		echo "</table>";
 	} else {
-		echo "<p>No results</p>";
+		echo "<p class=\"alert alert-info\">No results</p>";
 	}
 } catch(Exception $exception) {
 	echo "<p class=\"alert alert-danger\">Exception: " . $exception->getMessage() . "</p>";
