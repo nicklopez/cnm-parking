@@ -12,14 +12,26 @@
 		<script type="text/javascript" src="//ajax.aspnetcdn.com/ajax/jquery.validate/1.12.0/additional-methods.min.js"></script>
 		<script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 
-		<title>Search for parking pass by user</title>
+		<title>Search</title>
 	</head>
 	<body>
-		<h1>Search for parking pass by user</h1>
-		<form class="" id="fullNameSearchForm" method="post" action="../php/controllers/visitor-search-by-name-post.php">
-			<label for="fullName">Full Name</label>
-			<input class="form-control" type="text" id="fullName" name="fullName"/><br />
-			<button id="fullNameSubmit" type="submit">Search</button>
+		<form id="visitorSearchForm" method="post" action="../php/controllers/visitor-search-meta.php">
+			<div class="form-group">
+				<label class="control-label">Search By</label>
+				<label class="radio-inline">
+					<input type="radio" name="visitorSearchOptions" id="radioVisitorSearchByName" value="name" checked/>Name
+				</label>
+				<label class="radio-inline">
+					<input type="radio" name="visitorSearchOptions" id="radioVisitorSearchByEmail" value="email"/>Email Address
+				</label>
+				<label class="radio-inline">
+					<input type="radio" name="visitorSearchOptions" id="radioVisitorSearchByPlate" value="plate"/>License Plate Number
+				</label>
+			</div>
+			<div class="form-group">
+				<input class="form-control" type="text" id="textVisitorSearchInput" maxlength="270" placeholder="Search Criteria"/>
+			</div>
+			<button id="visitorSearchSubmit" type="submit">Search</button>
 		</form>
 		<div id="outputArea"></div>
 	</body>

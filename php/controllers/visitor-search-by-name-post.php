@@ -11,42 +11,28 @@
 require_once("/etc/apache2/capstone-mysql/encrypted-config.php");
 
 /**
- * require the form
+ * require the form and class
  */
 require_once("../../visitor-search/index.php");
-
 require_once("../classes/visitor.php");
+require_once("../classes/vehicle.php");
+
 
 /**
  * split fullName into First and Last names. Then search
  */
-try {
+function searchByName($mysqli, $fullName) {
 	/**
-	 * verify the form values have been submitted
+	 * ensure string length is 270 char or less
 	 */
-	if(@isset($_POST["fullName"]) === false) {
-		throw(new InvalidArgumentException("Search field empty."));
-	}
-
-	/**
-	 * connect to mySQL
-	 */
-	mysqli_report(MYSQLI_REPORT_STRICT);
-	$config = readConfig("/etc/apache2/capstone-mysql/cnmparking.ini");
-	$mysqli = new mysqli($config["hostname"], $config["username"], $config["password"], $config["database"]);
-
-	/**
-	 * sanitize input string
-	 */
-	$fullName = filter_input (INPUT_POST, "fullName", FILTER_SANITIZE_STRING);
-	if(empty($fullName) === true) {
-		throw(new InvalidArgumentException("Input contains hostile code"));
+	if	(strlen($fullName) > 270) {
+		throw(new RangeException("Visitor name cannot be more than 270 characters in length."));
 	}
 
 	/**
 	 * split the phrase by any number of commas or spaces, which include " ", \r, \t, \n and \v
 	 */
-	$keywords = preg_split("/[\s,]+/", $_POST["fullName"], -1, PREG_SPLIT_NO_EMPTY);
+	$keywords = preg_split("/[\s,]+/", $fullName, -1, PREG_SPLIT_NO_EMPTY);
 	// check if a comma was used
 	$hasComma = strpos($fullName, ',');
 	if($hasComma !==false) {
@@ -102,38 +88,12 @@ try {
 			$results = Visitor::getVisitorByVisitorLastName($mysqli, $visitorFirstName);
 			if($results !== null) {
 				foreach($results as $result) {
-					if(stripos($result->getVisitorFirstName(), $visitorLastNameName) !== false) {
+					if(stripos($result->getVisitorFirstName(), $visitorLastName) !== false) {
 						$searchResults[] = $result;
 					}
 				}
 			}
 		}
 	}
-
-	/**
-	 * echo results to html form
-	 */
-
-	/**
-	 * preamble
-	*/
-	echo "<table class='table table-striped table-hover table-responsive'>";
-	echo "<tr><th>First Name</th><th>Last Name</th><th>Email</th><th>Phone</th></tr>";
-
-	/**
-	 * body
-	 */
-	foreach($searchResults as $searchResult) {
-		echo "<tr><td>" . $searchResult->getVisitorFirstName() . "</td><td>" . $searchResult->getVisitorLastName() . "</td><td>" . $searchResult->getVisitorEmail() . "</td><td>" . $searchResult->getVisitorPhone() . "</td></tr>";
-	}
-
-	/**
-	 * postamble
-	 */
-	echo "</table>";
-
-} catch(mysqli_sql_exception $mysqlException){
-	echo "<p class=\"alert alert-danger\">Exception: " . $exception->getMessage() . "</p>";
 }
-
 ?>

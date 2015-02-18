@@ -11,23 +11,28 @@
 require_once("/etc/apache2/capstone-mysql/encrypted-config.php");
 
 /**
- * require the form and clas
+ * require the form and classes
  */
 require_once("../../visitor-search/index.php");
 require_once("../classes/visitor.php");
 require_once("../classes/vehicle.php");
 
+
+
 /**
  * create function for meta file
  */
-function searchByEmail($mysqli, $email) {
+function searchByPlate($mysqli, $plate) {
+	/**
+	 * ensure string length is 8 char or less
+	 */
+	if	(strlen($plate) > 8) {
+		throw(new RangeException("License plate number cannot be more than 8 characters in length."));
+	}
 
 	/**
-	 * ensure string length is 128 char or less
+	 * populate array via get method
 	 */
-	if	(strlen($email) > 128) {
-		throw(new RangeException("Email cannot be more than 128 characters in length."));
-	}
-	$searchResults[] = Visitor::getVisitorByVisitorEmail($mysqli, $email);
+	$searchResults[] = Visitor::getParkingSpotByPlacardNumber($mysqli, $plate);
 }
 ?>
