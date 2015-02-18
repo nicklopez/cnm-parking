@@ -29,7 +29,7 @@
 				</label>
 			</div>
 			<div class="form-group">
-				<input class="form-control" type="text" id="textVisitorSearchInput" maxlength="270" placeholder="Search Criteria"/>
+				<input class="form-control" type="text" id="textVisitorSearchInput" name="textVisitorSearchInput" maxlength="270" placeholder="Search Criteria"/>
 			</div>
 			<button id="visitorSearchSubmit" type="submit">Search</button>
 		</form>

@@ -51,33 +51,35 @@ try {
 	 */
 	$function = $whiteList[$_POST["visitorSearchOptions"]];
 	$argv = array($mysqli, $searchInput);
-	call_user_func_array($function, $argv);
+	$searchResults = call_user_func_array($function, $argv);
 
 
 	/**
 	 * echo results to html form
 	 */
+	if(empty($searchResults) === false) {
+			/**
+			 *
+			 * preamble
+			 */
+			echo "<table class='table table-striped table-hover table-responsive'>";
+		echo "<tr><th>First Name</th><th>Last Name</th><th>Email</th><th>Phone</th></tr>";
 
-	/**
-	 * preamble
-	 */
-	echo "<table class='table table-striped table-hover table-responsive'>";
-	echo "<tr><th>First Name</th><th>Last Name</th><th>Email</th><th>Phone</th></tr>";
+		/**
+		 * table body
+		 */
+		foreach($searchResults as $searchResult) {
+			echo "<tr><td>" . $searchResult->getVisitorFirstName() . "</td><td>" . $searchResult->getVisitorLastName() . "</td><td>" . $searchResult->getVisitorEmail() . "</td><td>" . $searchResult->getVisitorPhone() . "</td></tr>";
+		}
 
-	/**
-	 * table body
-	 */
-	foreach($searchResults as $searchResult) {
-		echo "<tr><td>" . $searchResult->getVisitorFirstName() . "</td><td>" . $searchResult->getVisitorLastName() . "</td><td>" . $searchResult->getVisitorEmail() . "</td><td>" . $searchResult->getVisitorPhone() . "</td></tr>";
+		/**
+		 * postamble
+		 */
+		echo "</table>";
+	} else {
+		echo "<p>No results</p>";
 	}
-
-	/**
-	 * postamble
-	 */
-	echo "</table>";
-
 } catch(Exception $exception) {
 	echo "<p class=\"alert alert-danger\">Exception: " . $exception->getMessage() . "</p>";
 }
-
 ?>

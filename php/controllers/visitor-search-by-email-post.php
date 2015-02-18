@@ -28,6 +28,8 @@ function searchByEmail($mysqli, $email) {
 	if	(strlen($email) > 128) {
 		throw(new RangeException("Email cannot be more than 128 characters in length."));
 	}
-	$searchResults[] = Visitor::getVisitorByVisitorEmail($mysqli, $email);
+	$searchResults = Visitor::getVisitorByVisitorEmail($mysqli, $email);
+
+	return($searchResults);
 }
 ?>

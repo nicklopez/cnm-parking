@@ -33,6 +33,14 @@ function searchByPlate($mysqli, $plate) {
 	/**
 	 * populate array via get method
 	 */
-	$searchResults[] = Visitor::getParkingSpotByPlacardNumber($mysqli, $plate);
+	$results = Vehicle::getVehicleByPlateNumber($mysqli, $plate);
+	if($results !== null) {
+		foreach($results as $result) {
+			$searchResults[] = Visitor::getVisitorByVisitorId($mysqli, $result->getVisitorId());
+		}
+
+
+	}
+	return($searchResults);
 }
 ?>

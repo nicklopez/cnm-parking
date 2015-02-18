@@ -95,5 +95,6 @@ function searchByName($mysqli, $fullName) {
 			}
 		}
 	}
+	return($searchResults);
 }
 ?>
