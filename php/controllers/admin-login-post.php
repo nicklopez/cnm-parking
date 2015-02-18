@@ -17,7 +17,7 @@ try {
 
 	// create a new salt and hash
 	$salt = bin2hex(openssl_random_pseudo_bytes(32));
-	$hash = hash_pbkdf2("sha512", $_POST["password"], $salt, 2048, 128);
+
 
 	// connect to database
 	mysqli_report(MYSQLI_REPORT_STRICT);
@@ -29,17 +29,20 @@ try {
 		echo "Hello";
 	}
 
-	$stmt = $mysqli->prepare("SELECT password, salt FROM customer WHERE login = ?");
-	$stmt->bind_param("s", $input_login);
+	$stmt = $mysqli->prepare("SELECT passHash, salt FROM admin WHERE adminEmail = ?");
+	$stmt->bind_param("s", $adminEmail);
 	$stmt->execute();
-	$stmt->bind_result($password_hash, $salt);
+	$stmt->bind_result($passHash, $salt);
 
-	while ($stmt->fetch()) {
-		$input_password_hash = hash('sha256', $input_password . $salt);
-		if($input_password_hash == $password_hash) {
+	$adminPassword = null;
+	$row = $adminPassword->fetch_assoc();
+	if ($row !== null) {
+		$adminPassword = new Admin($row["adminId"], $row["adminEmail"], $row["activation"], $row["passHash"], $row["salt"]);
+		$hash = hash_pbkdf2("sha512", $_POST["password"], $salt, 2048, 128);
+		if($hash === $adminPassword->getPassHash());
 			return true;
 		}
-	}
+
 
 
 			echo "<p class=\"alert alert-success\">Admin(id = " . $admin->getAdminId() . ") logged on!</p>";
