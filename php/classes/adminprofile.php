@@ -360,7 +360,7 @@ class AdminProfile {
 			$adminProfile = null;
 			$row = $result->fetch_assoc();
 			if($row !== null) {
-				$adminProfile = new AdminProfile($row["adminProfileId"], $row["AdminId"], $row["AdminFirstName"], $row["AdminLastName"]);
+				$adminProfile = new AdminProfile($row["adminProfileId"], $row["adminId"], $row["adminFirstName"], $row["adminLastName"]);
 			}
 		} catch(Exception $exception) {
 			// if the row couldn't be converted, rethrow it
