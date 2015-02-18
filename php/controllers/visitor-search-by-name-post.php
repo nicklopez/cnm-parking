@@ -13,7 +13,6 @@ require_once("/etc/apache2/capstone-mysql/encrypted-config.php");
 /**
  * require the form and class
  */
-require_once("../../visitor-search/index.php");
 require_once("../classes/visitor.php");
 require_once("../classes/vehicle.php");
 

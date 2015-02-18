@@ -38,7 +38,7 @@ $(document).ready(
 					// GET or POST
 					type: "POST",
 					// where to submit data
-					url: "../php/controllers/visitor-search-meta	.php",
+					url: "../php/controllers/visitor-search-meta.php",
 					// reformat POST data
 					data: $(form).serialize(),
 					// success is an event that happens when the server replies

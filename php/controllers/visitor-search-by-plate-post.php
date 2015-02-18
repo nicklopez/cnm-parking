@@ -13,7 +13,6 @@ require_once("/etc/apache2/capstone-mysql/encrypted-config.php");
 /**
  * require the form and classes
  */
-require_once("../../visitor-search/index.php");
 require_once("../classes/visitor.php");
 require_once("../classes/vehicle.php");
 
@@ -33,13 +32,12 @@ function searchByPlate($mysqli, $plate) {
 	/**
 	 * populate array via get method
 	 */
+	$searchResults = array();
 	$results = Vehicle::getVehicleByPlateNumber($mysqli, $plate);
 	if($results !== null) {
 		foreach($results as $result) {
 			$searchResults[] = Visitor::getVisitorByVisitorId($mysqli, $result->getVisitorId());
 		}
-
-
 	}
 	return($searchResults);
 }
