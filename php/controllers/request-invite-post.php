@@ -32,16 +32,28 @@ try {
 	// create a new salt or token
 	$activation = bin2hex(openssl_random_pseudo_bytes(16));
 
-	// create a Visitor and Invite object and insert them into mySQL
+	// create a Visitor (if required) and Invite object and insert them into mySQL
 	$config = readConfig("/etc/apache2/capstone-mysql/cnmparking.ini");
 	$mysqli = new mysqli($config["hostname"], $config["username"], $config["password"], $config["database"]);
-	$visitor = new Visitor(null, $_POST["emailAddress"], $_POST["firstName"], $_POST["lastName"], $_POST["phone"]);
-	$visitor->insert($mysqli);
-	$invite = new Invite(null, null, $activation, null, null, null, $visitor->getVisitorId());
-	$invite->insert($mysqli);
+
+	// query mySQL to see if visitor exists
+	$visitor = Visitor::getVisitorByVisitorEmail($mysqli, $_POST["emailAddress"]);
+	if(count($visitor) === 0) {
+		$newVisitor = new Visitor(null, $_POST["emailAddress"], $_POST["firstName"], $_POST["lastName"], $_POST["phone"]);
+		$newVisitor->insert($mysqli);
+		$invite = new Invite(null, null, $activation, null, null, null, $newVisitor->getVisitorId());
+		$invite->insert($mysqli);
+	} else {
+		$invite = new Invite(null, null, $activation, null, null, null, $visitor->getVisitorId());
+		$invite->insert($mysqli);
+	}
 
 	// email the CNM admin and inform them of the request
-	$to = $visitor->getVisitorEmail();
+	if(count($visitor) === 0) {
+		$to = $newVisitor->getVisitorEmail();
+	} else {
+		$to = $visitor->getVisitorEmail();
+	}
 	$from = "noreply@cnm.edu";
 
 	// build headers
@@ -49,14 +61,20 @@ try {
 	$headers["To"] = $to;
 	$headers["From"] = $from;
 	$headers["Reply-To"] = $from;
-	$headers["Subject"] = "Parking Pass Invite Request - ".$visitor->getVisitorFirstName() . " " . $visitor->getVisitorLastName();
+
+	// use and if statement to fetch the available visitor values
+	if(count($visitor) === 0) {
+		$headers["Subject"] = "Parking Pass Invite Request - " . $newVisitor->getVisitorFirstName() . " " . $newVisitor->getVisitorLastName();
+	} else {
+		$headers["Subject"] = "Parking Pass Invite Request - " . $visitor->getVisitorFirstName() . " " . $visitor->getVisitorLastName();
+	}
 	$headers["MIME-Version"] = "1.0";
 	$headers["Content-Type"] = "text/html; charset=UTF-8";
 
 	// build message
-	$pageName = end(explode("/", $_SERVER["PHP_SELF"]));
+	$pageName = end(explode("/", $_SERVER["PHP_SELF"],4));
 	$url = "http://" . $_SERVER["SERVER_NAME"] . $_SERVER["PHP_SELF"];
-	$url = str_replace($pageName, "index.php", $url);
+	$url = str_replace($pageName, "personal-vehicle", $url);
 	$url = "$url?activation=$activation";
 	$message = <<< EOF
 <html>
