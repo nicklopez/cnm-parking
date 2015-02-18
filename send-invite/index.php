@@ -6,13 +6,13 @@
 		session_start();
 
 		// require CSRF protection
-		require_once("../lib/csrf.php");
+		require_once("../php/lib/csrf.php");
 
 		// require the encrypted configuration functions
 		require_once("/etc/apache2/capstone-mysql/encrypted-config.php");
 
 		// require the mySQL enabled Invite class
-		require_once("../classes/invite.php");
+		require_once("../php/classes/invite.php");
 
 		?>
 		<meta charset="UTF-8">
@@ -23,11 +23,13 @@
 		<script type="text/javascript" src="//ajax.aspnetcdn.com/ajax/jquery.validate/1.12.0/jquery.validate.min.js"></script>
 		<script type="text/javascript" src="//ajax.aspnetcdn.com/ajax/jquery.validate/1.12.0/additional-methods.min.js"></script>
 		<script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
-		<script type="text/javascript" src="../js/request-invite.js"></script>
+		<script type="text/javascript" src="../js/send-invite.js"></script>
 		<title>Controller: Send Invite</title>
 	</head>
 	<body>
 		<h1>Controller: Send a parking pass invite</h1>
+		<table class="table-bordered table-responsive table-striped">
+			<tr><th>Select</th><th>Name</th><th>Email</th></tr>
 		<form id="send-invite" method="post" action="../php/controllers/send-invite-post.php" novalidate="novalidate">
 			<?php echo generateInputTags();
 
@@ -42,15 +44,25 @@
 
 				// retrieve all pending invites
 				$invites = Invite::getPendingInvite($mysqli);
-				foreach($invites as $invite) {
-					echo "<tr><td>" . $invite->getInviteId() . "</td><br/><td>" . $invite->getActivation() . "</td><br/><td>" . $invite->getVisitorId() . "</td></tr>";
+				if(count($invites) !== 0) {
+					foreach($invites as $invite)
+			echo "<tr><td><input type=Checkbox></td><td>" . $invite["fullName"] . "</td><td>" . $invite["visitorEmail"] . "</td></tr>";
+				} else {
+					echo "<h2>No pending invites at this time</h2>";
+					return;
 				}
 				$mysqli->close();
 			} catch(Exception $exception) {
-				echo "<td><tr class=\"alert alert-danger\" colspan=\"4\">Exception: " . $exception->getMessage() . "</td></tr>";
+				echo "<td><tr class=\"alert alert-danger\" colspan=\"3\">Exception: " . $exception->getMessage() . "</td></tr>";
 			}
 			?>
-			<button id="sendInvite" type="submit">Send Invite</button>
+		</table>
+			<button id=accept class="btn btn-default">
+				<span class="glyphicon glyphicon-ok">Accept</span>
+			</button>
+			<button id=decline class="btn btn-default">
+				<span class="glyphicon glyphicon-remove">Decline</span>
+			</button>
 		</form>
 		<p id="outputArea"></p>
 	</body>
