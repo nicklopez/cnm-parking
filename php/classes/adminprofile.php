@@ -358,7 +358,6 @@ class AdminProfile {
 		// build an array of admin profiles
 		try {
 			$adminProfile = null;
-			$adminProfiles = array();
 			$row = $result->fetch_assoc();
 			if($row !== null) {
 				$adminProfile = new AdminProfile($row["adminProfileId"], $row["AdminId"], $row["AdminFirstName"], $row["AdminLastName"]);
