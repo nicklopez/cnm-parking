@@ -619,7 +619,10 @@ class Invite {
 		}
 
 		// create query template
-		$query = "SELECT inviteId, actionDateTime, activation, adminProfileId, approved, createDateTime, visitorId FROM invite WHERE approved IS NULL";
+		$query = "SELECT inviteId, CONCAT(visitor.visitorFirstName, ' ', visitor.visitorLastName) AS fullName, visitor.visitorEmail, actionDateTime, activation, adminProfileId, approved, createDateTime, invite.visitorId FROM invite
+		INNER JOIN visitor ON visitor.visitorId = invite.visitorId
+		WHERE approved IS NULL";
+
 		$statement = $mysqli->prepare($query);
 		if($statement === false) {
 			throw(new mysqli_sql_exception("unable to prepare statement"));
@@ -640,8 +643,7 @@ class Invite {
 		$invites = array();
 		while(($row = $result->fetch_assoc()) !== null)
 			try {
-				$invite = new Invite($row["inviteId"], $row["actionDateTime"], $row["activation"], $row["adminProfileId"], $row["approved"], $row["createDateTime"], $row["visitorId"]);
-				$invites[] = $invite;
+				$invites[] = $row;
 
 			} catch(Exception $exception) {
 				// if the row couldn't be converted, rethrow it
