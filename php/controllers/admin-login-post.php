@@ -36,7 +36,9 @@ try {
 	}
 
 	// assign session to logged in admin id
-	$_SESSION["login user"] = $admin->getAdminId();
+	$adminProfile = AdminProfile::getAdminProfileByAdminId($mysqli, $admin->getAdminId());
+
+	$_SESSION["adminProfileId"] = $adminProfile->getAdminProfileId();
 
 	print_r($_SESSION);
 

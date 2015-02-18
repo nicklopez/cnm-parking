@@ -401,7 +401,7 @@ class Admin {
 		// grab the admin from mySQL
 		try {
 			$admin = null;
-			$row   = $result->fetch_assoc();
+			$row = $result->fetch_assoc();
 			if($row !== null) {
 				$admin = new Admin($row["adminId"], $row["activation"], $row["adminEmail"], $row["passHash"], $row["salt"]);
 			}

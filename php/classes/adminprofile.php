@@ -424,7 +424,7 @@ class AdminProfile {
 		// grab the adminProfile from mySQL
 		try {
 			$adminProfile = null;
-			$row   = $result->fetch_assoc();
+			$row = $result->fetch_assoc();
 			if($row !== null) {
 				$adminProfile = new AdminProfile($row["adminProfileId"], $row["adminId"], $row["adminFirstName"], $row["adminLastName"]);
 			}
