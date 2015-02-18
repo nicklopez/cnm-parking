@@ -34,7 +34,7 @@ function testValidFields() {
 	// here, we assert we got the success message from the AJAX call
 	F(".alert").visible(function() {
 		// create a regular expression that evaluates the successful text
-		var successRegex = /Registered! Please Check Your Email./;
+		var successRegex = /Admin \(id = \d+\) added!/;
 
 		// the ok() function from qunit is equivalent to SimpleTest's assertTrue()
 		ok(F(this).hasClass("alert-success"), "successful alert CSS");
@@ -54,7 +54,7 @@ function testInvalidFields() {
 
 
 	// click the button once all the fields are filled in
-	F("#register").click();
+	F("#submit").click();
 
 	// in forms, we want to assert the form worked as expected
 	// here, we assert we got the success message from the AJAX call
