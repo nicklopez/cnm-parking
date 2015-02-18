@@ -28,7 +28,7 @@ function testValidFields() {
 	F("#password").type(VALID_PASSWORD);
 
 	// click the button once all the fields are filled in
-	F("#register").click();
+	F("#submit").click();
 
 	// in forms, we want to assert the form worked as expected
 	// here, we assert we got the success message from the AJAX call
