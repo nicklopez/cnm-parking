@@ -59,7 +59,6 @@ try {
 	 */
 	if(empty($searchResults) === false) {
 			/**
-			 *
 			 * preamble
 			 */
 			echo "<table class='table table-striped table-hover table-responsive'>";
