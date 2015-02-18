@@ -244,15 +244,16 @@ class Invite {
 	/**
 	 * mutator method for approved (or declined)
 	 *
-	 * @param boolean $newApproved new value of approved (approved or declined)
+	 * @param mixed $newApproved new value of approved (approved or declined)
 	 * @throws InvalidArgumentException if $newApproved is not a string or insecure
 	 * @throws RangeException if $newApproved is not 0 or 1
 	 **/
 	public function setApproved($newApproved) {
 		// verify approved is valid
-		$newApproved = filter_var($newApproved, FILTER_VALIDATE_BOOLEAN);
+		//$newApproved = filter_var($newApproved, FILTER_VALIDATE_BOOLEAN);
 		if($newApproved === NULL) {
-			throw(new InvalidArgumentException("approved is not a boolean"));
+			$this->approved = NULL;
+			return;
 		}
 
 		if($newApproved < 0 || $newApproved > 1) {

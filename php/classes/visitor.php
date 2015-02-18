@@ -546,5 +546,68 @@ class Visitor {
 			return ($visitors);
 		}
 	}
+
+	/**
+	 * gets the visitor by email address
+	 *
+	 * @param resource $mysqli pointer to mySQL connection, by reference
+	 * @param string $visitorEmail visitor to search for by email address
+	 * @return mixed visitor found or null if not found
+	 * @throws mysqli_sql_exception when mySQL related errors occur
+	 **/
+	public static function getVisitorByVisitorEmail(&$mysqli, $visitorEmail) {
+		// handle degenerate cases
+		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
+			throw(new mysqli_sql_exception("input is not a mysqli object"));
+		}
+
+		// sanitize the visitorEmail before searching
+		$visitorEmail = trim($visitorEmail);
+		$visitorEmail = filter_var($visitorEmail, FILTER_SANITIZE_EMAIL);
+		if(empty($visitorEmail) === true) {
+			throw(new InvalidArgumentException("visitor email address is empty or insecure"));
+		}
+
+		// create query template
+		$query = "SELECT visitorId, visitorEmail, visitorFirstName, visitorLastName, visitorPhone FROM visitor WHERE visitorEmail = ?";
+		$statement = $mysqli->prepare($query);
+		if($statement === false) {
+			throw(new mysqli_sql_exception("unable to prepare statement"));
+		}
+
+		// bind the visitorEmail to the place holder in the template
+		$wasClean = $statement->bind_param("s", $visitorEmail);
+		if($wasClean === false) {
+			throw(new mysqli_sql_exception("unable to bind parameters"));
+		}
+
+		// execute the statement
+		if($statement->execute() === false) {
+			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
+		}
+
+		// get result from the SELECT query
+		$result = $statement->get_result();
+		if($result === false) {
+			throw(new mysqli_sql_exception("unable to get result set"));
+		}
+
+		// grab the visitor from mySQL
+		try {
+			$visitorEmail = null;
+			$row = $result->fetch_assoc();
+			if($row !== null) {
+				$visitorEmail = new Visitor($row["visitorId"], $row["visitorEmail"], $row["visitorFirstName"], $row["visitorLastName"], $row["visitorPhone"]);
+			}
+		} catch (Exception $exception) {
+			// if the row couldn't be converted, rethrow it
+			throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
+		}
+
+		// free up memory and return the result
+		$result->free();
+		$statement->close();
+		return ($visitorEmail);
+	}
 }
 ?>
