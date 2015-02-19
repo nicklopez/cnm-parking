@@ -24,7 +24,6 @@ try {
 	if (count($admin) !== 0) {
 		$hash = hash_pbkdf2("sha512", $_POST["password"], $salt, 2048, 128);
 		if($hash === $admin->getPassHash()) ;
-		echo "Welcome Back!";
 		}
 	else	{
 		echo "incorrect email or password.";
@@ -35,7 +34,6 @@ try {
 
 	$_SESSION["adminProfileId"] = $adminProfile->getAdminProfileId();
 
-	print_r($_SESSION);
 
 	// PLACEHOLDER TO REDIRECT TO ADMIN PORTAL
 
