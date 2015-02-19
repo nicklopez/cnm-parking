@@ -1044,5 +1044,79 @@ class ParkingPass {
 		return($newDate);
 	}
 
+	/**
+	 *
+	 *
+	 * @param $mysqli
+	 * @param $location
+	 * @param $arrival
+	 * @param $departure
+	 */
+
+	public static function getParkingPassAvailability($mysqli, $location, $arrival, $departure) {
+		// handle degenerate cases
+		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
+			throw(new mysqli_sql_exception("input is not a mysqli object"));
+		}
+
+		// sanitize dates before searching - Using static function
+		try {
+			$sunrise = self::sanitizeDate($arrival);
+			$sunset = self::sanitizeDate($departure);
+		} catch(InvalidArgumentException $invalidArgument) {
+			throw(new InvalidArgumentException($invalidArgument->getMessage(), 0, $invalidArgument));
+		} catch(RangeException $range) {
+			throw(new RangeException($range->getMessage(), 0, $range));
+		}
+
+		// sanitize the location before searching
+		$location = filter_var($location, FILTER_VALIDATE_INT);
+		if($location === false) {
+			throw(new mysqli_sql_exception("location is not an integer"));
+		}
+		if($location <= 0) {
+			throw(new mysqli_sql_exception("location is not positive"));
+		}
+
+		// create query template
+		// first search via locationId
+		$query = "SELECT parkingPassId FROM parkingPass WHERE parkingPass.parkingSpotId = parkingSpot.parkingSpotId AND parkingSpot.locationId = $location";
+		$statement = $mysqli->prepare($query);
+		if($statement === false) {
+			throw(new mysqli_sql_exception(" unable to prepare statement"));
+		}
+		// then refine search via sunrise/sunset
+		$query = "SELECT parkingPassId FROM $statement (startDateTime <= $sunset AND endDateTime >= $sunrise) AND (
+ 			(startDateTime <= $sunrise AND endDateTime >= $sunrise) OR
+ 			(startDateTime >= $sunrise AND startDateTime <= $sunset) OR
+ 			(startDateTime <= $sunrise AND endDateTime <= $sunset))";
+		$statement = $mysqli->num_rows($query);
+		if(@isset($statement) === false) {
+			throw(new mysqli_sql_exception("unable to prepare statement"));
+		}
+
+		// bind the member variables to the place holders in the template
+		$sunrise = $sunrise->format("Y-m-d H:i:s");
+		$sunset = $sunset->format("Y-m-d H:i:s");
+		$wasClean = $statement->bind_param("iss", $location, $sunrise, $sunset);
+		if($wasClean === false) {
+			throw(new mysqli_sql_exception("unable to bind parameters"));
+		}
+		// execute the statement
+		if($statement->execute() === false) {
+			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
+		}
+
+		// get result from SELECT query
+		$result = $statement->get_result();
+		if(@isset($result) === false) {
+			throw(new mysqli_sql_exception("unable to get result set"));
+		}
+
+		// return number of results
+		return($result);
+		
+
+	}
 }
 ?>
