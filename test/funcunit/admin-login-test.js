@@ -53,10 +53,10 @@ function testInvalidFields() {
 	F(".alert").visible(function() {
 		// the ok() function from qunit is equivalent to SimpleTest's assertTrue()
 		ok(F(this).hasClass("alert-danger"), "danger alert CSS");
-		ok(F(this).html().indexOf("incorrect email or password.") === 0, "unsuccessful message");
+		ok(F(this).html().indexOf(" incorrect email or password. Try again.") === 0, "unsuccessful message");
 	});
 }
 
 // the test function *MUST* be called in order for the test to execute
 test("test valid fields", testValidFields);
-// test("test invalid fields", testInvalidFields);
+test("test invalid fields", testInvalidFields);
