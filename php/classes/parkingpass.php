@@ -4,6 +4,7 @@
  *
  * @author Kyle Dozier <kyle@kedlogic.com
  */
+
 class ParkingPass {
 	/**
 	 * Primary Key / int, auto-inc
@@ -1080,42 +1081,55 @@ class ParkingPass {
 
 		// create query template
 		// first search via locationId
-		$query = "SELECT parkingPassId FROM parkingPass WHERE parkingPass.parkingSpotId = parkingSpot.parkingSpotId AND parkingSpot.locationId = $location";
+
+		$query = "SELECT parkingPassId FROM parkingPass INNER JOIN parkingSpot WHERE parkingPass.parkingSpotId = parkingSpot.parkingSpotId AND parkingSpot.locationId = ?";
 		$statement = $mysqli->prepare($query);
 		if($statement === false) {
 			throw(new mysqli_sql_exception(" unable to prepare statement"));
 		}
-		// then refine search via sunrise/sunset
-		$query = "SELECT parkingPassId FROM $statement (startDateTime <= $sunset AND endDateTime >= $sunrise) AND (
- 			(startDateTime <= $sunrise AND endDateTime >= $sunrise) OR
- 			(startDateTime >= $sunrise AND startDateTime <= $sunset) OR
- 			(startDateTime <= $sunrise AND endDateTime <= $sunset))";
-		$statement = $mysqli->num_rows($query);
-		if(@isset($statement) === false) {
-			throw(new mysqli_sql_exception("unable to prepare statement"));
-		}
+		// bind param
+		$statement->bind_param("i", $location);
 
-		// bind the member variables to the place holders in the template
-		$sunrise = $sunrise->format("Y-m-d H:i:s");
-		$sunset = $sunset->format("Y-m-d H:i:s");
-		$wasClean = $statement->bind_param("iss", $location, $sunrise, $sunset);
-		if($wasClean === false) {
-			throw(new mysqli_sql_exception("unable to bind parameters"));
-		}
 		// execute the statement
 		if($statement->execute() === false) {
 			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
 		}
 
-		// get result from SELECT query
 		$result = $statement->get_result();
-		if(@isset($result) === false) {
+		if($result === false) {
 			throw(new mysqli_sql_exception("unable to get result set"));
 		}
 
-		// return number of results
-		return($result);
-		
+
+
+
+//		$query = "SELECT parkingPassId FROM $result (startDateTime <= $sunset AND endDateTime >= $sunrise) AND (
+//		(startDateTime <= $sunrise AND endDateTime >= $sunrise) OR
+// 			(startDateTime >= $sunrise AND startDateTime <= $sunset) OR
+// 			(startDateTime <= $sunrise AND endDateTime <= $sunset))";
+//		$statement = $mysqli->num_rows($query);
+//		if(@isset($statement) === false) {
+//			throw(new mysqli_sql_exception("unable to prepare statement"));
+//		}
+//
+//
+//		// bind the member variables to the place holders in the template
+//		$sunrise = $sunrise->format("Y-m-d H:i:s");
+//		$sunset = $sunset->format("Y-m-d H:i:s");
+//		$wasClean = $statement->bind_param("ss", $sunrise, $sunset);
+//		if($wasClean === false) {
+//			throw(new mysqli_sql_exception("unable to bind parameters"));
+//		}
+		// execute the statement
+//		if($statement->execute() === false) {
+//			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
+//		}
+//
+//		// get result from SELECT query
+//		$result = $statement->get_result();
+//		if(@isset($result) === false) {
+//			throw(new mysqli_sql_exception("unable to get result set"));
+//		}
 
 	}
 }
