@@ -10,8 +10,8 @@ var VALID_EMAIL = "dafevig@yahoo.com";
 var VALID_PASSWORD = "password";
 
 //global invalid for form values
-var INVALID_EMAIL = "";
-var INVALID_PASSWORD = "";
+var INVALID_EMAIL = "dade@yahoo.com	";
+var INVALID_PASSWORD = "matrix";
 
 /**
  * test filling in only valid form data
@@ -53,7 +53,7 @@ function testInvalidFields() {
 	F(".alert").visible(function() {
 		// the ok() function from qunit is equivalent to SimpleTest's assertTrue()
 		ok(F(this).hasClass("alert-danger"), "danger alert CSS");
-		ok(F(this).html().indexOf("form values not complete. verify the form and try again.") === 0, "unsuccessful message");
+		ok(F(this).html().indexOf("incorrect email or password.") === 0, "unsuccessful message");
 	});
 }
 

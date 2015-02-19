@@ -31,6 +31,9 @@ try {
 
 	// assign session to logged in admin id
 	$adminProfile = AdminProfile::getAdminProfileByAdminId($mysqli, $admin->getAdminId());
+	if (count === 0) {
+		throw (new mysqli_sql_exception("incorrect email or password"));
+	}
 
 	$_SESSION["adminProfileId"] = $adminProfile->getAdminProfileId();
 
