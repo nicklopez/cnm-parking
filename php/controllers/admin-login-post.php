@@ -44,7 +44,7 @@ try {
 	}
 
 
-	echo "<p class=\"alert alert-success\">Admin(id = " . $admin->getAdminId() . ") logged in!</p>";
+	echo "<p class=\"alert alert-success\">Admin(id = " . $admin->getAdminId() . ")logged in!</p>";
 		}
 	catch
 		(Exception $exception) {
