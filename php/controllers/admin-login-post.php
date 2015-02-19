@@ -25,17 +25,16 @@ try {
 		$hash = hash_pbkdf2("sha512", $_POST["password"], $salt, 2048, 128);
 		if($hash === $admin->getPassHash()) ;
 		}
-	else	{
-		echo "incorrect email or password.";
+	if (count($admin) === 0) {
+		throw (new mysqli_sql_exception("incorrect email or password"));
+	} else {
+		// assign session to logged in admin id
+		$adminProfile = AdminProfile::getAdminProfileByAdminId($mysqli, $admin->getAdminId());
+		$_SESSION["adminProfileId"] = $adminProfile->getAdminProfileId();
 	}
-
-	// assign session to logged in admin id
-	$adminProfile = AdminProfile::getAdminProfileByAdminId($mysqli, $admin->getAdminId());
-	if (count === 0) {
+	if	($hash !== $admin->getPassHash()) {
 		throw (new mysqli_sql_exception("incorrect email or password"));
 	}
-
-	$_SESSION["adminProfileId"] = $adminProfile->getAdminProfileId();
 
 
 	// PLACEHOLDER TO REDIRECT TO ADMIN PORTAL

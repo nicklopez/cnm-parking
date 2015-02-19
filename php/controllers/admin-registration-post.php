@@ -13,7 +13,7 @@ require_once("Mail.php");
 try {
 	// verify the form was submitted
 	if(@isset($_POST["adminFirstName"]) === false || @isset($_POST["adminLastName"]) === false || @isset($_POST["adminEmail"]) || @isset($_POST["password"])) {
-		throw(new InvalidArgumentException("<p class=\"alert alert-danger\">form values not complete. verify the form and try again.</p>"));
+		throw(new InvalidArgumentException("form values not complete. verify the form and try again."));
 	}
 	echo "<p class=\"alert alert-success\">Admin(id = " . $admin->getAdminId() . ") added!</p>";} catch(Exception $exception) {
 	echo "<p class=\"alert alert-danger\">Exception: " . $exception->getMessage() . "</p>";
