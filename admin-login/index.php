@@ -17,7 +17,7 @@
 						</p>
 				</fieldset>
 					<p>
-						<input type="submit" value="Submit" />
+						<input id="submit" type="submit" value="submit" />
 					</p>
 			</form>
 		</body>
