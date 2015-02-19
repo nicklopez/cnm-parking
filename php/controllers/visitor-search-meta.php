@@ -1,6 +1,10 @@
 <?php
 /**
+ * controller to search for visitors
+ * decides which variable to search with based on radio choice
+ * name, email, plate
  *
+ * @Author Kyle Dozier <kyle@kedlogic.com>
  */
 require_once("visitor-search-by-name-post.php");
 require_once("visitor-search-by-email-post.php");

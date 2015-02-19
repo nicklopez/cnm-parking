@@ -1,6 +1,7 @@
 <?php
 /**
- * controller
+ * controller to search for visitors
+ * uses name
  *
  * @Author Kyle Dozier <kyle@kedlogic.com>
  */

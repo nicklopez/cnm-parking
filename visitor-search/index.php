@@ -13,7 +13,7 @@
 		<script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 		<script type="text/javascript" src="../js/visitor-search.js"></script>
 
-		<title>Search</title>
+		<title>Visitor Search</title>
 	</head>
 	<body>
 		<form id="visitorSearchForm" method="post" action="../php/controllers/visitor-search-meta.php">
