@@ -9,11 +9,6 @@ $_SESSION["login user"] = $_POST["adminEmail"];
 
 
 try {
-	//
-	// verify the form values have been submitted
-//	if(@isset($_POST["adminEmail"]) === false || @isset($_POST["password"])) {
-//		throw (new InvalidArgumentException("<p class=\"alert alert-danger\">form values not complete. verify the form and try again.</p>"));
-//	}
 
 	// create a new salt and hash
 	$salt = bin2hex(openssl_random_pseudo_bytes(32));
@@ -45,7 +40,13 @@ try {
 	// PLACEHOLDER TO REDIRECT TO ADMIN PORTAL
 
 
-			echo "<p class=\"alert alert-success\">Admin(id = " . $admin->getAdminId() . ") logged on!</p>";
+	// verify the form values have been submitted
+	if(@isset($_POST["adminEmail"]) === false || @isset($_POST["password"])=== false) {
+		throw (new InvalidArgumentException("form values not complete. verify the form and try again."));
+	}
+
+
+	echo "<p class=\"alert alert-success\">Admin(id = " . $admin->getAdminId() . ") logged in!</p>";
 		}
 	catch
 		(Exception $exception) {
