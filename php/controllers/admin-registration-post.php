@@ -11,13 +11,6 @@ require_once("Mail.php");
 
 // create new admin
 try {
-	// verify the form was submitted
-	if(@isset($_POST["adminFirstName"]) === false || @isset($_POST["adminLastName"]) === false || @isset($_POST["adminEmail"]) || @isset($_POST["password"])) {
-		throw(new InvalidArgumentException("form values not complete. verify the form and try again."));
-	}
-	echo "<p class=\"alert alert-success\">Admin(id = " . $admin->getAdminId() . ") added!</p>";} catch(Exception $exception) {
-	echo "<p class=\"alert alert-danger\">Exception: " . $exception->getMessage() . "</p>";
-
 
 // create a new salt and hash
 	$salt = bin2hex(openssl_random_pseudo_bytes(32));
@@ -37,6 +30,16 @@ try {
 
 	$adminProfile = new AdminProfile(null, $admin->getAdminId(), $_POST["adminFirstName"], $_POST["adminLastName"]);
 	$adminProfile->insert($mysqli);
+
+	// verify the form was submitted
+	if(@isset($_POST["adminFirstName"]) === false || @isset($_POST["adminLastName"]) === false || @isset($_POST["adminEmail"]) || @isset($_POST["password"])) {
+		throw(new InvalidArgumentException("Please enter or verify the form fields."));
+	}
+	echo "<p class=\"alert alert-success\">Admin(id = " . $admin->getAdminId() . ")added!</p>";
+		}
+	catch(Exception $exception) {
+		echo "<p class=\"alert alert-danger\">" . $exception->getMessage() . "</p>";
+
 
 	// email the user with an activation message
 	$to = $admin->getAdminEmail();

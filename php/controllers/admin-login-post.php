@@ -13,7 +13,6 @@ try {
 	// create a new salt and hash
 	$salt = bin2hex(openssl_random_pseudo_bytes(32));
 
-
 	// connect to database
 	mysqli_report(MYSQLI_REPORT_STRICT);
 	$configArray = readConfig("/etc/apache2/capstone-mysql/cnmparking.ini");
@@ -40,13 +39,10 @@ try {
 	if(@isset($_POST["adminEmail"]) === false || @isset($_POST["password"])=== false) {
 		throw (new InvalidArgumentException("form values not complete. verify the form and try again."));
 	}
-
-
 	echo "<p class=\"alert alert-success\">Admin(id = " . $admin->getAdminId() . ")logged in!</p>";
 		}
-	catch
-		(Exception $exception) {
-			echo "<p class=\"alert alert-danger\">" . $exception->getMessage() . "</p>";
+	catch	(Exception $exception) {
+		echo "<p class=\"alert alert-danger\">" . $exception->getMessage() . "</p>";
 		}
 
 ?>

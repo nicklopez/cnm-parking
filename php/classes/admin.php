@@ -151,7 +151,7 @@ class Admin {
 		$newAdminEmail = trim($newAdminEmail);
 		$newAdminEmail = filter_var($newAdminEmail, FILTER_SANITIZE_EMAIL);
 		if(empty($newAdminEmail) === true) {
-			throw(new InvalidArgumentException("the admin email is valid"));
+			throw(new InvalidArgumentException("the admin email is empty or insecure"));
 		}
 		// verify the admin email will fit in the database
 		if(strlen($newAdminEmail) > 128) {

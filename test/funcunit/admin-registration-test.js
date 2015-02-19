@@ -34,7 +34,7 @@ function testValidFields() {
 	// here, we assert we got the success message from the AJAX call
 	F(".alert").visible(function() {
 		// create a regular expression that evaluates the successful text
-		var successRegex = /Admin \(id = \d+\) added!/;
+		var successRegex = /Admin \(id = \d+\)added!/;
 
 		// the ok() function from qunit is equivalent to SimpleTest's assertTrue()
 		ok(F(this).hasClass("alert-success"), "successful alert CSS");
