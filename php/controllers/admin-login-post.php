@@ -33,14 +33,14 @@ try {
 
 
 	// PLACEHOLDER TO REDIRECT TO ADMIN PORTAL
-	header("Location: https://bootcamp-coders.cnm.edu/~dfevig/cnm-parking/admin-logout/index.php");
+	header("https://bootcamp-coders.cnm.edu/~dfevig/cnm-parking/php/test-portal/test-portal.php");
 
 
 	// verify the form values have been submitted
 	if(@isset($_POST["adminEmail"]) === false || @isset($_POST["password"])=== false) {
 		throw (new InvalidArgumentException("form values not complete. verify the form and try again."));
 	}
-	echo "<p class=\"alert alert-success\">Admin(id = " . $admin->getAdminId() . ")created!</p>";
+	echo "<p class=\"alert alert-success\">Admin(id = " . $admin->getAdminId() . ")welcome!</p>";
 		}
 	catch	(Exception $exception) {
 		echo "<p class=\"alert alert-danger\">" . $exception->getMessage() . "</p>";
