@@ -16,23 +16,12 @@
 		<title>Verify Availability</title>
 	</head>
 	<body>
-		<form id="verifyAvailabilityForm" method="post" action="../php/controllers/visitor-search-meta.php">
+		<form id="verifyAvailabilityForm" method="post" action="../php/controllers/verify-availability-post.php">
 			<div class="form-group">
-				<label class="control-label">Search By</label>
-				<label class="radio-inline">
-					<input type="radio" name="visitorSearchOptions" id="radioVisitorSearchByName" value="name" checked/>Name
-				</label>
-				<label class="radio-inline">
-					<input type="radio" name="visitorSearchOptions" id="radioVisitorSearchByEmail" value="email"/>Email Address
-				</label>
-				<label class="radio-inline">
-					<input type="radio" name="visitorSearchOptions" id="radioVisitorSearchByPlate" value="plate"/>License Plate Number
-				</label>
+				Arrival<input class="form-control" type="datetime-local" id="dateTimeVerifyAvailabilityInputArrival" name="dateTimeVerifyAvailabilityInputArrival"/>
+				Departure<input class="form-control" type="datetime-local" id="dateTimeVerifyAvailabilityInputDeparture" name="dateTimeVerifyAvailabilityInputDeparture"/>
 			</div>
-			<div class="form-group">
-				<input class="form-control" type="text" id="textVisitorSearchInput" name="textVisitorSearchInput" maxlength="270" placeholder="Search Criteria"/>
-			</div>
-			<button id="visitorSearchSubmit" type="submit">Search</button>
+			<button id="verifyAvailabilitySubmit" type="submit">Verify Availability</button>
 		</form>
 		<div id="outputArea"></div>
 	</body>
