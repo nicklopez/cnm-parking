@@ -36,7 +36,7 @@ try {
 
 if(@isset($_POST["visitorFirstName"]) === false || @isset($_POST["visitorLastName"]) === false || @isset($_POST["visitorEmail"]) === false || @isset($_POST["visitorPhone"]) === false || @isset($_POST["vehicleMake"]) === false || @isset($_POST["vehicleModel"]) === false || @isset($_POST["vehicleYear"]) === false ||
 	@isset($_POST["vehicleColor"]) === false || @isset($_POST["vehiclePlateNumber"]) === false || @isset($_POST["vehiclePlateState"]) === false) {
-	echo "<p class=\"alert alert-danger\">form values not complete. verify the form and try again.</p>";
+	trow(new mysqli_sql_exception("form values not complete. verify the form and try again."));
 }
 
 	echo "<p class=\"alert alert-success\">Visitor(id = " . $visitor->getVisitorId() . ") added!</p>";

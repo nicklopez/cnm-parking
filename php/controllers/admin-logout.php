@@ -8,5 +8,5 @@ session_destroy();
 var_dump($_SESSION['login user']);
 
 // redirect to login page
-header("Location: /login/index.php"); // Redirecting To Admin Login Page
+header("Location: https://bootcamp-coders.cnm.edu/~dfevig/cnm-parking/admin-login/index.php"); // Redirecting To Admin Login Page
 ?>

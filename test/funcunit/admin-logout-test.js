@@ -1,4 +1,4 @@
-// open a new window with the form under scrutiny
+;// open a new window with the form under scrutiny
 module("tabs", {
 	setup: function() {
 		F.open("../../admin-login/index.php");
@@ -39,7 +39,7 @@ function testValidFields() {
 
 //function testLogout() {
 //	// click logout link
-//	F("#a").click();
+//	F("#logout").click();
 //}
 
 // the test function *MUST* be called in order for the test to execute

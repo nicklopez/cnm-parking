@@ -33,7 +33,7 @@ try {
 
 
 	// PLACEHOLDER TO REDIRECT TO ADMIN PORTAL
-	header("Location: /admin-logout/index.php");
+	header("Location: https://bootcamp-coders.cnm.edu/~dfevig/cnm-parking/admin-logout/index.php");
 
 
 	// verify the form values have been submitted

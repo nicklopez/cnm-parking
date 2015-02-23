@@ -5,8 +5,9 @@
 	</head>
 	   
 	<body>
-		<form method="post" action="../php/controllers/admin-login-post.php">
-			<a ref="admin-logout.php">Admin Logout</a>
+		<form method="post" action="../admin-login/index.php">
+			<input type="submit" id="logout" value="Logout">
+		</form>
 	</body>
 </html>
 
