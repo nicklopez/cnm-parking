@@ -12,6 +12,8 @@
 require_once("/etc/apache2/capstone-mysql/encrypted-config.php");
 
 require_once ("../classes/parkingpass.php");
+require_once ("../classes/parkingspot.php");
+
 
 
 
@@ -23,9 +25,30 @@ $config = readConfig("/etc/apache2/capstone-mysql/cnmparking.ini");
 $mysqli = new mysqli($config["hostname"], $config["username"], $config["password"], $config["database"]);
 
 /**
- * verify availability via class get method
+ * verify availability via ParkingPass get method
  * use $arrival and $departure as $sunrise and $sunset
+ * html id/name 's = dateTimeVerifyAvailabilityInputArrival and dateTimeVerifyAvailabilityInputDeparture
  */
 
+$location = filter_input(INPUT_POST, "dateTimeVerifyAvailabilityInputArrival", FILTER_VALIDATE_INT);
+if(empty($searchInput) === true) {
+	throw(new InvalidArgumentException("Input contains hostile code"));
+}
 
-dateTimeVerifyAvailabilityInputDeparture
+$location = filter_input(INPUT_POST, "dateTimeVerifyAvailabilityInputArrival", FILTER_SANITIZE_STRING);
+if(empty($searchInput) === true) {
+	throw(new InvalidArgumentException("Input contains hostile code"));
+}
+
+$departure = filter_input(INPUT_POST, "dateTimeVerifyAvailabilityInputDeparture", FILTER_SANITIZE_STRING);
+if(empty($searchInput) === true) {
+	throw(new InvalidArgumentException("Input contains hostile code"));
+}
+
+
+$searchResults = ParkingPass::getParkingPassAvailability($mysqli, $location, $arrival, $departure);
+if($searchResults !== null) {
+	$searchResults = array($searchResults);
+}
+
+return($searchResults);

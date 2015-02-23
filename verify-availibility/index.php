@@ -18,8 +18,14 @@
 	<body>
 		<form id="verifyAvailabilityForm" method="post" action="../php/controllers/verify-availability-post.php">
 			<div class="form-group">
-				Arrival<input class="form-control" type="datetime-local" id="dateTimeVerifyAvailabilityInputArrival" name="dateTimeVerifyAvailabilityInputArrival"/>
-				Departure<input class="form-control" type="datetime-local" id="dateTimeVerifyAvailabilityInputDeparture" name="dateTimeVerifyAvailabilityInputDeparture"/>
+				<label for="selectListLocation" class="control-label">Choose Location</label><br/>
+				<select id="selectListLocation" name="selectListLocation" class="form-control"  >
+					<option value="1">City Lot</option>
+				</select>
+			</div>
+			<div class="form-group">
+				Arrival<input class="form-control" type="datetime-local" id="dateTimeVerifyAvailabilityInputArrival" name="dateTimeVerifyAvailabilityInputArrival" value="arrival"/>
+				Departure<input class="form-control" type="datetime-local" id="dateTimeVerifyAvailabilityInputDeparture" name="dateTimeVerifyAvailabilityInputDeparture" value="departure"/>
 			</div>
 			<button id="verifyAvailabilitySubmit" type="submit">Verify Availability</button>
 		</form>

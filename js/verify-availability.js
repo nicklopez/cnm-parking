@@ -13,15 +13,31 @@ $(document).ready(
 			// rules define what is good/bad input
 			rules: {
 				// each rule starts with the inputs name (NOT id)
-				dateTimeVerifyAvailabilityInput: {
+				selectListLocation: {
+					required: true
+				},
+				dateTimeVerifyAvailabilityInputArrival: {
+					required: true
+				},
+
+				dateTimeVerifyAvailabilityInputDeparture: {
 					required: true
 				}
 			},
 
+
 			// error messages to display to the end user
 			messages: {
 				// each rule starts with the inputs name (NOT id)
-				dateTimeVerifyAvailabilityInput: {
+				selectListLocation: {
+					required: "Field is required."
+				},
+
+				dateTimeVerifyAvailabilityInputArrival: {
+					required: "Field is required."
+				},
+
+				dateTimeVerifyAvailabilityInputDeparture: {
 					required: "Field is required."
 				}
 			},

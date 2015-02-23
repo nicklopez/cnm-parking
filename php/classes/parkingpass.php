@@ -1070,35 +1070,42 @@ class ParkingPass {
 			throw(new RangeException($range->getMessage(), 0, $range));
 		}
 
-		// sanitize the location before searching
-		$location = filter_var($location, FILTER_VALIDATE_INT);
-		if($location === false) {
-			throw(new mysqli_sql_exception("location is not an integer"));
-		}
-		if($location <= 0) {
-			throw(new mysqli_sql_exception("location is not positive"));
-		}
-
 		// create query template
-		// first search via locationId
-
-		$query = "SELECT parkingPassId FROM parkingPass INNER JOIN parkingSpot WHERE parkingPass.parkingSpotId = parkingSpot.parkingSpotId AND parkingSpot.locationId = ?";
+		$query = "SELECT parkingSpotId FROM parkingSpot WHERE parkingSpotId NOT IN 
+			(SELECT parkingSpotId FROM parkingSpot INNER JOIN parkingPass ON parkingSpot.parkingSpotId = parkingPass.parkingSpotId WHERE (
+			locationId = :location AND $sunset >= startDateTime AND $sunrise <= endDateTime AND 
+			(($sunrise <= endDateTime AND $sunrise >= startDateTime) OR 
+			($sunrise <= startDateTime AND $sunset >= startDateTime) OR 
+			($sunrise >= startDateTime AND $sunset >= endDateTime))))
+			LIMIT 1";
 		$statement = $mysqli->prepare($query);
 		if($statement === false) {
 			throw(new mysqli_sql_exception(" unable to prepare statement"));
 		}
-		// bind param
-		$statement->bind_param("i", $location);
-
+		
+		
+		// bind the member variables to the place holders in the template
+		$sunrise = $sunrise->format("Y-m-d H:i:s");
+		$sunset = $sunset->format("Y-m-d H:i:s");
+		$wasClean = $statement->bind_param("iss", $location, $sunrise, $sunset);
+		if($wasClean === false) {
+			throw(new mysqli_sql_exception("unable to bind parameters"));
+		}
 		// execute the statement
 		if($statement->execute() === false) {
 			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
 		}
 
+		// get result from SELECT query
 		$result = $statement->get_result();
 		if($result === false) {
 			throw(new mysqli_sql_exception("unable to get result set"));
 		}
+
+		var_dump($result);
+
+
+
 
 
 
