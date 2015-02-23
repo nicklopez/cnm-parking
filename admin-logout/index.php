@@ -1,12 +1,13 @@
-<?php
-// start admin restart session
-session_start();
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Logout CNM Parking Admin</title>
+	</head>
+	   
+	<body>
+		<form method="post" action="../php/controllers/admin-login-post.php">
+			<a ref="admin-logout.php">Admin Logout</a>
+	</body>
+</html>
 
-// destroy admin the session
-session_destroy();
 
-var_dump($_SESSION['login user']);
-
-// redirect to login page
-header("Location: /login/index.php"); // Redirecting To Admin Login Page
-?>
