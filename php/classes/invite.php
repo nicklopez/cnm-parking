@@ -124,7 +124,7 @@ class Invite {
 	public function setActionDateTime($newActionDateTime) {
 		// base case: if the date is null, use the current date and time
 		if($newActionDateTime === null) {
-			$this->actionDateTime = new DateTime();
+			$this->actionDateTime = null;
 			return;
 		}
 
@@ -250,10 +250,11 @@ class Invite {
 	 **/
 	public function setApproved($newApproved) {
 		// verify approved is valid
-		//$newApproved = filter_var($newApproved, FILTER_VALIDATE_BOOLEAN);
 		if($newApproved === NULL) {
 			$this->approved = NULL;
 			return;
+		} else {
+			$newApproved = filter_var($newApproved, FILTER_VALIDATE_BOOLEAN);
 		}
 
 		if($newApproved < 0 || $newApproved > 1) {
@@ -378,7 +379,12 @@ class Invite {
 		}
 
 		// bind the invite variables to the place holders in the template
-		$formattedActionDate = $this->actionDateTime->format("Y-m-d H:i:s");
+		if($this->actionDateTime === null) {
+			$formattedActionDate = null;
+		} else {
+			$formattedActionDate = $this->actionDateTime->format("Y-m-d H:i:s");
+		}
+
 		$formattedCreateDate = $this->createDateTime->format("Y-m-d H:i:s");
 		$wasClean = $statement->bind_param("issiisi", $this->inviteId, $formattedActionDate, $this->activation, $this->adminProfileId, $this->approved, $formattedCreateDate, $this->visitorId);
 		if($wasClean === false) {
