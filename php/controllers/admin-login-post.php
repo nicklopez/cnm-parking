@@ -33,7 +33,7 @@ try {
 
 
 	// PLACEHOLDER TO REDIRECT TO ADMIN PORTAL
-	header("https://bootcamp-coders.cnm.edu/~dfevig/cnm-parking/php/test-portal/test-portal.php");
+	header("https://bootcamp-coders.cnm.edu/~dfevig/cnm-parking/php/test-portal.php");
 
 
 	// verify the form values have been submitted

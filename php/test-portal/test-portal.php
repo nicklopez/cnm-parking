@@ -9,7 +9,9 @@ $_SESSION["adminProfileId"] = $adminProfile->getAdminProfileId();
 	<body>
 		<div id="adminProfile">
 			<p> id="welcome">Welcome : <?php echo $_SESSION["adminProfileId"]; ?></p>
-			<a href="../../admin-login/index.php">Log Out</a>
+			<form method="post" action="../../admin-login/index.php">
+				<input type="submit" id="logout" value="Logout">
+			</form>
 		</div>
 	</body>
 </html>
