@@ -30,7 +30,7 @@ $mysqli = new mysqli($config["hostname"], $config["username"], $config["password
  * html id/name 's = dateTimeVerifyAvailabilityInputArrival and dateTimeVerifyAvailabilityInputDeparture
  */
 
-$location = filter_input(INPUT_POST, "dateTimeVerifyAvailabilityInputArrival", FILTER_VALIDATE_INT);
+$location = filter_input(INPUT_POST, "intLocationInput", FILTER_VALIDATE_INT);
 if(empty($searchInput) === true) {
 	throw(new InvalidArgumentException("Input contains hostile code"));
 }

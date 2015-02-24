@@ -1,3 +1,6 @@
+/**
+ * @author kyle@kedlogic.com
+ */
 // document ready event
 $(document).ready(
 	// inner function for the ready() event
@@ -13,7 +16,7 @@ $(document).ready(
 			// rules define what is good/bad input
 			rules: {
 				// each rule starts with the inputs name (NOT id)
-				selectListLocation: {
+				intLocationInput: {
 					required: true
 				},
 				dateTimeVerifyAvailabilityInputArrival: {
@@ -29,15 +32,15 @@ $(document).ready(
 			// error messages to display to the end user
 			messages: {
 				// each rule starts with the inputs name (NOT id)
-				selectListLocation: {
+				intLocationInput: {
 					required: "Field is required."
 				},
 
-				dateTimeVerifyAvailabilityInputArrival: {
+				dateTimePickerArrival: {
 					required: "Field is required."
 				},
 
-				dateTimeVerifyAvailabilityInputDeparture: {
+				dateTimePickerDeparture: {
 					required: "Field is required."
 				}
 			},
@@ -66,5 +69,15 @@ $(document).ready(
 					}
 				});
 			}
+		});
+
+		$('#dateTimePickerArrival').datetimepicker();
+		$('#dateTimePickerDeparture').datetimepicker();
+		$("#dateTimePickerArrival").on("dp.change", function(e) {
+			$('#dateTimePickerDeparture').data("DateTimePicker").minDate(e.date);
+		});
+		$("#dateTimePickerDeparture").on("dp.change", function(e) {
+			$('#dateTimePickerArrival').data("DateTimePicker").maxDate(e.date);
+			$('#dateTimePickerArrival').data("DateTimePicker").minDate(now);
 		});
 	});
