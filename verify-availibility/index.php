@@ -17,17 +17,22 @@
 	</head>
 	<body>
 		<form id="verifyAvailabilityForm" method="post" action="../php/controllers/verify-availability-post.php">
-			<div class="form-group">
-				<label for="selectListLocation" class="control-label">Choose Location</label><br/>
-				<select id="selectListLocation" name="selectListLocation" class="form-control"  >
-					<option value="1">City Lot</option>
-				</select>
+			<div class="container">
+				<div class="col-xs-12 col-sm-6 col-md-3">
+					<div class="form-group">
+						<label for="selectListLocation" class="control-label">Verify Availability</label><br/>
+						Choose Location<select id="selectListLocation" name="selectListLocation" class="form-control"  >
+							<option value="1">City Lot 1</option>
+							<option value="2">City Lot 2</option>
+							<option value="3">City Lot 3</option>
+							<option value="4">City Lot 4</option>
+						</select>
+						Arrival<input class="form-control" type="datetime-local" id="dateTimeVerifyAvailabilityInputArrival" name="dateTimeVerifyAvailabilityInputArrival" value="arrival"/>
+						Departure<input class="form-control" type="datetime-local" id="dateTimeVerifyAvailabilityInputDeparture" name="dateTimeVerifyAvailabilityInputDeparture" value="departure"/>
+					</div>
+					<button id="verifyAvailabilitySubmit" type="submit">Verify Availability</button>
+				</div>
 			</div>
-			<div class="form-group">
-				Arrival<input class="form-control" type="datetime-local" id="dateTimeVerifyAvailabilityInputArrival" name="dateTimeVerifyAvailabilityInputArrival" value="arrival"/>
-				Departure<input class="form-control" type="datetime-local" id="dateTimeVerifyAvailabilityInputDeparture" name="dateTimeVerifyAvailabilityInputDeparture" value="departure"/>
-			</div>
-			<button id="verifyAvailabilitySubmit" type="submit">Verify Availability</button>
 		</form>
 		<div id="outputArea"></div>
 	</body>
