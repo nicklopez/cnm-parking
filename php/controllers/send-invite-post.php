@@ -1,9 +1,10 @@
 <?php
 // start a PHP session for CSRF protection
 session_start();
+$_SESSION["adminProfileId"] = 6;
 
 // require CSRF protection
-require_once("../lib/csrf.php");
+//require_once("../lib/csrf.php");
 
 // require encrypted configuration files
 require_once("/etc/apache2/capstone-mysql/encrypted-config.php");
@@ -18,30 +19,27 @@ require_once("../classes/invite.php");
 require_once("Mail.php");
 
 try {
-//	// verify the form was submitted OK
-//	if (@isset($_POST["emailAddress"]) === false || @isset($_POST["firstName"]) === false ||
-//		@isset($_POST["lastName"]) === false || @isset($_POST["phone"]) === false) {
-//		throw(new RuntimeException("form variables incomplete or missing"));
-//	}
-
-	// verify the CSRF tokens
-	if(verifyCsrf($_POST["csrfName"], $_POST["csrfToken"]) === false) {
-		throw(new RuntimeException("CSRF tokens incorrect or missing. Make sure cookies are enabled."));
-	}
-
-//	// create a new salt or token
-//	$activation = bin2hex(openssl_random_pseudo_bytes(16));
-
 	// create a Visitor (if required) and Invite object and insert them into mySQL
 	$config = readConfig("/etc/apache2/capstone-mysql/cnmparking.ini");
 	$mysqli = new mysqli($config["hostname"], $config["username"], $config["password"], $config["database"]);
 
 	// query mySQL to see if visitor exists
-	$invites = Invite::getPendingInvite($mysqli);
+	$objects = Invite::getInviteByActivation($mysqli, $_POST["token"]);
+	$invite = $objects["invite"];
+	$invite->setAdminProfileId($_SESSION["adminProfileId"]);
+	$invite->setActionDateTime(new DateTime());
 
+	if (isset($_POST["accept"])) {
+		$invite->setApproved($_POST["accept"]);
+	} else {
+		$invite->setApproved($_POST["decline"]);
+	}
+
+	$invite->update($mysqli);
 
 	// email the visitor a URL with token
-	$to = $newVisitor->getVisitorEmail();
+	$visitor = $objects["visitor"];
+	$to = $visitor->getVisitorEmail();
 	$from = "noreply@cnm.edu";
 
 	// build headers
@@ -51,39 +49,52 @@ try {
 	$headers["Reply-To"] = $from;
 
 	// use and if statement to fetch the available visitor values
-	$headers["Subject"] = "Parking Pass Invite Request - " . $visitor->getVisitorFirstName() . " " . $visitor->getVisitorLastName();
+	$headers["Subject"] = "Parking Pass Invite - ";
 	$headers["MIME-Version"] = "1.0";
 	$headers["Content-Type"] = "text/html; charset=UTF-8";
 
 	// build message
-	$pageName = end(explode("/", $_SERVER["PHP_SELF"],4));
+	$activation = $invite->getActivation();
+	$pageName = end(explode("/", $_SERVER["PHP_SELF"], 4));
 	$url = "http://" . $_SERVER["SERVER_NAME"] . $_SERVER["PHP_SELF"];
 	$url = str_replace($pageName, "personal-vehicle", $url);
 	$url = "$url?activation=$activation";
-	$message = <<< EOF
-<html>
-	<body>
-		<h1>CNM STEMulus Center Parking</h1>
-		<hr />
-		<p>Please visit the following URL to register for a parking pass: <a href="$url">$url</a>.</p>
-	</body>
-</html>
+	if(isset($_POST["accept"])) {
+		$message = <<< EOF
+	<html>
+		<body>
+			<h1>CNM STEMulus Center Parking</h1>
+				<hr />
+					<p>Please visit the following URL to register for a parking pass: <a href="$url">$url</a>.</p>
+		</body>
+	</html>
 EOF;
+	} else {
+		$message = <<< EOF
+	<html>
+		<body>
+			<h1>CNM STEMulus Center Parking</h1>
+				<hr />
+					<p>Your request could not be approved at this time.  Please contact CNM STEMulus center if you have any questions</p>
+		</body>
+	</html>
+EOF;
+	}
 
 	// send the email
-	error_reporting(E_ALL & ~(E_STRICT|E_NOTICE|E_DEPRECATED));
+	error_reporting(E_ALL & ~(E_STRICT | E_NOTICE | E_DEPRECATED));
 	$mailer =& Mail::factory("sendmail");
 	$status = $mailer->send($to, $headers, $message);
-	if(PEAR::isError($status) === true)
-	{
-		echo "<div class=\"alert alert-danger\" role=\"alert\"><strong>Oh snap!</strong> your request did not reach us:" . $status->getMessage() . "</div>";
-	}
-	else
-	{
-		echo "<div class=\"alert alert-success\" role=\"alert\"><strong>Request sent successfully!</strong> You will receive an email with additional details shortly.</div>";
-	}
 
+	if(PEAR::isError($status) === true) {
+		echo "<div class=\"alert alert-danger\" role=\"alert\"><strong>Oh snap!</strong> your request did not reach us:" . $status->getMessage() . "</div>";
+	} else if(PEAR::isError($status) === false && isset($_POST["accept"])) {
+		echo "<div class=\"alert alert-success\" role=\"alert\"><strong>Invite sent to ". $visitor->getVisitorFirstName(). " " . $visitor->getVisitorLastName(). " successfully!</strong></div>";
+	} else {
+		echo "<div class=\"alert alert-warning\" role=\"alert\"><strong>Decline message sent to ". $visitor->getVisitorFirstName(). " " . $visitor->getVisitorLastName(). " successfully!</strong></div>";
+	}
 } catch(Exception $exception) {
 	echo "<div class=\"alert alert-danger\" role=\"alert\"><strong>Oh snap!</strong> Unable to request a parking pass: " . $exception->getMessage() . "</div>";
 }
+
 ?>
