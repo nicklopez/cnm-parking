@@ -564,7 +564,9 @@ class Invite {
 		}
 
 		// create query template
-		$query = "SELECT inviteId, actionDateTime, activation, adminProfileId, approved, createDateTime, visitorId FROM invite WHERE activation = ?";
+		$query = "SELECT inviteId, visitor.visitorFirstName, visitor.visitorLastName, visitor.visitorEmail, visitor.visitorPhone, actionDateTime, activation, adminProfileId, approved, createDateTime, visitor.visitorId FROM invite
+		INNER JOIN visitor ON visitor.visitorId = invite.visitorId
+		WHERE activation = ?";
 		$statement = $mysqli->prepare($query);
 		if($statement === false) {
 			throw(new mysqli_sql_exception("unable to prepare statement"));
@@ -588,22 +590,41 @@ class Invite {
 		}
 
 		// grab the invite from mySQL
+//		while(($row = $result->fetch_assoc()) !== null) {
+//			try {
+//				return $row;
+//
+//			} catch(Exception $exception) {
+//				// if the row couldn't be converted, rethrow it
+//				throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
+//			}
+
+		// handle degenerate case: more than 1 row!?
+		$numRows = $result->num_rows;
+		if($numRows > 1) {
+			throw(new mysqli_sql_exception("activation (token) is not unique"));
+		} else if($numRows === 0) {
+			return (null);
+		}
+
+		// build up the array of 2 objects
 		try {
-			$invite = null;
 			$row = $result->fetch_assoc();
-			if($row !== null) {
-				$invite = new Invite($row["inviteId"], $row["actionDateTime"], $row["activation"], $row["adminProfileId"], $row["approved"], $row["createDateTime"], $row["visitorId"]);
-			}
+			$objects = array();
+			$visitor = new Visitor($row["visitorId"], $row["visitorEmail"], $row["visitorFirstName"], $row["visitorLastName"], $row["visitorPhone"]);
+			$invite = new Invite($row["inviteId"], $row["actionDateTime"], $row["activation"], $row["adminProfileId"], $row["approved"], $row["createDateTime"], $row["visitorId"]);
+			$objects["visitor"] = $visitor;
+			$objects["invite"] = $invite;
 		} catch(Exception $exception) {
 			// if the row couldn't be converted, rethrow it
 			throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
 		}
 
-		// free up memory and return the result
-		$result->free();
-		$statement->close();
-		return ($invite);
-	}
+			// free up memory and return the results
+			$result->free();
+			$statement->close();
+			return($objects);
+		}
 
 	/**
 	 * retrieves all invite requests for review
@@ -658,7 +679,7 @@ class Invite {
 		if($numberOfInvites === 0) {
 			return(null);
 		} else {
-			return ($invites);
+			return $invites;
 		}
 	}
 }

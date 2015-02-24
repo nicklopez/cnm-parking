@@ -74,16 +74,15 @@ try {
 	// build message
 	$pageName = end(explode("/", $_SERVER["PHP_SELF"],4));
 	$url = "http://" . $_SERVER["SERVER_NAME"] . $_SERVER["PHP_SELF"];
-	$url = str_replace($pageName, "personal-vehicle", $url);
-	$url = "$url?activation=$activation";
+	$url = str_replace($pageName, "send-invite", $url);
 	$message = <<< EOF
-<html>
-	<body>
-		<h1>CNM STEMulus Center Parking</h1>
-		<hr />
-		<p>Please visit the following URL to send the invite: <a href="$url">$url</a>.</p>
-	</body>
-</html>
+	<html>
+		<body>
+			<h1>CNM STEMulus Center Parking</h1>
+				<hr />
+					<p>Please visit the following URL to send the invite: <a href="$url">$url</a>.</p>
+		</body>
+	</html>
 EOF;
 
 	// send the email
