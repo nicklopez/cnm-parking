@@ -6,10 +6,12 @@ require_once("../classes/adminprofile.php");
 session_start();
 
 $_SESSION["login user"] = $_POST["adminEmail"];
+if(isset($_SESSION["login_user"])) {
+	header("location: https://bootcamp-coders.cnm.edu/~dfevig/cnm-parking/php/test-portal/test-portal.php");
+}
 
 
 try {
-
 	// create a new salt and hash
 	$salt = bin2hex(openssl_random_pseudo_bytes(32));
 
@@ -20,18 +22,19 @@ try {
 
 	// query admin email and hash compare
 	$admin = Admin::getAdminByAdminEmail($mysqli, $_POST["adminEmail"]);
-	if (count($admin) !== 0) {
+	if(count($admin) !== 0) {
 		$hash = hash_pbkdf2("sha512", $_POST["password"], $salt, 2048, 128);
-		if($hash === $admin->getPassHash());
+		if($hash === $admin->getPassHash()) ;
 		// assign session to logged in admin id
 		$adminProfile = AdminProfile::getAdminProfileByAdminId($mysqli, $admin->getAdminId());
 		$_SESSION["adminProfileId"] = $adminProfile->getAdminProfileId();
 		// PLACEHOLDER TO REDIRECT TO ADMIN PORTAL
 		header("location: https://bootcamp-coders.cnm.edu/~dfevig/cnm-parking/php/test-portal/test-portal.php");
-		}
-	else {
+
+	} else {
 		throw (new mysqli_sql_exception(" incorrect email or password. Try again."));
 	}
+
 
 	// verify the form values have been submitted
 	if(@isset($_POST["adminEmail"]) === false || @isset($_POST["password"])=== false) {
@@ -41,6 +44,6 @@ try {
 		}
 	catch	(Exception $exception) {
 		echo "<p class=\"alert alert-danger\">" . $exception->getMessage() . "</p>";
-		}
+	}
 
 ?>
