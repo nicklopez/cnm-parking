@@ -9,11 +9,11 @@
 					<legend>CNM Parking Admin Credential</legend>
 						<p>
 					   	<label for="adminEmail">Email: </label>
-					   	<input type="text" name="adminEmail" id="adminEmail" placeholder="name@example.com" value="" />
+					   	<input type="text" name="adminEmail" id="adminEmail" placeholder="name@example.com"  />
 						</p>
 						<p>
 							<label for="password">Password: </label>
-							<input type="password" name="password" id="password" placeholder="******" value="" />
+							<input type="password" name="password" id="password" placeholder="******"  />
 						</p>
 				</fieldset>
 					<p>

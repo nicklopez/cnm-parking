@@ -1,14 +1,24 @@
 <?php
-
+session_start();
 require_once("/etc/apache2/capstone-mysql/encrypted-config.php");
 require_once("../classes/admin.php");
 require_once("../classes/adminprofile.php");
-session_start();
-
 $_SESSION["login user"] = $_POST["adminEmail"];
-if(isset($_SESSION["login_user"])) {
-	header("location: https://bootcamp-coders.cnm.edu/~dfevig/cnm-parking/php/test-portal/test-portal.php");
-}
+//if(isset($_SESSION["login_user"])) {
+	//header("location: https://bootcamp-coders.cnm.edu/~dfevig/cnm-parking/php/test-portal/test-portal.php");
+// }
+?>
+	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+	<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery.form/3.51/jquery.form.min.js"></script>
+	<script type="text/javascript" src="//ajax.aspnetcdn.com/ajax/jquery.validate/1.12.0/jquery.validate.min.js"></script>
+	<script type="text/javascript" src="//ajax.aspnetcdn.com/ajax/jquery.validate/1.12.0/additional-methods.min.js"></script>
+
+	<!-- Latest compiled and minified Bootstrap JavaScript, all compiled plugins included -->
+	<script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+	<script src="../../js/admin-login.js"></script>
+
+<?php
 
 
 try {
@@ -27,9 +37,18 @@ try {
 		if($hash === $admin->getPassHash()) ;
 		// assign session to logged in admin id
 		$adminProfile = AdminProfile::getAdminProfileByAdminId($mysqli, $admin->getAdminId());
-		$_SESSION["adminProfileId"] = $adminProfile->getAdminProfileId();
+		// $_SESSION["adminProfileId"] = $adminProfile->getAdminProfileId();
+		$_SESSION["adminProfile"] = array(
+			'id' => $adminProfile->getAdminProfileId()
+		);
+
+		$adminProfileId = $adminProfile->getAdminProfileId();
+
+		echo '<button id="'.$adminProfileId.'" class="btn btn-default portalButton">Go To Portal</button>';
+
+
 		// PLACEHOLDER TO REDIRECT TO ADMIN PORTAL
-		header("location: https://bootcamp-coders.cnm.edu/~dfevig/cnm-parking/php/test-portal/test-portal.php");
+		// header("location: https://bootcamp-coders.cnm.edu/~dfevig/cnm-parking/php/test-portal/test-portal.php");
 
 	} else {
 		throw (new mysqli_sql_exception(" incorrect email or password. Try again."));
@@ -40,10 +59,9 @@ try {
 	if(@isset($_POST["adminEmail"]) === false || @isset($_POST["password"])=== false) {
 		throw (new InvalidArgumentException("form values not complete. verify the form and try again."));
 	}
-	echo "<p class=\"alert alert-success\">Admin(id = " . $admin->getAdminId() . ")welcome!</p>";
+	echo "<p>Click to Continue</p>"; // "<p class=\"alert alert-success\">Admin(id = " . $admin->getAdminId() . ")welcome!</p>";
 		}
 	catch	(Exception $exception) {
 		echo "<p class=\"alert alert-danger\">" . $exception->getMessage() . "</p>";
 	}
 
-?>
