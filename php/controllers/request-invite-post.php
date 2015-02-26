@@ -1,9 +1,4 @@
 <?php
-// start a PHP session for CSRF protection
-session_start();
-
-// require CSRF protection
-require_once("../lib/csrf.php");
 
 // require encrypted configuration files
 require_once("/etc/apache2/capstone-mysql/encrypted-config.php");
@@ -22,11 +17,6 @@ try {
 	if (@isset($_POST["emailAddress"]) === false || @isset($_POST["firstName"]) === false ||
 		@isset($_POST["lastName"]) === false || @isset($_POST["phone"]) === false) {
 		throw(new RuntimeException("form variables incomplete or missing"));
-	}
-
-	// verify the CSRF tokens
-	if(verifyCsrf($_POST["csrfName"], $_POST["csrfToken"]) === false) {
-		throw(new RuntimeException("CSRF tokens incorrect or missing. Make sure cookies are enabled."));
 	}
 
 	// create a new salt or token

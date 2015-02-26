@@ -10,7 +10,9 @@ session_start();
 // require CSRF protection
 require_once("../php/lib/csrf.php");
 ?>
+<header>
 	<h1>Controller: Request a parking pass invite</h1>
+	</header>
 	<form id="request-invite" method="post" action="../php/controllers/request-invite-post.php" novalidate="novalidate">
 		<?php echo generateInputTags(); ?>
 		<label for="emailAddress">Email:</label>
