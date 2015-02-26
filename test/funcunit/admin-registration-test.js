@@ -33,12 +33,10 @@ function testValidFields() {
 	// in forms, we want to assert the form worked as expected
 	// here, we assert we got the success message from the AJAX call
 	F(".alert").visible(function() {
-		// create a regular expression that evaluates the successful text
-		var successRegex = /Admin\(id = \d+\)added!/;
 
 		// the ok() function from qunit is equivalent to SimpleTest's assertTrue()
 		ok(F(this).hasClass("alert-success"), "successful alert CSS");
-		ok(successRegex.test(F(this).html()), "successful message");
+		ok(successRegex.test(F(this).text("Success! Please check your email to finish registration.")), "successful message");
 	});
 }
 
@@ -61,7 +59,7 @@ function testInvalidFields() {
 	F(".alert").visible(function() {
 		// the ok() function from qunit is equivalent to SimpleTest's assertTrue()
 		ok(F(this).hasClass("alert-danger"), "danger alert CSS");
-		ok(F(this).html().indexOf("form values not complete. verify the form and try again.") === 0, "unsuccessful message");
+		ok(F(this).html().indexOf("Unable to complete request. Try again."), "unsuccessful message");
 	});
 }
 

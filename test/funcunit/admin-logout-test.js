@@ -30,10 +30,11 @@ function testValidFields() {
 
 	// in forms, we want to assert the form worked as expected
 	// here, we assert we got the success message from the AJAX call
-	F("#message").visible(function() {
+	F(".alert").visible(function() {
 		//	// create a regular expression that evaluates the successful text
 
 		// the ok() function from qunit is equivalent to SimpleTest's assertTrue()
+		ok(F(this).hasClass("alert-success"), "successful alert css");
 		ok(F(this).text("You have been logged out"), "successful message");
 		})
 }

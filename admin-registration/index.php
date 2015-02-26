@@ -1,4 +1,5 @@
 <?php
+$pageTitle = "Admin Registration";
 require_once("../php/lib/header.php");
 ?>
 

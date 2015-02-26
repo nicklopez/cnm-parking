@@ -1,9 +1,8 @@
-<!DOCTYPE html>
-<html>
-	   <head>
-			<title>Login to CNM Parking Admin</title>
-		</head>
-	   <body>
+<?php
+$pageTitle = "Admin Login";
+require_once("../php/lib/header.php");
+?>
+
 			<form method="post" action="../php/controllers/admin-login-post.php">
 				<fieldset>
 					<legend>CNM Parking Admin Credential</legend>

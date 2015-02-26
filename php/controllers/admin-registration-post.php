@@ -1,6 +1,6 @@
 <?php
 // require_once("../../../lib/csrf.php");
-require_once("../../admin-registration/index.php");
+$pageTitle = "Success";
 require_once("/etc/apache2/capstone-mysql/encrypted-config.php");
 require_once("../classes/admin.php");
 require_once("../classes/adminprofile.php");
@@ -36,10 +36,11 @@ try {
 	if(@isset($_POST["adminFirstName"]) === false || @isset($_POST["adminLastName"])=== false || @isset($_POST["adminEmail"]) === false || @isset($_POST["password"]) === false) {
 		throw (new InvalidArgumentException("form values not complete. verify the form and try again."));
 	}
-	echo "<p class=\"alert alert-success\">Admin(id = " . $admin->getAdminId() . ") registered</p>";
+	echo "<p class=\"alert alert-success\">Success! Please check your email to finish registration.</p>";
 }
 catch	(Exception $exception) {
-	echo "<p class=\"alert alert-danger\">" . $exception->getMessage() . "</p>";
+	echo "<p class=\"alert alert-danger\">Unable to complete request. Try again.</p>";
+	// . $exception->getMessage() . "</p>";
 }
 
 //	// email the visitor a URL with token
