@@ -28,7 +28,7 @@ function testValidFields() {
 	F("#password").type(VALID_PASSWORD);
 
 	// click the button once all the fields are filled in
-	F("#submit").click();
+	F("#register").click();
 
 	// in forms, we want to assert the form worked as expected
 	// here, we assert we got the success message from the AJAX call
@@ -36,7 +36,7 @@ function testValidFields() {
 
 		// the ok() function from qunit is equivalent to SimpleTest's assertTrue()
 		ok(F(this).hasClass("alert-success"), "successful alert CSS");
-		ok(successRegex.test(F(this).text("Success! Please check your email to finish registration.")), "successful message");
+		ok(F(this).text("Success! Please check your email to finish registration."), "successful message");
 	});
 }
 
@@ -52,14 +52,14 @@ function testInvalidFields() {
 
 
 	// click the button once all the fields are filled in
-	F("#submit").click();
+	F("#register").click();
 
 	// in forms, we want to assert the form worked as expected
 	// here, we assert we got the success message from the AJAX call
 	F(".alert").visible(function() {
 		// the ok() function from qunit is equivalent to SimpleTest's assertTrue()
 		ok(F(this).hasClass("alert-danger"), "danger alert CSS");
-		ok(F(this).html().indexOf("Unable to complete request. Try again."), "unsuccessful message");
+		ok(F(this).html().indexOf("Unable to complete request. Try again.") === 0, "unsuccessful message");
 	});
 }
 

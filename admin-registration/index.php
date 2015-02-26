@@ -19,7 +19,7 @@ require_once("../php/lib/header.php");
 			<label for="password">Password</label>
 			<input type="password" id="password" name="password"><br>
 
-			<button id="submit" type="submit" value="submit">Register</button>
+			<button id="register" type="submit">Register</button>
 		</form>
 
 <?php
