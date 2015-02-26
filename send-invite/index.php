@@ -30,7 +30,7 @@
 	<body>
 
 		<h1>Controller: Send a parking pass invite</h1>
-				<?php
+						<?php
 				try {
 					// now retrieve the configuration parameters
 					$configFile = "/etc/apache2/capstone-mysql/cnmparking.ini";
