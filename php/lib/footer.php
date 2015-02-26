@@ -1,7 +1,4 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: David
- * Date: 2/11/2015
- * Time: 3:06 PM
- */
+			</main>
+		<footer>Made by CNM Parking Team &copy <?php echo date("Y") ?></footer>
+	</body>
+</html>
