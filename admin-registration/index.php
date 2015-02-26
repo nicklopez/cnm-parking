@@ -3,7 +3,6 @@ $pageTitle = "Admin Registration";
 require_once("../php/lib/header.php");
 ?>
 
-
 		<h1>CNM Parking Admin Registration</h1>
 		<form method="post" action="../php/controllers/admin-registration-post.php">
 
