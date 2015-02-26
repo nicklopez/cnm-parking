@@ -10,6 +10,8 @@ $mysqli = new mysqli($configArray['hostname'], $configArray['username'], $config
 $adminProfile = AdminProfile::getAdminProfileByAdminProfileId($mysqli, $_SESSION['adminProfileId']);
 
 $adminProfileId = $adminProfile->getAdminProfileId();
+
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -20,7 +22,7 @@ $adminProfileId = $adminProfile->getAdminProfileId();
 		<div id="adminProfile">
 			<p id="welcome">Welcome Admin: <?php echo $adminProfileId; ?>
 			<form action="../controllers/admin-logout.php" method="post">
-				    <input type="submit" value="logout" />
+				    <input id="logout" type="submit" value="logout" />
 			</form>
 
 		</div>

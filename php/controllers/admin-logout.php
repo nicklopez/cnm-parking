@@ -8,8 +8,7 @@
 	session_destroy();
 
 	// redirect to login page
-	echo "You have been logged out.";
-	header("Location: https://bootcamp-coders.cnm.edu/~dfevig/cnm-parking/admin-login/index.php"); // Redirecting To Admin Login Page
+	header("Location: https://bootcamp-coders.cnm.edu/~dfevig/cnm-parking/admin-logout/index.php"); // Redirecting To Admin Logout Message Page
 
 ?>
 
