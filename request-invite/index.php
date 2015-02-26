@@ -1,38 +1,29 @@
-<!DOCTYPE html>
-<html>
-	<head>
-		<?php
-		// start a PHP session for CSRF protection
-		session_start();
+<script type="text/javascript" src="../js/request-invite.js"></script>
+<?php
+// require the header file
+$pageTitle = "Controller - Request Parking Pass Invite";
+require_once("../php/lib/header.php");
 
-		// require CSRF protection
-		require_once("../php/lib/csrf.php");
-		?>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<link type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet">
-		<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery.form/3.51/jquery.form.min.js"></script>
-		<script type="text/javascript" src="//ajax.aspnetcdn.com/ajax/jquery.validate/1.12.0/jquery.validate.min.js"></script>
-		<script type="text/javascript" src="//ajax.aspnetcdn.com/ajax/jquery.validate/1.12.0/additional-methods.min.js"></script>
-		<script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
-		<script type="text/javascript" src="../js/request-invite.js"></script>
-		<title>Controller: Request Invite</title>
-	</head>
-	<body>
-		<h1>Controller: Request a parking pass invite</h1>
-		<form id="request-invite" method="post" action="../php/controllers/request-invite-post.php" novalidate="novalidate">
-			<?php echo generateInputTags(); ?>
-			<label for="emailAddress">Email:</label>
-			<input type="text" id="emailAddress" name="emailAddress" size="128" maxlength="128" placeholder="name@example.com"><br>
-			<label for="firstName">First Name:</label>
-			<input type="text" id="firstName" name="firstName" size="128" maxlength="128" placeholder="First Name"><br>
-			<label for="lastName">Last Name:</label>
-			<input type="text" id="lastName" name="lastName" size="128" maxlength="128" placeholder="Last Name"><br>
-			<label for="phone">Phone:</label>
-			<input type="text" id="phone" name="phone" size="128" maxlength="128" placeholder="Phone Number"><br>
-			<button id="sendRequest" type="submit">Send Request</button>
-		</form>
-		<p id="outputArea"></p>
-	</body>
-</html>
+// start a PHP session for CSRF protection
+session_start();
+
+// require CSRF protection
+require_once("../php/lib/csrf.php");
+?>
+	<h1>Controller: Request a parking pass invite</h1>
+	<form id="request-invite" method="post" action="../php/controllers/request-invite-post.php" novalidate="novalidate">
+		<?php echo generateInputTags(); ?>
+		<label for="emailAddress">Email:</label>
+		<input type="text" id="emailAddress" name="emailAddress" size="128" maxlength="128" placeholder="name@example.com"><br>
+		<label for="firstName">First Name:</label>
+		<input type="text" id="firstName" name="firstName" size="128" maxlength="128" placeholder="First Name"><br>
+		<label for="lastName">Last Name:</label>
+		<input type="text" id="lastName" name="lastName" size="128" maxlength="128" placeholder="Last Name"><br>
+		<label for="phone">Phone:</label>
+		<input type="text" id="phone" name="phone" size="128" maxlength="128" placeholder="Phone Number"><br>
+		<button id="sendRequest" type="submit">Send Request</button>
+	</form>
+	<p id="outputArea"></p>
+
+	<!--	require the footer file-->
+	<?php require_once("../php/lib/footer.php"); ?>
