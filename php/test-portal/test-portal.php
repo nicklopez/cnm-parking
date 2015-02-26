@@ -1,7 +1,5 @@
 <?php
 session_start();
-// require session from login script
-//include_once("../../php/controllers/admin-login-post.php");
 require_once("/etc/apache2/capstone-mysql/encrypted-config.php");
 require_once("../classes/adminprofile.php");
 
@@ -22,8 +20,9 @@ $adminProfileId = $adminProfile->getAdminProfileId();
 	<body>
 		<div id="adminProfile">
 			<p id="welcome">Welcome Admin: <?php echo $adminProfileId; ?></p>
-			<form method="post" action="../../admin-login/index.php">
-				<input type="submit" id="logout" value="Logout">
+			<form action="../controllers/admin-logout.php" method="post">
+				<input name="return" type="hidden" />
+				<input type="submit" value="logout" />
 			</form>
 		</div>
 	</body>
