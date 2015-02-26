@@ -4,6 +4,7 @@ require_once("../../admin-registration/index.php");
 require_once("/etc/apache2/capstone-mysql/encrypted-config.php");
 require_once("../classes/admin.php");
 require_once("../classes/adminprofile.php");
+require_once("../lib/header.php");
 
 // require PEAR::Mail <http://pear.php.net/package/Mail> to send mail
 require_once("Mail.php");
@@ -30,6 +31,16 @@ try {
 
 	$adminProfile = new AdminProfile(null, $admin->getAdminId(), $_POST["adminFirstName"], $_POST["adminLastName"]);
 	$adminProfile->insert($mysqli);
+
+// verify the form values have been submitted
+	if(@isset($_POST["adminFirstName"]) === false || @isset($_POST["adminLastName"])=== false || @isset($_POST["adminEmail"]) === false || @isset($_POST["password"]) === false) {
+		throw (new InvalidArgumentException("form values not complete. verify the form and try again."));
+	}
+	echo "<p class=\"alert alert-success\">Admin(id = " . $admin->getAdminId() . ") registered</p>";
+}
+catch	(Exception $exception) {
+	echo "<p class=\"alert alert-danger\">" . $exception->getMessage() . "</p>";
+}
 
 //	// email the visitor a URL with token
 //	$admin = $objects["admin"];

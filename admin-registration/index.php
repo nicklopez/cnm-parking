@@ -1,6 +1,8 @@
-<html>
+<?php
+require_once("../php/lib/header.php");
+?>
 
-	<body>
+
 		<h1>CNM Parking Admin Registration</h1>
 		<form method="post" action="../php/controllers/admin-registration-post.php">
 
@@ -19,5 +21,6 @@
 			<button id="submit" type="submit" value="submit">Register</button>
 		</form>
 
-	</body>
-</html>
+<?php
+require_once("../php/lib/footer.php");
+?>
