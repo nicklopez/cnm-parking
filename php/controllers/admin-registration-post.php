@@ -31,15 +31,55 @@ try {
 	$adminProfile = new AdminProfile(null, $admin->getAdminId(), $_POST["adminFirstName"], $_POST["adminLastName"]);
 	$adminProfile->insert($mysqli);
 
-	// verify the form was submitted
-	if(@isset($_POST["adminFirstName"]) === false || @isset($_POST["adminLastName"]) === false || @isset($_POST["adminEmail"]) || @isset($_POST["password"])) {
-			throw (new InvalidArgumentException("form values not complete. verify the form and try again."));
-		}
-		echo "<p class=\"alert alert-success\">Admin(id = " . $admin->getAdminId() . ")created!</p>";
-		}
-		catch	(Exception $exception) {
-			echo "<p class=\"alert alert-danger\">" . $exception->getMessage() . "</p>";
+	// email the visitor a URL with token
+	$admin = $objects["admin"];
+	$to = $admin->getAdminEmail();
+	$from = "noreply@cnm.edu";
+
+// email the user with an activation message
+	$to = $admin->getAdminEmail();
+	$from = "noreply@cnm.edu";
+
+	// build headers
+	$headers = array();
+	$headers["To"] = $to;
+	$headers["From"] = $from;
+	$headers["Reply-To"] = $from;
+	$headers["Subject"] = $admin->getFirstName() . " " . $admin->getLastName() . ", Activate your CNM Parking Admin Login";
+	$headers["MIME-Version"] = "1.0";
+	$headers["Content-Type"] = "text/html; charset=UTF-8";
+
+	// build message
+	$pageName = end(explode("/", $_SERVER["PHP_SELF"]));
+	$url = "http://" . $_SERVER["SERVER_NAME"] . $_SERVER["PHP_SELF"];
+	$url = str_replace($pageName, "activate.php", $url);
+	$url = "$url?activation=$activation";
+	$message = <<< EOF
+<html>
+	<body>
+		<h1>Congratulations on your Parking Admin Registration</h1>
+		<hr />
+		<p>Thank you for registering for an CNM Parking Admin. Visit the following URL to complete your registration process: <a href="$url">$url</a>.</p>
+	</body>
+</html>
+EOF;
+
+	// send the email
+	error_reporting(E_ALL & ~E_STRICT);
+	$mailer =& Mail::factory("sendmail");
+	$status = $mailer->send($to, $headers, $message);
+	if(PEAR::isError($status) === true)
+	{
+		echo "<div class=\"alert alert-danger\" role=\"alert\"><strong>Oh snap!</strong> Unable to send mail message:" . $status->getMessage() . "</div>";
+	}
+	else
+	{
+		echo "<div class=\"alert alert-success\" role=\"alert\"><strong>Sign up successful!</strong> Please check your Email to complete the signup process.</div>";
 	}
 
+} catch(Exception $exception) {
+	echo "<div class=\"alert alert-danger\" role=\"alert\"><strong>Oh snap!</strong> Unable to sign up: " . $exception->getMessage() . "</div>";
+}
+?>
 
 ?>

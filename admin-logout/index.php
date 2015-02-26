@@ -7,7 +7,7 @@
 	<body>
 		<?php
 		if(!isset($_SESSION["adminProfileId"])) {
-			echo '<p id="message">You have been logged out</p>';
+			echo '<div class="alert alert-success" role="alert" id="message">You have been logged out</div>';
 		}
 		?>
 		<form method="post" action="../admin-login/index.php">
@@ -15,5 +15,3 @@
 		</form>
 	</body>
 </html>
-
-
