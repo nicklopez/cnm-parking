@@ -1,4 +1,3 @@
-<script type="text/javascript" src="../js/request-invite.js"></script>
 <?php
 // require the header file
 $pageTitle = "Controller - Request Parking Pass Invite";
