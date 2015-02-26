@@ -38,7 +38,6 @@ try {
 			$email = $invite["visitorEmail"];
 			$visitorName = $invite["fullName"];
 			$row = <<< EOF
-
 			<tr><td id="name">$visitorName</td><td>$email</td><td>
 			<button id="accept" class="btn btn-default" onclick="acceptInvite('$activation');">
 			<span class="glyphicon glyphicon-ok">Accept</span>
