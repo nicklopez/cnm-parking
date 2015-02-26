@@ -14,8 +14,9 @@ require_once("/etc/apache2/capstone-mysql/encrypted-config.php");
 // require the mySQL enabled Invite class
 require_once("../php/classes/invite.php");
 ?>
-
-<h1>Controller: Send a parking pass invite</h1>
+<header>
+	<h1>Controller: Send a parking pass invite</h1>
+	</header>
 
 <?php
 try {

@@ -3,9 +3,6 @@
 session_start();
 $_SESSION["adminProfileId"] = 6;
 
-// require CSRF protection
-//require_once("../lib/csrf.php");
-
 // require encrypted configuration files
 require_once("/etc/apache2/capstone-mysql/encrypted-config.php");
 
@@ -89,9 +86,9 @@ EOF;
 	if(PEAR::isError($status) === true) {
 		echo "<div class=\"alert alert-danger\" role=\"alert\"><strong>Oh snap!</strong> your request did not reach us:" . $status->getMessage() . "</div>";
 	} else if(PEAR::isError($status) === false && isset($_POST["accept"])) {
-		echo "<div class=\"alert alert-success\" role=\"alert\"><strong>Invite sent to ". $visitor->getVisitorFirstName(). " " . $visitor->getVisitorLastName(). " successfully!</strong></div>";
+		echo "<div class=\"alert alert-success\" role=\"alert\"><strong>Invite sent to " . $visitor->getVisitorFirstName(). " " . $visitor->getVisitorLastName() . " successfully!</strong></div>";
 	} else {
-		echo "<div class=\"alert alert-warning\" role=\"alert\"><strong>Decline message sent to ". $visitor->getVisitorFirstName(). " " . $visitor->getVisitorLastName(). " successfully!</strong></div>";
+		echo "<div class=\"alert alert-warning\" role=\"alert\"><strong>Decline message sent to " . $visitor->getVisitorFirstName(). " " . $visitor->getVisitorLastName() . " successfully!</strong></div>";
 	}
 } catch(Exception $exception) {
 	echo "<div class=\"alert alert-danger\" role=\"alert\"><strong>Oh snap!</strong> Unable to request a parking pass: " . $exception->getMessage() . "</div>";
