@@ -1,10 +1,24 @@
 /**
  * @author kyle@kedlogic.com
  */
+
 // document ready event
 $(document).ready(
 	// inner function for the ready() event
 	function() {
+
+		$('#dateTimePickerArrival').datetimepicker({
+			format:'Y-m-d H:i:s',
+			inline:true,
+			lang:'en',
+			minDate: '0'
+
+		});
+		$('#dateTimePickerDeparture').datetimepicker({
+			format:'Y-m-d H:i:s',
+			inline:true,
+			lang:'en'
+		});
 
 		// tell the validator to validate this form
 		$("#verifyAvailabilityForm").validate({
@@ -19,11 +33,11 @@ $(document).ready(
 				intLocationInput: {
 					required: true
 				},
-				dateTimeVerifyAvailabilityInputArrival: {
+				dateTimePickerArrival: {
 					required: true
 				},
 
-				dateTimeVerifyAvailabilityInputDeparture: {
+				dateTimePickerDeparture: {
 					required: true
 				}
 			},
@@ -53,7 +67,7 @@ $(document).ready(
 					// where to submit data
 					url: "../php/controllers/verify-availability-post.php",
 					// reformat POST data
-					data: $(form).serialize(),
+					data: $(form),
 					// success is an event that happens when the server replies
 					success: function(ajaxOutput) {
 						// clear the output area's formatting
@@ -71,13 +85,4 @@ $(document).ready(
 			}
 		});
 
-		$('#dateTimePickerArrival').datetimepicker();
-		$('#dateTimePickerDeparture').datetimepicker();
-		$("#dateTimePickerArrival").on("dp.change", function(e) {
-			$('#dateTimePickerDeparture').data("DateTimePicker").minDate(e.date);
-		});
-		$("#dateTimePickerDeparture").on("dp.change", function(e) {
-			$('#dateTimePickerArrival').data("DateTimePicker").maxDate(e.date);
-			$('#dateTimePickerArrival').data("DateTimePicker").minDate(now);
-		});
 	});

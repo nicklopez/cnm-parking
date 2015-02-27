@@ -15,7 +15,7 @@ require_once ("../classes/parkingpass.php");
 require_once ("../classes/parkingspot.php");
 
 
-
+var_dump($_POST);
 
 /**
  * connect to mySQL
@@ -35,16 +35,15 @@ if(empty($searchInput) === true) {
 	throw(new InvalidArgumentException("Input contains hostile code"));
 }
 
-$location = filter_input(INPUT_POST, "dateTimeVerifyAvailabilityInputArrival", FILTER_SANITIZE_STRING);
+$location = filter_input(INPUT_POST, "dateTimePickerArrival", FILTER_SANITIZE_STRING);
 if(empty($searchInput) === true) {
 	throw(new InvalidArgumentException("Input contains hostile code"));
 }
 
-$departure = filter_input(INPUT_POST, "dateTimeVerifyAvailabilityInputDeparture", FILTER_SANITIZE_STRING);
+$departure = filter_input(INPUT_POST, "dateTimePickerDeparture", FILTER_SANITIZE_STRING);
 if(empty($searchInput) === true) {
 	throw(new InvalidArgumentException("Input contains hostile code"));
 }
-
 
 $searchResults = ParkingPass::getParkingPassAvailability($mysqli, $location, $arrival, $departure);
 if($searchResults !== null) {

@@ -6,6 +6,8 @@
 
 		<link type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet" />
 
+		<link type="text/css" href="../css/datetimepicker.css" rel="stylesheet" />
+
 		<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery.form/3.51/jquery.form.min.js"></script>
 		<script type="text/javascript" src="//ajax.aspnetcdn.com/ajax/jquery.validate/1.12.0/jquery.validate.min.js"></script>
@@ -13,6 +15,7 @@
 		<script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 		<script type="text/javascript" src="../js/datetimepicker.js"></script>
 		<script type="text/javascript" src="../js/verify-availability.js"></script>
+
 
 
 		<title>Verify Availability</title>
@@ -36,9 +39,7 @@
 						<div class="form-group">
 							<label for="dateTimePickerArrival" class="control-label">Arrival</label><br/>
 								<div class="input-group date" id="dateTimePickerArrival">
-								<input type="text" class="form-control" />
-								<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
-								</span>
+								<input type="text" class="xdsoft_datetimepicker xdsoft_inline" name="dateTimePickerArrival" id="dateTimePickerArrival"/>
 								</div>
 						</div>
 					</div>
@@ -46,9 +47,7 @@
 						<div class="form-group">
 							<label for="dateTimePickerDeparture" class="control-label">Departure</label><br/>
 								<div class="input-group date" id="dateTimePickerDeparture">
-									<input type="text" class="form-control" />
-								<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
-								</span>
+									<input type="text"class="xdsoft_datetimepicker xdsoft_inline" name="dateTimePickerDeparture" id="dateTimePickerDeparture" />
 								</div>
 						</div>
 					</div>
