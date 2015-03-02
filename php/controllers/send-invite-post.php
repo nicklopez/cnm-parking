@@ -1,7 +1,6 @@
 <?php
 // start a PHP session for CSRF protection
 session_start();
-$_SESSION["adminProfileId"] = 6;
 
 // require encrypted configuration files
 require_once("/etc/apache2/capstone-mysql/encrypted-config.php");
