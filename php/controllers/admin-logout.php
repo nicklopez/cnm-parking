@@ -1,8 +1,8 @@
 <?php
 	require_once("/etc/apache2/capstone-mysql/encrypted-config.php");
 	session_start();
-	$_SESSION["adminProfileId"] = array();
-	unset($_SESSION["array()"]);
+	$_SESSION = array();
+	unset($_SESSION);
 
 	// destroy admin the session
 	session_destroy();
