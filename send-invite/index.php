@@ -5,7 +5,6 @@ require_once("../php/lib/header.php");
 
 // start a PHP session for CSRF protection
 session_start();
-$_SESSION["adminProfileId"] = 6;
 
 // require the encrypted configuration functions
 require_once("/etc/apache2/capstone-mysql/encrypted-config.php");
