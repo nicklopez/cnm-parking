@@ -1,6 +1,6 @@
 <?php
 	require_once("/etc/apache2/capstone-mysql/encrypted-config.php");
-
+	$_SESSION["adminProfileId"] = array();
 	session_start();
 	unset($_SESSION["adminProfileId"]);
 
@@ -8,7 +8,7 @@
 	session_destroy();
 
 	// redirect to login page
-	header("Location: https://bootcamp-coders.cnm.edu/~dfevig/cnm-parking/admin-logout/index.php"); // Redirecting To Admin Logout Message Page
+	header("Location: ../../admin-login/index.php"); // Redirecting To Admin Logout Message Page
 
 ?>
 

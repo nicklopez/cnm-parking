@@ -19,6 +19,8 @@ require_once("../php/lib/header.php");
 						<input id="submit" type="submit" value="submit" />
 					</p>
 			</form>
-		</body>
-</html>
 
+<?php
+var_dump($_SESSION["adminProfileId"]);
+require_once("../php/lib/footer.php");
+?>
