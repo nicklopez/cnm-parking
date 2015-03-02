@@ -21,6 +21,6 @@ require_once("../php/lib/header.php");
 			</form>
 
 <?php
-var_dump($_SESSION["adminProfileId"]);
+
 require_once("../php/lib/footer.php");
 ?>

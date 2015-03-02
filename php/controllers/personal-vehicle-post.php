@@ -9,20 +9,21 @@ require_once("../classes/parkingpass.php");
 
 // require PEAR::Mail <http://pear.php.net/package/Mail> to send mail
 require_once("Mail.php");
+//$file = './files/example.zip';
+//$mime->addAttachment($file,'application/octet-stream');
 
 
 try {
+	// $adminProfileId = 6;
+	$locationId = 1;
+
 	//set up connection
 	mysqli_report(MYSQLI_REPORT_STRICT);
 	$configArray = readConfig("/etc/apache2/capstone-mysql/cnmparking.ini");
 	$mysqli = new mysqli($configArray['hostname'], $configArray['username'], $configArray['password'], $configArray['database']);
 
-	// create and insert admin profile
-	$adminProfile = new AdminProfile(null, $admin->getAdminId(), $adminProfile->getAdminFirstName(), $adminProfile->getAdminLastName());
-	$adminProfile->insert($mysqli);
-
 	// create and insert parking spot
-	$parkingSpot = new ParkingSpot(null, $location->getLocationId(), $parkingSpot->getPlacardNumber());
+	$parkingSpot = new ParkingSpot(null, 1, 200);
 	$parkingSpot->insert($mysqli);
 
 	// create and insert visitor
@@ -37,58 +38,61 @@ try {
 	$parkingPass = new ParkingPass(null, $adminProfile->getAdminProfileId(), $parkingSpot->getParkingSpotId(), $vehicle->getVehicleId(), $_POST["EndDateTime"], $parkingPass->getIssuedDateTime(), $_POST["startDateTime"], $parkingPass->getUuId());
 	$parkingPass->insert($mysqli);
 
+
 if(@isset($_POST["visitorFirstName"]) === false || @isset($_POST["visitorLastName"]) === false || @isset($_POST["visitorEmail"]) === false || @isset($_POST["visitorPhone"]) === false || @isset($_POST["vehicleMake"]) === false || @isset($_POST["vehicleModel"]) === false || @isset($_POST["vehicleYear"]) === false ||
-	@isset($_POST["vehicleColor"]) === false || @isset($_POST["vehiclePlateNumber"]) === false || @isset($_POST["vehiclePlateState"]) === false) {
+	@isset($_POST["vehicleColor"]) === false || @isset($_POST["vehiclePlateNumber"]) === false || @isset($_POST["vehiclePlateState"]) === false || @isset($_POST["startDateTime"]) === false || @isset($_POST["endDateTime"]) === false) {
 	throw(new mysqli_sql_exception("form values not complete. verify the form and try again."));
-}
-
-	echo '<p class=\"alert alert-success\">"Please check you email for the parking pass"</p>';
-} catch(Exception $exception) {
-	echo '<p class=\"alert alert-danger\">"Please confirm the form fileds are filled out."</p>';
-}
-
-	// email the visitor a URL with token
-	$admin = $objects["admin"];
-	$to = $admin->getAdminEmail();
-	$from = "noreply@cnm.edu";
-
-	// build headers
-	$headers = array();
-	$headers["To"] = $to;
-	$headers["From"] = $from;
-	$headers["Reply-To"] = $from;
-	$headers["Subject"] = $admin->getFirstName() . " " . $admin->getLastName() . ", CNM Temporary Parking Pass";
-	$headers["MIME-Version"] = "1.0";
-	$headers["Content-Type"] = "text/html; charset=UTF-8";
-
-	// build message
-	$pageName = end(explode("/", $_SERVER["PHP_SELF"]));
-	$url = "http://" . $_SERVER["SERVER_NAME"] . $_SERVER["PHP_SELF"];
-	$url = str_replace($pageName, "activate.php", $url);
-	$url = "$url?activation=$activation";
-	$message = <<< EOF
-<html>
-	<body>
-		<h1>Congratulations on your Parking Admin Registration</h1>
-		<hr />
-		<p>Thank you for registering for an CNM Parking Admin. Visit the following URL to complete your registration process: <a href="$url">$url</a>.</p>
-	</body>
-</html>
-EOF;
-
-	// send the email
-	error_reporting(E_ALL & ~E_STRICT);
-	$mailer =& Mail::factory("sendmail");
-	$status = $mailer->send($to, $headers, $message);
-	if(PEAR::isError($status) === true) {
-		echo "<div class=\"alert alert-danger\" role=\"alert\"><strong>Oh snap!</strong> Unable to send mail message:" . $status->getMessage() . "</div>";
 	}
-	else
-	{
-		echo "<div class=\"alert alert-success\" role=\"alert\"><strong>Sign up successful!</strong> Please check your Email to complete the signup process.</div>";
+{
+	echo "<div class=\"alert alert-success\" role=\"alert\"><strong>Sign up successful!</strong> Please check your for your temporary parking pass.</div>";
 	}
-
 } catch(Exception $exception) {
-	echo "<div class=\"alert alert-danger\" role=\"alert\"><strong>Oh snap!</strong> Unable to sign up: " . $exception->getMessage() . "</div>";
+	echo '<p class=\"alert alert-danger\">Please confirm the form fields are filled out.</p>';
 }
+// var_dump($parkingPass);
+//try {
+//	// email the visitor a URL with token
+//	$visitor = $objects["visitor"];
+//	$to = $visitor->getVisitorEmail();
+//	$from = "noreply@cnm.edu";
+//
+//	// build headers
+//	$headers = array();
+//	$headers["To"] = $to;
+//	$headers["From"] = $from;
+//	$headers["Reply-To"] = $from;
+//	$headers["Subject"] = $visitor->getVisitorFirstName() . " " . $visitor->getVisitorLastName() . ", CNM Temporary Parking Pass";
+//	$headers["MIME-Version"] = "1.0";
+//	$headers["Content-Type"] = "text/html; charset=UTF-8";
+//
+//	// build message
+//	$pageName = end(explode("/", $_SERVER["PHP_SELF"]));
+//	$url = "http://" . $_SERVER["SERVER_NAME"] . $_SERVER["PHP_SELF"];
+//	$url = str_replace($pageName, "activate.php", $url);
+//	$url = "$url?activation=$activation";
+//	$message = <<< EOF
+//<html>
+//	<body>
+//		<h1>Congratulations on your Parking Admin Registration</h1>
+//		<hr />
+//		<p>Thank you for registering for an CNM Parking Admin. Visit the following URL to complete your registration process: <a href="$url">$url</a>.</p>
+//	</body>
+//</html>
+//EOF;
+//
+//	// send the email
+//	error_reporting(E_ALL & ~(E_STRICT | E_NOTICE | E_DEPRECATED));
+//	$mailer =& Mail::factory("sendmail");
+//	$status = $mailer->send($to, $headers, $message);
+//	if(PEAR::isError($status) === true) {
+//		echo "<div class=\"alert alert-danger\" role=\"alert\"><strong>Oh snap!</strong> Unable to send mail message:" . $status->getMessage() . "</div>";
+//	}
+//	else
+//	{
+//		echo "<div class=\"alert alert-success\" role=\"alert\"><strong>Sign up successful!</strong> Please check your for your temporary parking pass.</div>";
+//	}
+//
+//} catch(Exception $exception) {
+//	echo "<div class=\"alert alert-danger\" role=\"alert\"><strong>Oh snap!</strong> Unable to sign up: " . $exception->getMessage() . "</div>";
+//}
 ?>

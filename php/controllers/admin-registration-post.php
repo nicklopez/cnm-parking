@@ -32,7 +32,6 @@ try {
 	$adminProfile = new AdminProfile(null, $admin->getAdminId(), $_POST["adminFirstName"], $_POST["adminLastName"]);
 	$adminProfile->insert($mysqli);
 
-	// $objects = Admin::getAdminByAdminEmail($mysqli, $_POST["adminEmail"]);
 
 	// verify the form values have been submitted
 	if(@isset($_POST["adminFirstName"]) === false || @isset($_POST["adminLastName"]) === false || @isset($_POST["adminEmail"]) === false || @isset($_POST["password"]) === false) {
