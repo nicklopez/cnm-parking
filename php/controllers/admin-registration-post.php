@@ -32,19 +32,21 @@ try {
 	$adminProfile = new AdminProfile(null, $admin->getAdminId(), $_POST["adminFirstName"], $_POST["adminLastName"]);
 	$adminProfile->insert($mysqli);
 
-// verify the form values have been submitted
-	if(@isset($_POST["adminFirstName"]) === false || @isset($_POST["adminLastName"])=== false || @isset($_POST["adminEmail"]) === false || @isset($_POST["password"]) === false) {
+	// $objects = Admin::getAdminByAdminEmail($mysqli, $_POST["adminEmail"]);
+
+	// verify the form values have been submitted
+	if(@isset($_POST["adminFirstName"]) === false || @isset($_POST["adminLastName"]) === false || @isset($_POST["adminEmail"]) === false || @isset($_POST["password"]) === false) {
 		throw (new InvalidArgumentException("form values not complete. verify the form and try again."));
 	}
-	echo "<p class=\"alert alert-success\">Success! Please check your email to finish registration.</p>";
-}
-catch	(Exception $exception) {
+} catch	(Exception $exception) {
 	echo "<p class=\"alert alert-danger\">Unable to complete request. Try again.</p>";
 	}
 
+try {
+	$objects = Admin::getAdminByAdminEmail($mysqli, $_POST["adminEmail"]);
 	// email the visitor a URL with token
-	$admin = $objects["admin"];
-	$to = $admin->getAdminEmail();
+	$admin = $objects->getAdminEmail();
+	$to = $objects->getAdminEmail();
 	$from = "noreply@cnm.edu";
 
 	// build headers
@@ -52,15 +54,14 @@ catch	(Exception $exception) {
 	$headers["To"] = $to;
 	$headers["From"] = $from;
 	$headers["Reply-To"] = $from;
-	$headers["Subject"] = $admin->getFirstName() . " " . $admin->getLastName() . ", Activate your CNM Parking Admin Login";
+	$headers["Subject"] = $adminProfile->getAdminFirstName() . " " . $adminProfile->getAdminLastName() . ", Activate your CNM Parking Admin Login";
 	$headers["MIME-Version"] = "1.0";
 	$headers["Content-Type"] = "text/html; charset=UTF-8";
 
 	// build message
-	$pageName = end(explode("/", $_SERVER["PHP_SELF"]));
+	$pageName = end(explode("/", $_SERVER["PHP_SELF"], 4));
 	$url = "http://" . $_SERVER["SERVER_NAME"] . $_SERVER["PHP_SELF"];
-	$url = str_replace($pageName, "activate.php", $url);
-	$url = "$url?activation=$activation";
+	$url = str_replace($pageName, "admin-login", $url);
 	$message = <<< EOF
 <html>
 	<body>
@@ -72,20 +73,17 @@ catch	(Exception $exception) {
 EOF;
 
 	// send the email
-	error_reporting(E_ALL & ~E_STRICT);
+	error_reporting(E_ALL & ~(E_STRICT | E_NOTICE | E_DEPRECATED));
 	$mailer =& Mail::factory("sendmail");
 	$status = $mailer->send($to, $headers, $message);
-	if(PEAR::isError($status) === true)
-	{
+	if(PEAR::isError($status) === true) {
 		echo "<div class=\"alert alert-danger\" role=\"alert\"><strong>Oh snap!</strong> Unable to send mail message:" . $status->getMessage() . "</div>";
-	}
-	else
-	{
+	} else {
 		echo "<div class=\"alert alert-success\" role=\"alert\"><strong>Sign up successful!</strong> Please check your Email to complete the registration process.</div>";
 	}
-
 } catch(Exception $exception) {
 	echo "<div class=\"alert alert-danger\" role=\"alert\"><strong>Oh snap!</strong> Unable to sign up: " . $exception->getMessage() . "</div>";
 }
+
 ?>
 
