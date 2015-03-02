@@ -27,7 +27,8 @@ $mysqli = new mysqli($config["hostname"], $config["username"], $config["password
 /**
  * verify availability via ParkingPass get method
  * use $arrival and $departure as $sunrise and $sunset
- * html id/name 's = dateTimeVerifyAvailabilityInputArrival and dateTimeVerifyAvailabilityInputDeparture
+ * sanitize via
+ * @throw InvalidArgumentException if
  */
 
 $location = filter_input(INPUT_POST, "intLocationInput", FILTER_VALIDATE_INT);
@@ -35,7 +36,7 @@ if(empty($searchInput) === true) {
 	throw(new InvalidArgumentException("Input contains hostile code"));
 }
 
-$location = filter_input(INPUT_POST, "dateTimePickerArrival", FILTER_SANITIZE_STRING);
+$arrival = filter_input(INPUT_POST, "dateTimePickerArrival", FILTER_SANITIZE_STRING);
 if(empty($searchInput) === true) {
 	throw(new InvalidArgumentException("Input contains hostile code"));
 }

@@ -62,18 +62,3 @@
 		<div id="outputArea"></div>
 	</body>
 </html>
-<!----->
-<!--<label for="selectListLocation" class="control-label">Verify Availability</label><br/>-->
-<!--Choose Location<select id="selectListLocation" name="selectListLocation" class="form-control"  >-->
-<!--	<option name="intLocationInput" value="1">City Lot 1</option>-->
-<!--	<option name="intLocationInput" value="2">City Lot 2</option>-->
-<!--	<option name="intLocationInput" value="3">City Lot 3</option>-->
-<!--	<option name="intLocationInput" value="4">City Lot 4</option>-->
-<!--</select>-->
-<!---->
-<!---->
-<!---->
-<!---->
-<!---->
-<!--Arrival<input class="form-control" type="datetime-local" id="dateTimeVerifyAvailabilityInputArrival" name="dateTimeVerifyAvailabilityInputArrival" value="arrival"/>-->
-<!--Departure<input class="form-control" type="datetime-local" id="dateTimeVerifyAvailabilityInputDeparture" name="dateTimeVerifyAvailabilityInputDeparture" value="departure"/>-->
