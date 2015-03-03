@@ -46,7 +46,7 @@ try {
 		<input type="text" id="visitorEmail" name="visitorEmail" value="<?php echo $visitor->getVisitorEmail(); ?>"><br>
 
 		<label for="visitorPhone">Phone Number</label>
-		<input type="text" id="visitorPhone" name="visitorPhone"><br>
+		<input type="text" id="visitorPhone" name="visitorPhone" value="<?php echo $visitor->getVisitorPhone(); ?>"><br>
 		<label for="vehicleVehicle">Vehicle</label>
 
 <!--		<select>-->
