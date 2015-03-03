@@ -14,17 +14,15 @@ require_once("Mail.php");
 
 
 try {
-	// $adminProfileId = 6;
-	$locationId = 1;
 
 	//set up connection
 	mysqli_report(MYSQLI_REPORT_STRICT);
 	$configArray = readConfig("/etc/apache2/capstone-mysql/cnmparking.ini");
 	$mysqli = new mysqli($configArray['hostname'], $configArray['username'], $configArray['password'], $configArray['database']);
 
-	// create and insert parking spot
-	$parkingSpot = new ParkingSpot(null, 1, 200);
-	$parkingSpot->insert($mysqli);
+//	// create and insert parking spot
+//	$parkingSpot = new ParkingSpot(null, 1, 200);
+//	$parkingSpot->insert($mysqli);
 
 	// create and insert visitor
 	$visitor = new Visitor(null, $_POST["visitorEmail"], $_POST["visitorFirstName"], $_POST["visitorLastName"], $_POST["visitorPhone"]);
@@ -35,7 +33,7 @@ try {
 	$vehicle->insert($mysqli);
 
 	// create and insert parking pass
-	$parkingPass = new ParkingPass(null, $adminProfile->getAdminProfileId(), $parkingSpot->getParkingSpotId(), $vehicle->getVehicleId(), $_POST["EndDateTime"], $parkingPass->getIssuedDateTime(), $_POST["startDateTime"], $parkingPass->getUuId());
+	$parkingPass = new ParkingPass(null, $adminProfile->getAdminProfileId(), 1, $vehicle->getVehicleId(), $_POST["EndDateTime"], "2015-02-10 08:00:00", $_POST["startDateTime"], $parkingPass->getUuId());
 	$parkingPass->insert($mysqli);
 
 
@@ -49,7 +47,7 @@ if(@isset($_POST["visitorFirstName"]) === false || @isset($_POST["visitorLastNam
 } catch(Exception $exception) {
 	echo '<p class=\"alert alert-danger\">Please confirm the form fields are filled out.</p>';
 }
-// var_dump($parkingPass);
+var_dump($parkingPass);
 //try {
 //	// email the visitor a URL with token
 //	$visitor = $objects["visitor"];
