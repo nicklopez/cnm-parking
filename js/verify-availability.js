@@ -59,7 +59,7 @@ $(document).ready(
 				}
 			},
 
-			// setup an AJAX call to submit the form without reloading
+
 			submitHandler: function(form) {
 				$(form).ajaxSubmit({
 					// GET or POST
@@ -67,7 +67,7 @@ $(document).ready(
 					// where to submit data
 					url: "../php/controllers/verify-availability-post.php",
 					// reformat POST data
-					data: $(form),
+					data: {selectListLocation:$("#intLocationInput").val(), dateTimePickerArrival:$("#dateTimePickerArrival").val(), dateTimePickerDeparture:$("#dateTimePickerDeparture").val()},
 					// success is an event that happens when the server replies
 					success: function(ajaxOutput) {
 						// clear the output area's formatting

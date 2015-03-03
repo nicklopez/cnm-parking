@@ -1024,11 +1024,11 @@ class ParkingPass {
 
 		// create query template
 		$query = "SELECT parkingSpotId FROM parkingSpot WHERE parkingSpotId NOT IN
-			(SELECT parkingSpotId FROM parkingSpot INNER JOIN parkingPass ON parkingSpot.parkingSpotId = parkingPass.parkingSpotId WHERE (
-			locationId = :location AND $sunset >= startDateTime AND $sunrise <= endDateTime AND
-			(($sunrise <= endDateTime AND $sunrise >= startDateTime) OR
-			($sunrise <= startDateTime AND $sunset >= startDateTime) OR
-			($sunrise >= startDateTime AND $sunset >= endDateTime))))
+			(SELECT parkingSpot.parkingSpotId FROM parkingSpot INNER JOIN parkingPass ON parkingSpot.parkingSpotId = parkingPass.parkingSpotId WHERE
+			(locationId = ? AND ? >= startDateTime AND ? <= endDateTime AND
+			((? <= endDateTime AND ? >= startDateTime) OR
+			(? <= startDateTime AND ? >= startDateTime) OR
+			(? >= startDateTime AND ? >= endDateTime))))
 			LIMIT 1";
 		$statement = $mysqli->prepare($query);
 		if($statement === false) {
@@ -1038,7 +1038,7 @@ class ParkingPass {
 		// bind the member variables to the place holders in the template
 		$sunrise = $sunrise->format("Y-m-d H:i:s");
 		$sunset = $sunset->format("Y-m-d H:i:s");
-		$wasClean = $statement->bind_param("iss", $location, $sunrise, $sunset);
+		$wasClean = $statement->bind_param("issssssss", $location, $sunset, $sunrise, $sunrise, $sunrise, $sunrise, $sunset,  $sunrise, $sunset);
 		if($wasClean === false) {
 			throw(new mysqli_sql_exception("unable to bind parameters"));
 		}
@@ -1053,8 +1053,13 @@ class ParkingPass {
 			throw(new mysqli_sql_exception("unable to get result set"));
 		}
 
-		var_dump($result);
+		// build array of result
+		$result = $result->fetch_assoc();
+
+		// return result
+		return($result);
 	}
+
 
 	/**
 	 * sanitizes a date either as a DateTime object or mySQL date string

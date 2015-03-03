@@ -27,29 +27,32 @@ $mysqli = new mysqli($config["hostname"], $config["username"], $config["password
 /**
  * verify availability via ParkingPass get method
  * use $arrival and $departure as $sunrise and $sunset
- * sanitize via
- * @throw InvalidArgumentException if
+ * return single parkingSpotId
+ *
+ * @throw
  */
 
-$location = filter_input(INPUT_POST, "intLocationInput", FILTER_VALIDATE_INT);
-if(empty($searchInput) === true) {
+$location = filter_input(INPUT_POST, "selectListLocation", FILTER_VALIDATE_INT);
+if(empty($location) === true) {
 	throw(new InvalidArgumentException("Input contains hostile code"));
 }
 
 $arrival = filter_input(INPUT_POST, "dateTimePickerArrival", FILTER_SANITIZE_STRING);
-if(empty($searchInput) === true) {
+if(empty($arrival) === true) {
 	throw(new InvalidArgumentException("Input contains hostile code"));
 }
 
 $departure = filter_input(INPUT_POST, "dateTimePickerDeparture", FILTER_SANITIZE_STRING);
-if(empty($searchInput) === true) {
+if(empty($departure) === true) {
 	throw(new InvalidArgumentException("Input contains hostile code"));
 
 }
 
-$searchResults = ParkingPass::getParkingPassAvailability($mysqli, $location, $arrival, $departure);
-if($searchResults !== null) {
-	$searchResults = array($searchResults);
+$searchResult = ParkingPass::getParkingPassAvailability($mysqli, $location, $arrival, $departure);
+if($searchResult !== null) {
+	var_dump($searchResult);
+	return($searchResult);
 }
 
-return($searchResults);
+
+
