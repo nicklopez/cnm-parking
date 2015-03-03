@@ -1,6 +1,33 @@
 <?php
 $pageTitle = "Visitor Vehicle Information";
 require_once("../php/lib/header.php");
+require_once("/etc/apache2/capstone-mysql/encrypted-config.php");
+require_once("../classes/visitor.php");
+
+try {
+
+	// verify $_GET["activation"] has an activation token; if not, throw an exception
+	if($_GET["activation"] === $invite->getActivation()) {
+		throw (new InvalidArgumentException("No activation token detected.  Resubmit request."));
+	}
+
+	//set up connection
+	mysqli_report(MYSQLI_REPORT_STRICT);
+	$configArray = readConfig("/etc/apache2/capstone-mysql/cnmparking.ini");
+	$mysqli = new mysqli($configArray['hostname'], $configArray['username'], $configArray['password'], $configArray['database']);
+	$resultObjects = Invite::getInviteByActivation($mysqli, $activation);
+
+	if(empty($resultObjects) === true) {
+		throw (new InvalidArgumentException("No objects in array"));
+	}
+
+	$invite = $resultObjects["invite"];
+	$visitor = $resultObjects["visitor"];
+	} catch(Exception $exception) {
+	// actually, echo the exception since this is the end of the line
+		echo "<p class=\"alert alert-danger\">" . $exception->getMessage() . "</p>";
+	}
+
 
 ?>
 
@@ -10,13 +37,13 @@ require_once("../php/lib/header.php");
 	<form method="post" action="../php/controllers/personal-vehicle-post.php">
 
 		<label for="visitorFirstName">First Name</label>
-		<input type="text" id="visitorFirstName" name="visitorFirstName"><br>
+		<input type="text" id="visitorFirstName" name="visitorFirstName" value="<?php echo $visitor->getVisitorFirstName(); ?>"><br>
 
 		<label for="visitorLastName">Last Name</label>
-		<input type="text" id="visitorLastName" name="visitorLastName"><br>
+		<input type="text" id="visitorLastName" name="visitorLastName" value="<?php echo $visitor->getVisitorLastName(); ?>"><br>
 
 		<label for="visitorEmail">Email</label>
-		<input type="text" id="visitorEmail" name="visitorEmail"><br>
+		<input type="text" id="visitorEmail" name="visitorEmail" value="<?php echo $visitor->getVisitorEmail(); ?>"><br>
 
 		<label for="visitorPhone">Phone Number</label>
 		<input type="text" id="visitorPhone" name="visitorPhone"><br>

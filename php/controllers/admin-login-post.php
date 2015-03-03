@@ -34,7 +34,7 @@ try {
 	$admin = Admin::getAdminByAdminEmail($mysqli, $_POST["adminEmail"]);
 	if(count($admin) !== 0) {
 		$hash = hash_pbkdf2("sha512", $_POST["password"], $salt, 2048, 128);
-		if($hash === $admin->getPassHash()) ;
+		if($hash === $admin->getPassHash());
 		// assign session to logged in admin id
 		$adminProfile = AdminProfile::getAdminProfileByAdminId($mysqli, $admin->getAdminId());
 		// $_SESSION["adminProfileId"] = $adminProfile->getAdminProfileId();
