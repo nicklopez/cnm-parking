@@ -14,9 +14,6 @@ require_once("/etc/apache2/capstone-mysql/encrypted-config.php");
 require_once ("../classes/parkingpass.php");
 require_once ("../classes/parkingspot.php");
 
-
-var_dump($_POST);
-
 /**
  * connect to mySQL
  */
@@ -27,7 +24,7 @@ $mysqli = new mysqli($config["hostname"], $config["username"], $config["password
 /**
  * verify availability via ParkingPass get method
  * use $arrival and $departure as $sunrise and $sunset
- * return single parkingSpotId
+ * return single parkingSpotId as
  *
  * @throw
  */
@@ -48,11 +45,13 @@ if(empty($departure) === true) {
 
 }
 
-$searchResult = ParkingPass::getParkingPassAvailability($mysqli, $location, $arrival, $departure);
-if($searchResult !== null) {
-	var_dump($searchResult);
-	return($searchResult);
+$availableSpot = ParkingPass::getParkingPassAvailability($mysqli, $location, $arrival, $departure);
+if($availableSpot !== null) {
+	$isAvailable = "YES!! There are currently available parking spots for that time window";
+} else {
+	$isAvailable = "No parking spots are available during the given time window";
 }
 
+echo " . $isAvailable . ";
 
 
