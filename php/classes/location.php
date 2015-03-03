@@ -476,5 +476,64 @@ class Location {
 			return ($locations);
 		}
 	}
+
+	/**
+	 * gets the locations & associated parking spots
+	 *
+	 * @param resource $mysqli pointer to mySQL connection, by reference
+	 * @return mixed location and spots found or null if not found
+	 * @throws mysqli_sql_exception when mySQL related errors occur
+	 **/
+	public static function getAllLocationsAndParkingSpots(&$mysqli) {
+		// handle degenerate cases
+		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
+			throw(new mysqli_sql_exception("input is not a mysqli object"));
+		}
+
+		// create query template
+		$query = "SELECT location.locationId, latitude, locationDescription, locationNote, longitude, parkingSpotId, placardNumber FROM location
+					 INNER JOIN parkingSpot ON location.locationId = parkingSpot.locationId";
+		$statement = $mysqli->prepare($query);
+		if($statement === false) {
+			throw(new mysqli_sql_exception("unable to prepare statement"));
+		}
+
+		// execute the statement
+		if($statement->execute() === false) {
+			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
+		}
+
+		// get result from the SELECT query
+		$result = $statement->get_result();
+		if($result === false) {
+			throw(new mysqli_sql_exception("unable to get result set"));
+		}
+
+		// handle degenerate cases
+		$numRows = $result->num_rows;
+		if($numRows === 0) {
+			return (null);
+		}
+
+		// Build the array, 2 objects
+		$objects = array();
+		while(($row = $result->fetch_assoc()) !== null) {
+			try {
+				$location = new Location($row["locationId"], $row["latitude"], $row["locationDescription"], $row["locationNote"], $row["longitude"]);
+				$parkingSpot = new ParkingSpot($row["parkingSpotId"], $row["locationId"], $row["placardNumber"]);
+				$objects["location"] = $location;
+				$objects["parkingSpot"] = $parkingSpot;
+
+			} catch(Exception $exception) {
+				// if the row couldn't be converted, rethrow it
+				throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
+			}
+		}
+
+		// free up memory and return the results
+		$result->free();
+		$statement->close();
+		return($objects);
+	}
 }
 ?>

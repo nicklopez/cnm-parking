@@ -595,16 +595,6 @@ class Invite {
 			throw(new mysqli_sql_exception("unable to get result set"));
 		}
 
-		// grab the invite from mySQL
-//		while(($row = $result->fetch_assoc()) !== null) {
-//			try {
-//				return $row;
-//
-//			} catch(Exception $exception) {
-//				// if the row couldn't be converted, rethrow it
-//				throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
-//			}
-
 		// handle degenerate case: more than 1 row!?
 		$numRows = $result->num_rows;
 		if($numRows > 1) {
