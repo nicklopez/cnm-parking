@@ -44,10 +44,8 @@ if(@isset($_POST["visitorFirstName"]) === false || @isset($_POST["visitorLastNam
 {
 	echo "<div class=\"alert alert-success\" role=\"alert\"><strong>Sign up successful!</strong> Please check your for your temporary parking pass.</div>";
 	}
-} catch(Exception $exception) {
-	echo '<p class=\"alert alert-danger\">Please confirm the form fields are filled out.</p>';
-}
-var_dump($parkingPass);
+
+
 //try {
 //	// email the visitor a URL with token
 //	$visitor = $objects["visitor"];
@@ -84,13 +82,13 @@ var_dump($parkingPass);
 //	$status = $mailer->send($to, $headers, $message);
 //	if(PEAR::isError($status) === true) {
 //		echo "<div class=\"alert alert-danger\" role=\"alert\"><strong>Oh snap!</strong> Unable to send mail message:" . $status->getMessage() . "</div>";
-//	}
-//	else
-//	{
-//		echo "<div class=\"alert alert-success\" role=\"alert\"><strong>Sign up successful!</strong> Please check your for your temporary parking pass.</div>";
-//	}
-//
-//} catch(Exception $exception) {
-//	echo "<div class=\"alert alert-danger\" role=\"alert\"><strong>Oh snap!</strong> Unable to sign up: " . $exception->getMessage() . "</div>";
-//}
+
+	//else
+	{
+		echo "<div class=\"alert alert-success\" role=\"alert\"><strong>Sign up successful!</strong> Please check your for your temporary parking pass.</div>";
+	}
+
+} catch(Exception $exception) {
+	echo "<div class=\"alert alert-danger\" role=\"alert\"><strong>Oh snap!</strong> Unable to sign up: Please confirm the form fields are filled out.</div>";
+}
 ?>
