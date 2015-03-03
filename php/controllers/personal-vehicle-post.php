@@ -89,6 +89,6 @@ if(@isset($_POST["visitorFirstName"]) === false || @isset($_POST["visitorLastNam
 	}
 
 } catch(Exception $exception) {
-	echo "<div class=\"alert alert-danger\" role=\"alert\"><strong>Oh snap!</strong> Unable to sign up: Please confirm the form fields are filled out.</div>";
+	echo "<div class=\"alert alert-danger\" role=\"alert\"><strong>Oh snap!</strong> " . $exception->getMessage() . "</div>";
 }
 ?>
