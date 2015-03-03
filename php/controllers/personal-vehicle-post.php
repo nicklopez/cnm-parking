@@ -33,7 +33,7 @@ try {
 	$vehicle->insert($mysqli);
 
 	// create and insert parking pass
-	$parkingPass = new ParkingPass(null, $adminProfile->getAdminProfileId(), 1, $vehicle->getVehicleId(), $_POST["EndDateTime"], "2015-02-10 08:00:00", $_POST["startDateTime"], $parkingPass->getUuId());
+	$parkingPass = new ParkingPass(null, 6, 1, $vehicle->getVehicleId(), $_POST["endDateTime"], "2015-02-10 08:00:00", $_POST["startDateTime"], null);
 	$parkingPass->insert($mysqli);
 
 
