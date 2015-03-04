@@ -53,7 +53,9 @@ try {
 
 		<label for="visitorPhone">Phone Number</label>
 		<input type="text" id="visitorPhone" disabled="disabled" name="visitorPhone" value="<?php echo $visitor->getVisitorPhone(); ?>" ><br>
-		<label for="vehicleVehicle">Vehicle</label>
+
+		<label for="adminProfileId">AdminProfileId</label>
+		<input type="number" id="adminProfileId" disabled="disabled" name="adminProfileId" value="<?php echo $invite->getAdminProfileId(); ?>" ><br>
 
 <!--		<select>-->
 <!--			name="visitorVehicle"-->
