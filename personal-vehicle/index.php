@@ -15,6 +15,7 @@ try {
 	}
 	var_dump($_GET["activation"]);
 
+
 	//set up connection
 	mysqli_report(MYSQLI_REPORT_STRICT);
 	$configArray = readConfig("/etc/apache2/capstone-mysql/cnmparking.ini");
@@ -33,7 +34,8 @@ try {
 	// actually, echo the exception since this is the end of the line
 		echo "<p class=\"alert alert-danger\">" . $exception->getMessage() . "</p>";
 	}
-var_dump($_POST["adminProfileId"]);
+	var_dump($invite->getAdminProfileId());
+
 ?>
 
 <body>
@@ -55,7 +57,8 @@ var_dump($_POST["adminProfileId"]);
 		<input type="text" id="visitorPhone" disabled="disabled" name="visitorPhone" value="<?php echo $visitor->getVisitorPhone(); ?>" ><br>
 
 		<label for="adminProfileId">AdminProfileId</label>
-		<input type="number" id="adminProfileId" disabled="disabled" name="adminProfileId" value="<?php echo $invite->getAdminProfileId(); ?>" ><br>
+		<input type="text" id="adminProfileId" name="adminProfileId" value="<?php echo $invite->getAdminProfileId(); ?>" ><br>
+
 
 <!--		<select>-->
 <!--			name="visitorVehicle"-->

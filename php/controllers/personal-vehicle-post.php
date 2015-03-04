@@ -1,4 +1,5 @@
 <?php
+$pageTitle = "Processing...";
 require_once("/etc/apache2/capstone-mysql/encrypted-config.php");
 require_once("../lib/header.php");
 require_once("../classes/visitor.php");
@@ -20,30 +21,19 @@ try {
 	$configArray = readConfig("/etc/apache2/capstone-mysql/cnmparking.ini");
 	$mysqli = new mysqli($configArray['hostname'], $configArray['username'], $configArray['password'], $configArray['database']);
 
-
-//	// create and insert parking spot
-//	$parkingSpot = new ParkingSpot(null, 1, 200);
-//	$parkingSpot->insert($mysqli);
-
-	// create and insert visitor
-//	$visitor = new Visitor(null, $visitor->getVisitorEmail(), $visitor->getVisitorFirstName(), $visitor->getVisitorLastName(), $visitor->getVisitorPhone());
-//	$visitor->insert($mysqli);
+	var_dump($_POST);
 
 	// create and insert vehicle
 	$vehicle = new Vehicle(null, 4, $_POST["vehicleColor"], $_POST["vehicleMake"], $_POST["vehicleModel"], $_POST["vehiclePlateNumber"], $_POST["vehiclePlateState"], $_POST["vehicleYear"]);
 	$vehicle->insert($mysqli);
 
-	var_dump($_POST["adminProfileId"]);
 	// create and insert parking pass
-	$parkingPass = new ParkingPass(null, $_GET["adminProfileId"], 1, $vehicle->getVehicleId(), $_POST["endDateTime"], "2015-02-10 08:00:00", $_POST["startDateTime"], null);
+	$parkingPass = new ParkingPass(null, $_POST["adminProfileId"], 1, $vehicle->getVehicleId(), $_POST["endDateTime"], "2015-02-10 08:00:00", $_POST["startDateTime"], null);
 	$parkingPass->insert($mysqli);
 
 if(@isset($_POST["vehicleMake"]) === false || @isset($_POST["vehicleModel"]) === false || @isset($_POST["vehicleYear"]) === false ||
 	@isset($_POST["vehicleColor"]) === false || @isset($_POST["vehiclePlateNumber"]) === false || @isset($_POST["vehiclePlateState"]) === false || @isset($_POST["startDateTime"]) === false || @isset($_POST["endDateTime"]) === false) {
 	throw(new mysqli_sql_exception("form values not complete. verify the form and try again."));
-	}
-{
-	echo "<div class=\"alert alert-success\" role=\"alert\"><strong>Sign up successful!</strong> Please check your for your temporary parking pass.</div>";
 	}
 
 
