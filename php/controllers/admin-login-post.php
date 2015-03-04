@@ -37,7 +37,7 @@ try {
 		if($hash === $admin->getPassHash());
 		// assign session to logged in admin id
 		$adminProfile = AdminProfile::getAdminProfileByAdminId($mysqli, $admin->getAdminId());
-		// $_SESSION["adminProfileId"] = $adminProfile->getAdminProfileId();
+
 		$_SESSION["adminProfile"] = array(
 			'id' => $adminProfile->getAdminProfileId()
 		);
@@ -46,9 +46,6 @@ try {
 
 		echo '<button id="'.$adminProfileId.'" class="btn btn-default portalButton">Go To Portal</button>';
 
-
-		// PLACEHOLDER TO REDIRECT TO ADMIN PORTAL
-		// header("location: https://bootcamp-coders.cnm.edu/~dfevig/cnm-parking/php/test-portal/test-portal.php");
 
 	} else {
 		throw (new mysqli_sql_exception(" incorrect email or password. Try again."));
@@ -59,7 +56,7 @@ try {
 	if(@isset($_POST["adminEmail"]) === false || @isset($_POST["password"])=== false) {
 		throw (new InvalidArgumentException("form values not complete. verify the form and try again."));
 	}
-	echo "<p>Click to Continue</p>"; // "<p class=\"alert alert-success\">Admin(id = " . $admin->getAdminId() . ")welcome!</p>";
+	echo "<p>Click to Continue</p>";
 		}
 	catch	(Exception $exception) {
 		echo "<p class=\"alert alert-danger\">" . $exception->getMessage() . "</p>";

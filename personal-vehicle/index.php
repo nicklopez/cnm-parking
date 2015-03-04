@@ -2,19 +2,22 @@
 $pageTitle = "Visitor Vehicle Information";
 require_once("../php/lib/header.php");
 require_once("/etc/apache2/capstone-mysql/encrypted-config.php");
-require_once("../classes/visitor.php");
+require_once("../php/classes/visitor.php");
+require_once("../php/classes/invite.php");
 
 try {
-
 	// verify $_GET["activation"] has an activation token; if not, throw an exception
-	if($_GET["activation"] === $invite->getActivation()) {
-		throw (new InvalidArgumentException("No activation token detected.  Resubmit request."));
+	// $activation = $_GET["activation"];
+	if(isset($_GET["activation"])) {
+		//throw (new InvalidArgumentException("No activation token detected.  Resubmit request."));
 	}
-
+	var_dump($_GET["activation"]);
 	//set up connection
 	mysqli_report(MYSQLI_REPORT_STRICT);
 	$configArray = readConfig("/etc/apache2/capstone-mysql/cnmparking.ini");
 	$mysqli = new mysqli($configArray['hostname'], $configArray['username'], $configArray['password'], $configArray['database']);
+
+	$activation = $_GET["activation"];
 	$resultObjects = Invite::getInviteByActivation($mysqli, $activation);
 
 	if(empty($resultObjects) === true) {
