@@ -33,9 +33,9 @@ try {
 	$vehicle = new Vehicle(null, 4, $_POST["vehicleColor"], $_POST["vehicleMake"], $_POST["vehicleModel"], $_POST["vehiclePlateNumber"], $_POST["vehiclePlateState"], $_POST["vehicleYear"]);
 	$vehicle->insert($mysqli);
 
-	var_dump($_GET["adminProfileId"]);
+	var_dump($_POST["adminProfileId"]);
 	// create and insert parking pass
-	$parkingPass = new ParkingPass(null, ($_POST["adminProfileId"]), 1, $vehicle->getVehicleId(), $_POST["endDateTime"], "2015-02-10 08:00:00", $_POST["startDateTime"], null);
+	$parkingPass = new ParkingPass(null, $_GET["adminProfileId"], 1, $vehicle->getVehicleId(), $_POST["endDateTime"], "2015-02-10 08:00:00", $_POST["startDateTime"], null);
 	$parkingPass->insert($mysqli);
 
 if(@isset($_POST["vehicleMake"]) === false || @isset($_POST["vehicleModel"]) === false || @isset($_POST["vehicleYear"]) === false ||

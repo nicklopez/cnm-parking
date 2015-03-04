@@ -33,7 +33,7 @@ try {
 	// actually, echo the exception since this is the end of the line
 		echo "<p class=\"alert alert-danger\">" . $exception->getMessage() . "</p>";
 	}
-
+var_dump($_POST["adminProfileId"]);
 ?>
 
 <body>
