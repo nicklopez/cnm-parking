@@ -7,6 +7,7 @@ require_once("../php/classes/invite.php");
 
 
 
+
 try {
 	// verify $_GET["activation"] has an activation token; if not, throw an exception
 	if(!isset($_GET["activation"])) {

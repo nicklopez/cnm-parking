@@ -4,7 +4,7 @@ require_once("../lib/header.php");
 require_once("../classes/visitor.php");
 require_once("../classes/vehicle.php");
 require_once("../classes/adminprofile.php");
-require_once("../classes/parkingspot.php");
+// require_once("../classes/parkingspot.php");
 require_once("../classes/parkingpass.php");
 
 // require PEAR::Mail <http://pear.php.net/package/Mail> to send mail
@@ -20,23 +20,23 @@ try {
 	$configArray = readConfig("/etc/apache2/capstone-mysql/cnmparking.ini");
 	$mysqli = new mysqli($configArray['hostname'], $configArray['username'], $configArray['password'], $configArray['database']);
 
+
 //	// create and insert parking spot
 //	$parkingSpot = new ParkingSpot(null, 1, 200);
 //	$parkingSpot->insert($mysqli);
 
 	// create and insert visitor
-//	$visitor = new Visitor(null, $_POST["visitorEmail"], $_POST["visitorFirstName"], $_POST["visitorLastName"], $_POST["visitorPhone"]);
+//	$visitor = new Visitor(null, $visitor->getVisitorEmail(), $visitor->getVisitorFirstName(), $visitor->getVisitorLastName(), $visitor->getVisitorPhone());
 //	$visitor->insert($mysqli);
 
 	// create and insert vehicle
-	$vehicle = new Vehicle(null, $visitor->getVisitorId(), $_POST["vehicleColor"], $_POST["vehicleMake"], $_POST["vehicleModel"], $_POST["vehiclePlateNumber"], $_POST["vehiclePlateState"], $_POST["vehicleYear"]);
+	$vehicle = new Vehicle(null, 10, $_POST["vehicleColor"], $_POST["vehicleMake"], $_POST["vehicleModel"], $_POST["vehiclePlateNumber"], $_POST["vehiclePlateState"], $_POST["vehicleYear"]);
 	$vehicle->insert($mysqli);
 
 	// create and insert parking pass
-	$parkingPass = new ParkingPass(null, 6, 1, $vehicle->getVehicleId(), $_POST["endDateTime"], "2015-02-10 08:00:00", $_POST["startDateTime"], null);
+	$parkingPass = new ParkingPass(null, $visitor->getAdminId(), 1, $vehicle->getVehicleId(), $_POST["endDateTime"], "2015-02-10 08:00:00", $_POST["startDateTime"], null);
 	$parkingPass->insert($mysqli);
 
-	// @isset($_POST["visitorFirstName"]) === false || @isset($_POST["visitorLastName"]) === false || @isset($_POST["visitorEmail"]) === false || @isset($_POST["visitorPhone"]) === false ||
 if(@isset($_POST["vehicleMake"]) === false || @isset($_POST["vehicleModel"]) === false || @isset($_POST["vehicleYear"]) === false ||
 	@isset($_POST["vehicleColor"]) === false || @isset($_POST["vehiclePlateNumber"]) === false || @isset($_POST["vehiclePlateState"]) === false || @isset($_POST["startDateTime"]) === false || @isset($_POST["endDateTime"]) === false) {
 	throw(new mysqli_sql_exception("form values not complete. verify the form and try again."));
