@@ -5,6 +5,8 @@ require_once("/etc/apache2/capstone-mysql/encrypted-config.php");
 require_once("../php/classes/visitor.php");
 require_once("../php/classes/invite.php");
 
+
+
 try {
 	// verify $_GET["activation"] has an activation token; if not, throw an exception
 	// $activation = $_GET["activation"];
@@ -34,21 +36,22 @@ try {
 ?>
 
 <body>
+	<script src="../js/personal-vehicle.js"></script>
 
 	<h1>CNM Visitor Vehicle Parking Information</h1>
 	<form method="post" action="../php/controllers/personal-vehicle-post.php">
 
 		<label for="visitorFirstName">First Name</label>
-		<input type="text" id="visitorFirstName" disabled="disabled" name="visitorFirstName" value="<?php echo $visitor->getVisitorFirstName(); ?>" >><br>
+		<input type="text" id="visitorFirstName" disabled="disabled" name="visitorFirstName" value="<?php echo $visitor->getVisitorFirstName(); ?>" ><br>
 
 		<label for="visitorLastName">Last Name</label>
-		<input type="text" id="visitorLastName" disabled="disabled" name="visitorLastName" value="<?php echo $visitor->getVisitorLastName(); ?>" >><br>
+		<input type="text" id="visitorLastName" disabled="disabled" name="visitorLastName" value="<?php echo $visitor->getVisitorLastName(); ?>" ><br>
 
 		<label for="visitorEmail">Email</label>
-		<input type="text" id="visitorEmail" disabled="disabled" name="visitorEmail" value="<?php echo $visitor->getVisitorEmail(); ?>" >><br>
+		<input type="text" id="visitorEmail" disabled="disabled" name="visitorEmail" value="<?php echo $visitor->getVisitorEmail(); ?>" ><br>
 
 		<label for="visitorPhone">Phone Number</label>
-		<input type="text" id="visitorPhone" disabled="disabled" name="visitorPhone" value="<?php echo $visitor->getVisitorPhone(); ?>" >><br>
+		<input type="text" id="visitorPhone" disabled="disabled" name="visitorPhone" value="<?php echo $visitor->getVisitorPhone(); ?>" ><br>
 		<label for="vehicleVehicle">Vehicle</label>
 
 <!--		<select>-->
