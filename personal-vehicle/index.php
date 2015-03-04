@@ -31,7 +31,6 @@ try {
 		echo "<p class=\"alert alert-danger\">" . $exception->getMessage() . "</p>";
 	}
 
-
 ?>
 
 <body>
@@ -40,16 +39,16 @@ try {
 	<form method="post" action="../php/controllers/personal-vehicle-post.php">
 
 		<label for="visitorFirstName">First Name</label>
-		<input type="text" id="visitorFirstName" name="visitorFirstName" value="<?php echo $visitor->getVisitorFirstName(); ?>"><br>
+		<input type="text" id="visitorFirstName" name="visitorFirstName" value="<?php echo $visitor->getVisitorFirstName(); ?>" readonly>><br>
 
 		<label for="visitorLastName">Last Name</label>
-		<input type="text" id="visitorLastName" name="visitorLastName" value="<?php echo $visitor->getVisitorLastName(); ?>"><br>
+		<input type="text" id="visitorLastName" name="visitorLastName" value="<?php echo $visitor->getVisitorLastName(); ?>" readonly>><br>
 
 		<label for="visitorEmail">Email</label>
-		<input type="text" id="visitorEmail" name="visitorEmail" value="<?php echo $visitor->getVisitorEmail(); ?>"><br>
+		<input type="text" id="visitorEmail" name="visitorEmail" value="<?php echo $visitor->getVisitorEmail(); ?>" readonly>><br>
 
 		<label for="visitorPhone">Phone Number</label>
-		<input type="text" id="visitorPhone" name="visitorPhone" value="<?php echo $visitor->getVisitorPhone(); ?>"><br>
+		<input type="text" id="visitorPhone" name="visitorPhone" value="<?php echo $visitor->getVisitorPhone(); ?>" readonly>><br>
 		<label for="vehicleVehicle">Vehicle</label>
 
 <!--		<select>-->
