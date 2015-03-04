@@ -25,8 +25,8 @@ try {
 //	$parkingSpot->insert($mysqli);
 
 	// create and insert visitor
-	$visitor = new Visitor(null, $_POST["visitorEmail"], $_POST["visitorFirstName"], $_POST["visitorLastName"], $_POST["visitorPhone"]);
-	$visitor->insert($mysqli);
+//	$visitor = new Visitor(null, $_POST["visitorEmail"], $_POST["visitorFirstName"], $_POST["visitorLastName"], $_POST["visitorPhone"]);
+//	$visitor->insert($mysqli);
 
 	// create and insert vehicle
 	$vehicle = new Vehicle(null, $visitor->getVisitorId(), $_POST["vehicleColor"], $_POST["vehicleMake"], $_POST["vehicleModel"], $_POST["vehiclePlateNumber"], $_POST["vehiclePlateState"], $_POST["vehicleYear"]);
@@ -36,8 +36,8 @@ try {
 	$parkingPass = new ParkingPass(null, 6, 1, $vehicle->getVehicleId(), $_POST["endDateTime"], "2015-02-10 08:00:00", $_POST["startDateTime"], null);
 	$parkingPass->insert($mysqli);
 
-
-if(@isset($_POST["visitorFirstName"]) === false || @isset($_POST["visitorLastName"]) === false || @isset($_POST["visitorEmail"]) === false || @isset($_POST["visitorPhone"]) === false || @isset($_POST["vehicleMake"]) === false || @isset($_POST["vehicleModel"]) === false || @isset($_POST["vehicleYear"]) === false ||
+	// @isset($_POST["visitorFirstName"]) === false || @isset($_POST["visitorLastName"]) === false || @isset($_POST["visitorEmail"]) === false || @isset($_POST["visitorPhone"]) === false ||
+if(@isset($_POST["vehicleMake"]) === false || @isset($_POST["vehicleModel"]) === false || @isset($_POST["vehicleYear"]) === false ||
 	@isset($_POST["vehicleColor"]) === false || @isset($_POST["vehiclePlateNumber"]) === false || @isset($_POST["vehiclePlateState"]) === false || @isset($_POST["startDateTime"]) === false || @isset($_POST["endDateTime"]) === false) {
 	throw(new mysqli_sql_exception("form values not complete. verify the form and try again."));
 	}
