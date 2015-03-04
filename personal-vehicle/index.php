@@ -9,11 +9,11 @@ require_once("../php/classes/invite.php");
 
 try {
 	// verify $_GET["activation"] has an activation token; if not, throw an exception
-	// $activation = $_GET["activation"];
-	if(isset($_GET["activation"])) {
-		//throw (new InvalidArgumentException("No activation token detected.  Resubmit request."));
+	if(!isset($_GET["activation"])) {
+		throw (new InvalidArgumentException("No activation token detected.  Resubmit request."));
 	}
 	var_dump($_GET["activation"]);
+
 	//set up connection
 	mysqli_report(MYSQLI_REPORT_STRICT);
 	$configArray = readConfig("/etc/apache2/capstone-mysql/cnmparking.ini");
