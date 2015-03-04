@@ -45,7 +45,7 @@
 						<div class="form-group">
 							<label for="dateTimePickerDeparture" class="control-label">Departure</label><br/>
 								<div class="input-group date" id="dateTimePickerDeparture">
-									<input type="text"class="xdsoft_datetimepicker xdsoft_inline" name="dateTimePickerDeparture" id="dateTimePickerDeparture" />
+									<input type="text"class="xdsoft_datetimepicker xdsoft_inline" name="dateTimePickerDeparture" id="dateTimePickerDeparture"/>
 								</div>
 						</div>
 					</div>

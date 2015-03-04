@@ -28,7 +28,7 @@ $mysqli = new mysqli($config["hostname"], $config["username"], $config["password
  *
  * @throw
  */
-
+var_dump($_POST);
 $location = filter_input(INPUT_POST, "selectListLocation", FILTER_VALIDATE_INT);
 if(empty($location) === true) {
 	throw(new InvalidArgumentException("Input contains hostile code"));
@@ -46,12 +46,12 @@ if(empty($departure) === true) {
 }
 
 $availableSpot = ParkingPass::getParkingPassAvailability($mysqli, $location, $arrival, $departure);
-if($availableSpot !== null) {
-	$isAvailable = "YES!! There are currently available parking spots for that time window";
+if($availableSpot !== null || $availableSpot !== false) {
+	$isAvailable = "Yes! There are currently available parking spots for that time window";
 } else {
 	$isAvailable = "No parking spots are available during the given time window";
 }
 
-echo " . $isAvailable . ";
+echo "<span id=\"isAvailable\"> . $isAvailable . </span>";
 
 
