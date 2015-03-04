@@ -39,16 +39,16 @@ try {
 	<form method="post" action="../php/controllers/personal-vehicle-post.php">
 
 		<label for="visitorFirstName">First Name</label>
-		<input type="text" id="visitorFirstName" name="visitorFirstName" value="<?php echo $visitor->getVisitorFirstName(); ?>" readonly>><br>
+		<input type="text" id="visitorFirstName" disabled="disabled" name="visitorFirstName" value="<?php echo $visitor->getVisitorFirstName(); ?>" >><br>
 
 		<label for="visitorLastName">Last Name</label>
-		<input type="text" id="visitorLastName" name="visitorLastName" value="<?php echo $visitor->getVisitorLastName(); ?>" readonly>><br>
+		<input type="text" id="visitorLastName" disabled="disabled" name="visitorLastName" value="<?php echo $visitor->getVisitorLastName(); ?>" >><br>
 
 		<label for="visitorEmail">Email</label>
-		<input type="text" id="visitorEmail" name="visitorEmail" value="<?php echo $visitor->getVisitorEmail(); ?>" readonly>><br>
+		<input type="text" id="visitorEmail" disabled="disabled" name="visitorEmail" value="<?php echo $visitor->getVisitorEmail(); ?>" >><br>
 
 		<label for="visitorPhone">Phone Number</label>
-		<input type="text" id="visitorPhone" name="visitorPhone" value="<?php echo $visitor->getVisitorPhone(); ?>" readonly>><br>
+		<input type="text" id="visitorPhone" disabled="disabled" name="visitorPhone" value="<?php echo $visitor->getVisitorPhone(); ?>" >><br>
 		<label for="vehicleVehicle">Vehicle</label>
 
 <!--		<select>-->
