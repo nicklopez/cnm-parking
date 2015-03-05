@@ -5,16 +5,11 @@ require_once("/etc/apache2/capstone-mysql/encrypted-config.php");
 require_once("../php/classes/visitor.php");
 require_once("../php/classes/invite.php");
 
-
-
-
 try {
 	// verify $_GET["activation"] has an activation token; if not, throw an exception
 	if(!isset($_GET["activation"])) {
 		throw (new InvalidArgumentException("No activation token detected.  Resubmit request."));
 	}
-	var_dump($_GET["activation"]);
-
 
 	//set up connection
 	mysqli_report(MYSQLI_REPORT_STRICT);
@@ -34,68 +29,153 @@ try {
 	// actually, echo the exception since this is the end of the line
 		echo "<p class=\"alert alert-danger\">" . $exception->getMessage() . "</p>";
 	}
-	var_dump($invite->getAdminProfileId());
-
 ?>
 
-<body>
-	<script src="../js/personal-vehicle.js"></script>
-
-	<h1>CNM Visitor Vehicle Parking Information</h1>
-	<form method="post" action="../php/controllers/personal-vehicle-post.php">
-
-		<label for="visitorFirstName">First Name</label>
-		<input type="text" id="visitorFirstName" disabled="disabled" name="visitorFirstName" value="<?php echo $visitor->getVisitorFirstName(); ?>" ><br>
-
-		<label for="visitorLastName">Last Name</label>
-		<input type="text" id="visitorLastName" disabled="disabled" name="visitorLastName" value="<?php echo $visitor->getVisitorLastName(); ?>" ><br>
-
-		<label for="visitorEmail">Email</label>
-		<input type="text" id="visitorEmail" disabled="disabled" name="visitorEmail" value="<?php echo $visitor->getVisitorEmail(); ?>" ><br>
-
-		<label for="visitorPhone">Phone Number</label>
-		<input type="text" id="visitorPhone" disabled="disabled" name="visitorPhone" value="<?php echo $visitor->getVisitorPhone(); ?>" ><br>
-
-		<label for="adminProfileId">AdminProfileId</label>
-		<input type="text" id="adminProfileId" name="adminProfileId" value="<?php echo $invite->getAdminProfileId(); ?>" ><br>
-
-
-<!--		<select>-->
-<!--			name="visitorVehicle"-->
-<!--			<option>+New</option>-->
-<!--		</select>-->
-<!--		<br>-->
-
-		<label for="vehicleMake">Vehicle Make</label>
-		<input type="text" id="vehicleMake" name="vehicleMake"><br>
-
-		<label for="vehicleModel">Vehicle Model</label>
-		<input type="text" id="vehicleModel" name="vehicleModel"><br>
-
-		<label for="vehicleYear">Vehicle Year</label>
-		<input type="text" id="vehicleYear" name="vehicleYear"><br>
-
-		<label for="vehicleColor">Vehicle Color</label>
-		<input type="text" id="vehicleColor" name="vehicleColor"><br>
-
-		<label for="vehiclePlateNumber">Vehicle Plate #</label>
-		<input type="text" id="vehiclePlateNumber" name="vehiclePlateNumber"><br>
-
-		<label for="vehiclePlateState">Plate State Issued</label>
-		<input type="text" id="vehiclePlateState" name="vehiclePlateState"><br>
-
-<!--		<label for="parkingLocation">Parking Location</label>-->
-<!--		<select id="vehiclePlateState" name="vehiclePlateState">-->
-<!--			<option>CNM STEMulus</option>-->
-<!--		</select>-->
-<!--		<br>-->
-
-		<label for="startDateTime">Start Date/Time</label>
-		<input type="text" id="startDateTime" name="startDateTime"><br>
-
+<!--<body>-->
+<!---->
+<!--	<h1>CNM Visitor Vehicle Parking Information</h1>-->
+<!--	<form method="post" action="../php/controllers/personal-vehicle-post.php">-->
+<!---->
+<!--		<label for="visitorFirstName">First Name</label>-->
+<!--		<input type="text" id="visitorFirstName" disabled="disabled" name="visitorFirstName" value="--><?php //echo $visitor->getVisitorFirstName(); ?><!--" ><br>-->
+<!---->
+<!--		<label for="visitorLastName">Last Name</label>-->
+<!--		<input type="text" id="visitorLastName" disabled="disabled" name="visitorLastName" value="--><?php //echo $visitor->getVisitorLastName(); ?><!--" ><br>-->
+<!---->
+<!--		<label for="visitorEmail">Email</label>-->
+<!--		<input type="text" id="visitorEmail" disabled="disabled" name="visitorEmail" value="--><?php //echo $visitor->getVisitorEmail(); ?><!--" ><br>-->
+<!---->
+<!--		<label for="visitorPhone">Phone Number</label>-->
+<!--		<input type="text" id="visitorPhone" disabled="disabled" name="visitorPhone" value="--><?php //echo $visitor->getVisitorPhone(); ?><!--" ><br>-->
+<!---->
+<!--		<label for="adminProfileId">AdminProfileId</label>-->
+<!--		<input type="text" id="adminProfileId" name="adminProfileId" value="--><?php //echo $invite->getAdminProfileId(); ?><!--" ><br>-->
+<!---->
+<!--		<label for="vehicleMake">Vehicle Make</label>-->
+<!--		<input type="text" id="vehicleMake" name="vehicleMake"><br>-->
+<!---->
+<!--		<label for="vehicleModel">Vehicle Model</label>-->
+<!--		<input type="text" id="vehicleModel" name="vehicleModel"><br>-->
+<!---->
+<!--		<label for="vehicleYear">Vehicle Year</label>-->
+<!--		<input type="text" id="vehicleYear" name="vehicleYear"><br>-->
+<!---->
+<!--		<label for="vehicleColor">Vehicle Color</label>-->
+<!--		<input type="text" id="vehicleColor" name="vehicleColor"><br>-->
+<!---->
+<!--		<label for="vehiclePlateNumber">Vehicle Plate #</label>-->
+<!--		<input type="text" id="vehiclePlateNumber" name="vehiclePlateNumber"><br>-->
+<!---->
+<!--		<label for="vehiclePlateState">Plate State Issued</label>-->
+<!--		<input type="text" id="vehiclePlateState" name="vehiclePlateState"><br>-->
+<!---->
+<!--		<label for="startDateTime">Start Date/Time</label>-->
+<!--		<input type="text" id="startDateTime" name="startDateTime"><br>-->
 <!---->
 <!--		<label for="endDateTime">End Date/Time</label>-->
 <!--		<input type="text" id="endDateTime" name="endDateTime"><br>-->
+
+		<header>
+			<h1>CNM Visitor Vehicle Parking Information</h1>
+		</header>
+		<form id="request-invite" method="post" action="../php/controllers/personal-vehicle-post.php" novalidate="novalidate">
+<!--			--><?php //echo generateInputTags(); ?>
+
+			<label for="visitorFirstName">First Name:</label>
+			<input type="text" id="visitorFirstName" disabled="disabled" name="visitorFirstName" value="<?php echo $visitor->getVisitorFirstName(); ?>" ><br>
+
+			<label for="visitorLastName">Last Name:</label>
+			<input type="text" id="visitorLastName" disabled="disabled" name="visitorLastName" value="<?php echo $visitor->getVisitorLastName(); ?>" ><br>
+
+			<label for="visitorEmail">Email:</label>
+			<input type="text" id="visitorEmail" disabled="disabled" name="visitorEmail" value="<?php echo $visitor->getVisitorEmail(); ?>" ><br>
+
+			<label for="visitorPhone">Phone Number:</label>
+			<input type="text" id="visitorPhone" disabled="disabled" name="visitorPhone" value="<?php echo $visitor->getVisitorPhone(); ?>" ><br>
+
+			<label for="vehicleMake">Vehicle Make:</label>
+			<input type="text" id="vehicleMake" name="vehicleMake" size="128" maxlength="128"><br>
+
+			<label for="vehicleModel">Vehicle Model:</label>
+			<input type="text" id="vehicleModel" name="vehicleModel" size="128" maxlength="128"><br>
+
+			<label for="vehicleYear">Vehicle Year:</label>
+			<input type="text" id="vehicleYear" name="vehicleYear" size="128" maxlength="128"><br>
+
+			<label for="vehicleColor">Vehicle Color:</label>
+			<input type="text" id="vehicleColor" name="vehicleColor" size="128" maxlength="128"><br>
+
+			<label for="vehiclePlateNumber">Vehicle Plate #:</label>
+			<input type="text" id="vehiclePlateNumber" name="vehiclePlateNumber" size="128" maxlength="128"><br>
+
+			<label for="vehiclePlate">Vehicle Plate #:</label>
+			<input type="text" id="vehiclePlateNumber" name="vehiclePlateNumber" size="128" maxlength="128"><br>
+
+			<label for="vehiclePlateState">Plate State:</label>
+			<select name="vehiclePlateState" id="vehiclePlateState" style="width:128px;">
+				<option value="AL">AL</option>
+				<option value="AK">AK</option>
+				<option value="AZ">AZ</option>
+				<option value="AR">AR</option>
+				<option value="CA">CA</option>
+				<option value="CO">CO</option>
+				<option value="CT">CT</option>
+				<option value="DE">DE</option>
+				<option value="FL">FL</option>
+				<option value="GA">GA</option>
+				<option value="HI">HI</option>
+				<option value="ID">ID</option>
+				<option value="IL">IL</option>
+				<option value="IN">IN</option>
+				<option value="IA">IA</option>
+				<option value="KS">KS</option>
+				<option value="KY">KY</option>
+				<option value="LA">LA</option>
+				<option value="ME">ME</option>
+				<option value="MD">MD</option>
+				<option value="MA">MA</option>
+				<option value="MI">MI</option>
+				<option value="MN">MN</option>
+				<option value="MS">MS</option>
+				<option value="MO">MO</option>
+				<option value="MT">MT</option>
+				<option value="NE">NE</option>
+				<option value="NV">NV</option>
+				<option value="NH">NH</option>
+				<option value="NJ">NJ</option>
+				<option selected="selected" value="NM">NM</option>
+				<option value="NY">NY</option>
+				<option value="NC">NC</option>
+				<option value="ND">ND</option>
+				<option value="OH">OH</option>
+				<option value="OK">OK</option>
+				<option value="OR">OR</option>
+				<option value="PA">PA</option>
+				<option value="RI">RI</option>
+				<option value="SC">SC</option>
+				<option value="SD">SD</option>
+				<option value="TN">TN</option>
+				<option value="TX">TX</option>
+				<option value="UT">UT</option>
+				<option value="VT">VT</option>
+				<option value="VA">VA</option>
+				<option value="WA">WA</option>
+				<option value="WV">WV</option>
+				<option value="WI">WI</option>
+				<option value="WY">WY</option>
+			</select><br>
+
+			<label for="startDateTime">Start Date/Time</label>
+			<input type="text" id="startDateTime" name="startDateTime"><br>
+
+			<label for="endDateTime">End Date/Time</label>
+			<input type="text" id="endDateTime" name="endDateTime"><br>
+
+			<button id="sendRequest" type="submit">Send Request</button>
+		</form>
+		<p id="outputArea"></p>
+
+
 <!--		<div class="container">-->
 <!--			<div class="row">-->
 <!--				<div class="col-xs-12 col-md-4">-->
@@ -134,12 +214,10 @@ try {
 <!--	</form>-->
 <!--	<div id="outputArea"></div>-->
 <!--</body>-->
-</html>V
 
-
-		<button id="submit" type="submit">Submit</button>
-	</form>
-</body>
+<!--		<button id="submit" type="submit">Submit</button>-->
+<!--	</form>-->
+<!--</body>-->
 
 <?php
 require_once("../php/lib/footer.php");

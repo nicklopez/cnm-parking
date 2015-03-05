@@ -1,12 +1,15 @@
 <?php
+// start session
 session_start();
+
+// require necessary files
 require_once("/etc/apache2/capstone-mysql/encrypted-config.php");
 require_once("../classes/admin.php");
 require_once("../classes/adminprofile.php");
+
+// assign the session
 $_SESSION["login user"] = $_POST["adminEmail"];
-//if(isset($_SESSION["login_user"])) {
-	//header("location: https://bootcamp-coders.cnm.edu/~dfevig/cnm-parking/php/test-portal/test-portal.php");
-// }
+
 ?>
 	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 	<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
@@ -35,6 +38,7 @@ try {
 	if(count($admin) !== 0) {
 		$hash = hash_pbkdf2("sha512", $_POST["password"], $salt, 2048, 128);
 		if($hash === $admin->getPassHash());
+
 		// assign session to logged in admin id
 		$adminProfile = AdminProfile::getAdminProfileByAdminId($mysqli, $admin->getAdminId());
 
@@ -42,10 +46,9 @@ try {
 			'id' => $adminProfile->getAdminProfileId()
 		);
 
+		// session assignment to correct profile id
 		$adminProfileId = $adminProfile->getAdminProfileId();
-
 		echo '<button id="'.$adminProfileId.'" class="btn btn-default portalButton">Go To Portal</button>';
-
 
 	} else {
 		throw (new mysqli_sql_exception(" incorrect email or password. Try again."));
