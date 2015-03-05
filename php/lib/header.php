@@ -8,10 +8,18 @@
 		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery.form/3.51/jquery.form.min.js"></script>
 		<script type="text/javascript" src="//ajax.aspnetcdn.com/ajax/jquery.validate/1.12.0/jquery.validate.min.js"></script>
 		<script type="text/javascript" src="//ajax.aspnetcdn.com/ajax/jquery.validate/1.12.0/additional-methods.min.js"></script>
+		<script type="text/javascript" src="//cdn.datatables.net/1.10.5/js/jquery.dataTables.min.js"></script>
+
 		<!--		Custom JavaScript-->
 		<script type="text/javascript" src="../js/request-invite.js"></script>
 		<script type="text/javascript" src="../js/send-invite.js"></script>
+		<script type="text/javascript" src="../js/location-row-grouping.js"></script>
+		<script type="text/javascript" src="../js/reports.js"></script>
+		<script type="text/javascript" src="../../js/reports.js"></script>
+
 		<script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+		<link type="text/css" href="//cdn.datatables.net/1.10.5/css/jquery.dataTables.css" rel="stylesheet">
+		<link type="text/css" href="../../css/custom.css" rel="stylesheet">
 		<link type="text/css" href="../css/custom.css" rel="stylesheet">
 		<title><?php echo $pageTitle ?></title>
 	</head>
