@@ -9,52 +9,58 @@ require_once("/etc/apache2/capstone-mysql/encrypted-config.php");
 
 try {
 // now retrieve the configuration parameters
-$configFile = "/etc/apache2/capstone-mysql/cnmparking.ini";
-$configArray = readConfig($configFile);
+	$configFile = "/etc/apache2/capstone-mysql/cnmparking.ini";
+	$configArray = readConfig($configFile);
 
 // first, connect to mysqli
-mysqli_report(MYSQLI_REPORT_STRICT);
-$mysqli = new mysqli($configArray["hostname"], $configArray["username"], $configArray["password"], $configArray["database"]);
+	mysqli_report(MYSQLI_REPORT_STRICT);
+	$mysqli = new mysqli($configArray["hostname"], $configArray["username"], $configArray["password"], $configArray["database"]);
 
 	?>
 	<header>
 		<h1>Results</h1>
 	</header>
 	<table id="reports" class="hover row-border">
-	<thead>
-		<th>adminProfileId</th>
-		<th>vehicleId</th>
-		<th>parkingSpotId</th>
-		<th>startDate</th>
-		<th>endDate</th>
-	</thead>
-	<tbody>
+		<thead>
+			<th>Location</th>
+			<th>Visitor Name</th>
+			<th>Vehicle Plate #</th>
+			<th>Arrival</th>
+			<th>Departure</th>
+			<th>Approved By</th>
+		</thead>
+		<tbody>
 
-<?php
+			<?php
 
-$begin = new DateTime($_POST["startDate"]);
-$end = new DateTime($_POST["endDate"]);
+			$begin = new DateTime($_POST["startDate"]);
+			$end = new DateTime($_POST["endDate"]);
 
+			$parkingPass = ParkingPass::getVisitorParkingDataByDateRange($mysqli, $begin, $end);
 
-$parkingPass = ParkingPass::getParkingPassByStartDateTimeEndDateTimeRange($mysqli, $begin, $end);
-
-foreach($parkingPass as $pass) {
-	$adminProfileId = $pass->getAdminProfileId();
-	$vehicleId = $pass->getVehicleId();
-	$parkingSpotId = $pass->getParkingSpotId();
-	$startDate = $pass->getStartDateTime()->format("m-d-Y");
-	$endDate = $pass->getEndDateTime()->format("m-d-Y");
-	$row = <<< EOF
-		<tr><td>$adminProfileId</td><td>$vehicleId</td><td>$parkingSpotId</td><td>$startDate</td><td>$endDate</td></tr>
+			if (count($parkingPass) === 0) {
+				return null;
+			} else {
+				foreach($parkingPass as $pass) {
+					$locationDesc = $pass["locationDescription"] . " - " . $pass["locationNote"];
+					$visitor = $pass["visitorFirstName"] . " " . $pass["visitorLastName"];
+					$admin = $pass["adminFirstName"] . " " . $pass["adminLastName"];
+					$plateNumber = $pass["vehiclePlateNumber"];
+					$startDate = new DateTime($pass["startDateTime"]);
+					$formattedStartDate = $startDate->format("m-d-Y H:i:s");
+					$endDate = new DateTime($pass["endDateTime"]);
+					$formattedEndDate = $endDate->format("m-d-Y H:i:s");
+					$row = <<< EOF
+				<tr><td>$locationDesc</td><td>$visitor</td><td>$plateNumber</td><td>$formattedStartDate</td>
+				<td>$formattedEndDate</td><td>$admin</td></tr>
 EOF;
-	echo $row;
-}
-?>
-</tbody>
-</table>
+					echo $row;
+				}
+			}
 
-<?php
-$mysqli->close();
+	echo "</tbody>";
+	echo "</table>";
+	$mysqli->close();
 
 } catch(Exception $exception) {
 	echo "<td><tr class=\"alert alert-danger\" colspan=\"3\">Exception: " . $exception->getMessage() . "</td></tr>";
