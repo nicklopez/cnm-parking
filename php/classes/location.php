@@ -519,11 +519,6 @@ class Location {
 		$objects = array();
 		while(($row = $result->fetch_assoc()) !== null) {
 			try {
-				//$objects = array();
-				//$location = new Location($row["locationId"], $row["latitude"], $row["locationDescription"], $row["locationNote"], $row["longitude"]);
-				//$parkingSpot = new ParkingSpot($row["parkingSpotId"], $row["locationId"], $row["placardNumber"]);
-				//$objects["locations"][$location->getLocationId()] = $location;
-				//$objects["parkingSpots"][$parkingSpot->getPlacardNumber()] = $parkingSpot;
 				$objects[] = $row;
 
 			} catch(Exception $exception) {
