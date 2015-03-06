@@ -20,7 +20,7 @@ $mysqli = new mysqli($configArray["hostname"], $configArray["username"], $config
 	<header>
 		<h1>Results</h1>
 	</header>
-<table id="reports" class="table-bordered table-responsive table-striped">
+	<table id="reports" class="hover row-border">
 	<thead>
 		<th>adminProfileId</th>
 		<th>vehicleId</th>
@@ -34,6 +34,7 @@ $mysqli = new mysqli($configArray["hostname"], $configArray["username"], $config
 
 $begin = new DateTime($_POST["startDate"]);
 $end = new DateTime($_POST["endDate"]);
+
 
 $parkingPass = ParkingPass::getParkingPassByStartDateTimeEndDateTimeRange($mysqli, $begin, $end);
 

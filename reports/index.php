@@ -1,18 +1,21 @@
 <?php
-$pageTitle = "Reports";
+$pageTitle = "Visitor Parking Data";
 require_once("../php/lib/header.php");
 ?>
-<form method="post" action="../php/controllers/reports-post.php" novalidate="novalidate">
+
 <header>
-	<h1>Reports</h1>
+	<h1>Visitor Parking Data</h1>
 </header>
-<table>
-	<tbody>
-		<tr><td>Start Date:</td><td><input id="startDate" name="startDate" type="date"></td></tr>
-		<tr><td>End Date:</td><td><input id="endDate" name="endDate" type="date"></td></tr>
-	</tbody>
-</table>
-<button type="submit">Run Report</button>
-	</form>
+<form method="post" action="../php/controllers/reports-post.php">
+	<div class="form-group">
+		<label for="startDate">Start Date</label>
+		<input type="date" class="form-control" id="startDate" name="startDate">
+	</div>
+	<div class="form-group">
+		<label for="endDate">End Date</label>
+		<input type="date" class="form-control" id="endDate" name="endDate">
+	</div>
+	<button type="submit" class="btn btn-default">Run Report</button>
+</form>
 
 <?php require_once("../php/lib/footer.php"); ?>
