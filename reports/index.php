@@ -11,6 +11,7 @@ require_once("../php/lib/csrf.php");
 ?>
 
 <form method="post" action="../php/controllers/reports-post.php">
+	<?php echo generateInputTags(); ?>
 	<div class="form-group">
 		<label for="startDate">Start Date</label>
 		<input type="date" class="form-control date" id="startDate" name="startDate">
