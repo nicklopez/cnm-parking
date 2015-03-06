@@ -25,6 +25,7 @@ $_SESSION["login user"] = $_POST["adminEmail"];
 
 
 try {
+
 	// create a new salt and hash
 	$salt = bin2hex(openssl_random_pseudo_bytes(32));
 

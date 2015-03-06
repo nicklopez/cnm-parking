@@ -5,7 +5,6 @@ require_once("../lib/header.php");
 require_once("../classes/visitor.php");
 require_once("../classes/vehicle.php");
 require_once("../classes/adminprofile.php");
-// require_once("../classes/parkingspot.php");
 require_once("../classes/parkingpass.php");
 
 // require PEAR::Mail <http://pear.php.net/package/Mail> to send mail
@@ -21,11 +20,7 @@ try {
 	$configArray = readConfig("/etc/apache2/capstone-mysql/cnmparking.ini");
 	$mysqli = new mysqli($configArray['hostname'], $configArray['username'], $configArray['password'], $configArray['database']);
 
-	var_dump($_POST);
-
-	// $vehiclePlateState = $_POST["vehiclePlateState"];
-
-	// create and insert vehicle
+		// create and insert vehicle
 	$vehicle = new Vehicle(null, 4, $_POST["vehicleColor"], $_POST["vehicleMake"], $_POST["vehicleModel"], $_POST["vehiclePlateNumber"], $_POST["vehiclePlateState"], $_POST["vehicleYear"]);
 	$vehicle->insert($mysqli);
 
@@ -82,7 +77,6 @@ if(@isset($_POST["vehicleMake"]) === false || @isset($_POST["vehicleModel"]) ===
 	}
 
 } catch(Exception $exception) {
-	var_dump($_POST);
 	echo "<div class=\"alert alert-danger\" role=\"alert\"><strong>Oh snap!</strong> " . $exception->getMessage() . "</div>";
 }
 ?>
