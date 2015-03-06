@@ -1,5 +1,6 @@
 <?php
-$pageTitle = "Processing...";
+$title = "Processing...";
+$headerTitle = "Processing";
 require_once("/etc/apache2/capstone-mysql/encrypted-config.php");
 require_once("../lib/header.php");
 require_once("../classes/visitor.php");
@@ -29,7 +30,7 @@ try {
 	$parkingPass->insert($mysqli);
 
 if(@isset($_POST["vehicleMake"]) === false || @isset($_POST["vehicleModel"]) === false || @isset($_POST["vehicleYear"]) === false || @isset($_POST["vehicleColor"]) === false ||
-	@isset($_POST["vehiclePlateNumber"]) === false || @isset($_GET["vehiclePlateState"]) === false || @isset($_POST["startDateTime"]) === false || @isset($_POST["endDateTime"]) === false) {
+	@isset($_POST["vehiclePlateNumber"]) === false || @isset($_POST["vehiclePlateState"]) === false || @isset($_POST["startDateTime"]) === false || @isset($_POST["endDateTime"]) === false) {
 	throw(new mysqli_sql_exception("form values not complete. verify the form and try again."));
 	}
 
@@ -77,6 +78,6 @@ if(@isset($_POST["vehicleMake"]) === false || @isset($_POST["vehicleModel"]) ===
 	}
 
 } catch(Exception $exception) {
-	//echo "<div class=\"alert alert-danger\" role=\"alert\"><strong>Oh snap!</strong> " . $exception->getMessage() . "</div>";
+	echo "<div class=\"alert alert-danger\" role=\"alert\"><strong>Oh snap!</strong> " . $exception->getMessage() . "</div>";
 }
 ?>
