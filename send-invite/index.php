@@ -47,15 +47,17 @@ EOF;
 		}
 	} else {
 		echo "<div class=\"alert alert-success\" role=\"alert\"><strong>No pending invites at this time</strong></div>";
-		return;
 		require_once("../php/lib/footer.php");
+		return;
+
 	}
 	$mysqli->close();
 } catch(Exception $exception) {
 	echo "<td><tr class=\"alert alert-danger\" colspan=\"3\">Exception: " . $exception->getMessage() . "</td></tr>";
 }
 ?>
-			</table>
-			<p id="outputArea"></p>
-			<!--require the footer file-->
-			<?php require_once("../php/lib/footer.php"); ?>
+</table>
+<p id="outputArea"></p>
+
+<!--require the footer file-->
+<?php require_once("../php/lib/footer.php"); ?>
