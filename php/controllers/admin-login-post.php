@@ -1,6 +1,3 @@
-<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-
-
 <?php
 // start session
 session_start();
