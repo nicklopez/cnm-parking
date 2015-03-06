@@ -35,19 +35,19 @@ h1 {
 }
 
 .date {
-	width: 10%
+	width: 128px;
 }
 
 .name {
-	width: 15%;
+	width: 192px;
 }
 
 .phone {
-	width: 12%;
+	width: 154px;
 }
 
 .email {
-	width: 25%
+	width: 320px;
 }
 
 @font-face {
