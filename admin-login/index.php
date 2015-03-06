@@ -10,6 +10,7 @@ require_once("../php/lib/csrf.php");
 
 //start a session
 session_start();
+
 ?>
 
 	<form id="admin-login" method="post" action="../php/controllers/admin-login-post.php" novalidate="novalidate">

@@ -1,9 +1,14 @@
 <?php
-$pageTitle = "Visitor Vehicle Information";
+$headerTitle = "Visitor Vehicle Information";
+$title = "CNM Visitor Vehcile Parking Information";
 require_once("../php/lib/header.php");
 require_once("/etc/apache2/capstone-mysql/encrypted-config.php");
 require_once("../php/classes/visitor.php");
 require_once("../php/classes/invite.php");
+require_once("../php/lib/csrf.php");
+
+// start session
+session_start();
 
 try {
 	// verify $_GET["activation"] has an activation token; if not, throw an exception
@@ -31,55 +36,8 @@ try {
 	}
 ?>
 
-<!--<body>-->
-<!---->
-<!--	<h1>CNM Visitor Vehicle Parking Information</h1>-->
-<!--	<form method="post" action="../php/controllers/personal-vehicle-post.php">-->
-<!---->
-<!--		<label for="visitorFirstName">First Name</label>-->
-<!--		<input type="text" id="visitorFirstName" disabled="disabled" name="visitorFirstName" value="--><?php //echo $visitor->getVisitorFirstName(); ?><!--" ><br>-->
-<!---->
-<!--		<label for="visitorLastName">Last Name</label>-->
-<!--		<input type="text" id="visitorLastName" disabled="disabled" name="visitorLastName" value="--><?php //echo $visitor->getVisitorLastName(); ?><!--" ><br>-->
-<!---->
-<!--		<label for="visitorEmail">Email</label>-->
-<!--		<input type="text" id="visitorEmail" disabled="disabled" name="visitorEmail" value="--><?php //echo $visitor->getVisitorEmail(); ?><!--" ><br>-->
-<!---->
-<!--		<label for="visitorPhone">Phone Number</label>-->
-<!--		<input type="text" id="visitorPhone" disabled="disabled" name="visitorPhone" value="--><?php //echo $visitor->getVisitorPhone(); ?><!--" ><br>-->
-<!---->
-<!--		<label for="adminProfileId">AdminProfileId</label>-->
-<!--		<input type="text" id="adminProfileId" name="adminProfileId" value="--><?php //echo $invite->getAdminProfileId(); ?><!--" ><br>-->
-<!---->
-<!--		<label for="vehicleMake">Vehicle Make</label>-->
-<!--		<input type="text" id="vehicleMake" name="vehicleMake"><br>-->
-<!---->
-<!--		<label for="vehicleModel">Vehicle Model</label>-->
-<!--		<input type="text" id="vehicleModel" name="vehicleModel"><br>-->
-<!---->
-<!--		<label for="vehicleYear">Vehicle Year</label>-->
-<!--		<input type="text" id="vehicleYear" name="vehicleYear"><br>-->
-<!---->
-<!--		<label for="vehicleColor">Vehicle Color</label>-->
-<!--		<input type="text" id="vehicleColor" name="vehicleColor"><br>-->
-<!---->
-<!--		<label for="vehiclePlateNumber">Vehicle Plate #</label>-->
-<!--		<input type="text" id="vehiclePlateNumber" name="vehiclePlateNumber"><br>-->
-<!---->
-<!--		<label for="vehiclePlateState">Plate State Issued</label>-->
-<!--		<input type="text" id="vehiclePlateState" name="vehiclePlateState"><br>-->
-<!---->
-<!--		<label for="startDateTime">Start Date/Time</label>-->
-<!--		<input type="text" id="startDateTime" name="startDateTime"><br>-->
-<!---->
-<!--		<label for="endDateTime">End Date/Time</label>-->
-<!--		<input type="text" id="endDateTime" name="endDateTime"><br>-->
-
-		<header>
-			<h1>CNM Visitor Vehicle Parking Information</h1>
-		</header>
 		<form id="request-invite" method="post" action="../php/controllers/personal-vehicle-post.php" novalidate="novalidate">
-<!--			--><?php //echo generateInputTags(); ?>
+			<?php echo generateInputTags(); ?>
 
 			<label for="visitorFirstName">First Name:</label>
 			<input type="text" id="visitorFirstName" disabled="disabled" name="visitorFirstName" value="<?php echo $visitor->getVisitorFirstName(); ?>" ><br>
