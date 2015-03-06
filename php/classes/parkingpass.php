@@ -1024,12 +1024,11 @@ class ParkingPass {
 
 		// create query template
 		$query = "SELECT parkingSpotId FROM parkingSpot WHERE parkingSpotId NOT IN
-			(SELECT parkingSpot.parkingSpotId FROM parkingSpot INNER JOIN parkingPass ON parkingSpot.parkingSpotId = parkingPass.parkingSpotId WHERE
-			(locationId = ? AND ? >= startDateTime AND ? <= endDateTime AND
-			((? >= endDateTime AND ? <= startDateTime) OR
-			(? >= startDateTime AND ? >= startDateTime) OR
-			(? >= startDateTime AND ? >= endDateTime)))) AND
-			locationId =?
+			  (SELECT parkingSpot.parkingSpotId FROM parkingSpot INNER JOIN parkingPass ON parkingSpot.parkingSpotId = parkingPass.parkingSpotId WHERE
+				  (locationId = ? AND ? <= endDateTime AND
+					((? > startDateTime AND ? <= startDateTime) OR
+					 (? >= startDateTime)))) AND
+			  locationId = ?
 			LIMIT 1";
 		$statement = $mysqli->prepare($query);
 		if($statement === false) {
@@ -1039,7 +1038,7 @@ class ParkingPass {
 		// bind the member variables to the place holders in the template
 		$sunrise = $sunrise->format("Y-m-d H:i:s");
 		$sunset = $sunset->format("Y-m-d H:i:s");
-		$wasClean = $statement->bind_param("issssssssi", $location, $sunset, $sunrise, $sunrise, $sunrise, $sunrise, $sunset,  $sunrise, $sunset, $location);
+		$wasClean = $statement->bind_param("issssi", $location,$sunrise, $sunrise, $sunset, $sunrise, $location);
 		if($wasClean === false) {
 			throw(new mysqli_sql_exception("unable to bind parameters"));
 		}
