@@ -1060,6 +1060,82 @@ class ParkingPass {
 		return($result);
 	}
 
+	/**
+	 * gets parkingPass and visitor data by DateTime range of startDateTime - endDateTime
+	 *
+	 * @param resource $mysqli pointer to mySQL connection, by reference
+	 * @param string $startDateTime, $endDateTime startDateTime to endDateTime range to search for
+	 * @throws mixed array of DateTime Ranges found or null if not found
+	 * @throws mysqli_sql_exception when mySQL related errors occur
+	 */
+	public static function getVisitorParkingDataByDateRange(&$mysqli, $startDateTime, $endDateTime) {
+		// handle degenerate cases
+		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
+			throw(new mysqli_sql_exception("input is not a mysqli object"));
+		}
+
+		// sanitize before searching - Using static function
+		try {
+			$sunrise = self::sanitizeDate($startDateTime);
+			$sunset = self::sanitizeDate($endDateTime);
+		} catch(InvalidArgumentException $invalidArgument) {
+			throw(new InvalidArgumentException($invalidArgument->getMessage(), 0, $invalidArgument));
+		} catch(RangeException $range) {
+			throw(new RangeException($range->getMessage(), 0, $range));
+		}
+
+		// create query template
+		$query = "SELECT adminFirstName, adminLastName, locationDescription, locationNote, vehiclePlateNumber, visitorFirstName, visitorLastName, endDateTime, issuedDateTime, startDateTime FROM parkingPass
+		INNER JOIN vehicle ON vehicle.vehicleId = parkingPass.vehicleId
+		INNER JOIN adminProfile ON adminProfile.adminProfileId = parkingPass.adminProfileId
+		INNER JOIN parkingSpot ON parkingSpot.parkingSpotId = parkingPass.parkingSpotId
+		INNER JOIN location ON location.locationId = parkingSpot.locationId
+		INNER JOIN visitor ON visitor.visitorId = vehicle.visitorId
+		WHERE startDateTime >= ? AND endDateTime <= ?";
+		$statement = $mysqli->prepare($query);
+		if($statement === false) {
+			throw(new mysqli_sql_exception(" unable to prepare statement"));
+		}
+
+		// bind the member variables to the place holders in the template
+		$sunrise = $sunrise->format("Y-m-d H:i:s");
+		$sunset = $sunset->format("Y-m-d H:i:s");
+		$wasClean = $statement->bind_param("ss", $sunrise, $sunset);
+		if($wasClean === false) {
+			throw(new mysqli_sql_exception("unable to bind parameters"));
+		}
+		// execute the statement
+		if($statement->execute() === false) {
+			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
+		}
+
+		// get result from SELECT query
+		$result = $statement->get_result();
+		if($result === false) {
+			throw(new mysqli_sql_exception("unable to get result set"));
+		}
+
+		// build array of parkingPass
+		$visitorData = array();
+		while(($row = $result->fetch_assoc()) !== null) {
+			try {
+				$visitorData[] = $row;
+			} catch(Exception $exception) {
+				// if the row couldn't be converted, rethrow it
+				throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
+			}
+		}
+
+		// count the results in array and return:
+		// 1) null if zero results
+		// 2) the entire array if > 1 result
+		$recordCount = count($visitorData);
+		if($recordCount === 0) {
+			return (null);
+		} else {
+			return ($visitorData);
+		}
+	}
 
 	/**
 	 * sanitizes a date either as a DateTime object or mySQL date string
