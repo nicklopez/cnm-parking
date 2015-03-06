@@ -37,6 +37,8 @@ imagettftext($image, 16.0, 0.0, 16, 16, $black, "./fonts/Helvetica.ttf", "CNM ST
 
 imagettftext($image, 16.0, 0.0, 150, 150, $black, "./fonts/Helvetica.ttf", "Start Date/Time:" );
 
+imagettftext($image, 16)
+
 imagesetthickness($image, 45);
 
 // set content type header as jpeg
