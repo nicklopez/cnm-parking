@@ -1,5 +1,6 @@
 <?php
-$pageTitle = "Results";
+$title = "Results";
+$headerTitle = "Results";
 require_once("../lib/header.php");
 
 require_once("../classes/parkingpass.php");
@@ -17,9 +18,7 @@ try {
 	$mysqli = new mysqli($configArray["hostname"], $configArray["username"], $configArray["password"], $configArray["database"]);
 
 	?>
-	<header>
-		<h1>Results</h1>
-	</header>
+
 	<table id="reports" class="hover row-border">
 		<thead>
 			<th>Location</th>
