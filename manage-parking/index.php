@@ -24,7 +24,7 @@ $objects = Location::getAllLocationsAndParkingSpots($mysqli);
 	<h1>Manage locations & parking spots</h1>
 </header>
 
-<table id="example" class="table-bordered table-responsive table-striped">
+<table id="example" class="hover row-border">
 	<thead>
 	<th>Location</th>
 		<th>Placard #</th>
