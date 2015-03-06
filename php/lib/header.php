@@ -16,6 +16,7 @@
 		<script type="text/javascript" src="../js/location-row-grouping.js"></script>
 		<script type="text/javascript" src="../js/reports.js"></script>
 		<script type="text/javascript" src="../../js/reports.js"></script>
+		<script type="text/javascript" src="../../js/admin-login.js"></script>
 
 		<script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 		<link type="text/css" href="//cdn.datatables.net/1.10.5/css/jquery.dataTables.css" rel="stylesheet">
