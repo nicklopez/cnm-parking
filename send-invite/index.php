@@ -1,6 +1,7 @@
 <?php
 // require the header file
-$pageTitle = "Controller - Send Parking Pass Invite";
+$title = "Send Parking Pass Invite";
+$headerTitle = "Send a parking pass invite";
 require_once("../php/lib/header.php");
 
 // start a PHP session for CSRF protection
@@ -12,9 +13,6 @@ require_once("/etc/apache2/capstone-mysql/encrypted-config.php");
 // require the mySQL enabled Invite class
 require_once("../php/classes/invite.php");
 ?>
-<header>
-	<h1>Controller: Send a parking pass invite</h1>
-	</header>
 
 <?php
 try {
@@ -29,7 +27,7 @@ try {
 	$invites = Invite::getPendingInvite($mysqli);
 
 	if(count($invites) !== 0) {
-		echo '<table class="table-bordered table-responsive table-striped" style="width:50%">';
+		echo '<table id="invite" class="hover row-border" style="width:80%">';
 		echo "<tr><th>Name</th><th>Email</th><th>Action</th></tr>";
 
 		foreach($invites as $invite) {
@@ -38,10 +36,10 @@ try {
 			$visitorName = $invite["fullName"];
 			$row = <<< EOF
 			<tr><td id="name">$visitorName</td><td>$email</td><td>
-			<button id="accept" class="btn btn-default" onclick="acceptInvite('$activation');">
+			<button id="accept" class="btn btn-success" onclick="acceptInvite('$activation');">
 			<span class="glyphicon glyphicon-ok">Accept</span>
 			</button>
-			<button id="decline" class="btn btn-default" onclick="declineInvite('$activation');">
+			<button id="decline" class="btn btn-danger" onclick="declineInvite('$activation');">
 			<span class="glyphicon glyphicon-remove">Decline</span>
 			</button></td></tr>
 EOF;
