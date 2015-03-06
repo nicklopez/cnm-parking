@@ -1,4 +1,5 @@
 <?php
+// required label variables
 $title = "Admin Login";
 $headerTitle = "CNM Parking Admin Credentials";
 
@@ -12,14 +13,17 @@ require_once("../php/lib/csrf.php");
 session_start();
 
 ?>
-
 	<form id="admin-login" method="post" action="../php/controllers/admin-login-post.php" novalidate="novalidate">
 		<?php echo generateInputTags(); ?>
-		<label for="adminEmail">Email:</label>
-		<input type="text" id="adminEmail" name="adminEmail" size="128" maxlength="128" placeholder="name@example.com"><br>
-		<label for="password">Password:</label>
-		<input type="password" id="password" name="password" size="128" maxlength="128" placeholder="******"><br>
-		<button id="submit" type="submit" value="submit">Log In</button>
+		<div class="control-group">
+			<label for="adminEmail">Email:</label>
+			<input type="text" class="form-control email" id="adminEmail" name="adminEmail" size="128" maxlength="128" placeholder="name@example.com"><br>
+		</div>
+		<div class="form-group">
+			<label for="password">Password:</label>
+			<input type="password" class="form-control name" id="password" name="password" size="128" maxlength="128" placeholder="******"><br>
+		</div>
+		<button id="submit" type="submit" class="btn btn-primary" value="submit">Log In</button>
 	</form>
 	<p id="outputArea"></p>
 

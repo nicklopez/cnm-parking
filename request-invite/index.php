@@ -28,7 +28,9 @@ require_once("../php/lib/csrf.php");
 			<label for="phone">Phone:</label>
 			<input type="text" class="form-control phone" id="phone" name="phone" size="24" maxlength="24" placeholder="Phone Number">
 		</div>
+		<div class="form-group">
 		<button type="submit" id="submitRequest" name="submitRequest" class="btn btn-primary">Send Request</button>
+		</div>
 	</form>
 	<p id="outputArea"></p>
 

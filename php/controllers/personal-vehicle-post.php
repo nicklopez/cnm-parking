@@ -1,6 +1,6 @@
 <?php
 $title = "Processing...";
-$headerTitle = "Processing";
+$headerTitle = "Processing...";
 require_once("/etc/apache2/capstone-mysql/encrypted-config.php");
 require_once("../lib/header.php");
 require_once("../classes/visitor.php");
@@ -12,7 +12,7 @@ require_once("../classes/parkingpass.php");
 require_once("Mail.php");
 //$file = './files/example.zip';
 //$mime->addAttachment($file,'application/octet-stream');
-
+var_dump($_POST);
 
 try {
 
@@ -22,7 +22,7 @@ try {
 	$mysqli = new mysqli($configArray['hostname'], $configArray['username'], $configArray['password'], $configArray['database']);
 
 		// create and insert vehicle
-	$vehicle = new Vehicle(null, 4, $_POST["vehicleColor"], $_POST["vehicleMake"], $_POST["vehicleModel"], $_POST["vehiclePlateNumber"], $_POST["vehiclePlateState"], $_POST["vehicleYear"]);
+	$vehicle = new Vehicle(null, $_POST["visitorId"], $_POST["vehicleColor"], $_POST["vehicleMake"], $_POST["vehicleModel"], $_POST["vehiclePlateNumber"], $_POST["vehiclePlateState"], $_POST["vehicleYear"]);
 	$vehicle->insert($mysqli);
 
 	// create and insert parking pass

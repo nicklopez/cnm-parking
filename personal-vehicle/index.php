@@ -34,43 +34,55 @@ try {
 	// actually, echo the exception since this is the end of the line
 		echo "<p class=\"alert alert-danger\">" . $exception->getMessage() . "</p>";
 	}
+
 ?>
 
-		<form id="personal-vehicle" method="post" action="../php/controllers/personal-vehicle-post.php" novalidate="novalidate">
+		<form id="personal-vehicle" method="post" action="../php/controllers/personal-vehicle-post.php" >
 			<?php echo generateInputTags(); ?>
+			<div class="form-group">
+				<label for="visitorFirstName">First Name:</label>
+				<input type="text" class="form-control name" id="visitorFirstName" disabled="disabled" name="visitorFirstName" value="<?php echo $visitor->getVisitorFirstName(); ?>" ><br>
+			</div>
+			<div class="form-group">
+				<label for="visitorLastName">Last Name:</label>
+				<input type="text" class="form-control name" id="visitorLastName" disabled="disabled" name="visitorLastName" value="<?php echo $visitor->getVisitorLastName(); ?>" ><br>
+			</div>
+			<div class="form-group">
+				<label for="visitorEmail">Email:</label>
+				<input type="text" class="form-control email" id="visitorEmail" disabled="disabled" name="visitorEmail" value="<?php echo $visitor->getVisitorEmail(); ?>" ><br>
+			</div>
+			<div class="form-group">
+				<label for="visitorPhone">Phone Number:</label>
+				<input type="text" class="form-control phone" id="visitorPhone" disabled="disabled" name="visitorPhone" value="<?php echo $visitor->getVisitorPhone(); ?>" ><br>
+			</div>
 
-			<label for="visitorFirstName">First Name:</label>
-			<input type="text" id="visitorFirstName" disabled="disabled" name="visitorFirstName" value="<?php echo $visitor->getVisitorFirstName(); ?>" ><br>
+			<!--hidden foreign key forms-->
+			<input hidden="hidden" type="text" id="adminProfileId" name="adminProfileId" value="<?php echo $invite->getAdminProfileId(); ?>" ><br>
+			<input hidden="hidden" type="text" id="visitorId" name="visitorId" value="<?php echo $visitor->getVisitorId(); ?>" ><br>
 
-			<label for="visitorLastName">Last Name:</label>
-			<input type="text" id="visitorLastName" disabled="disabled" name="visitorLastName" value="<?php echo $visitor->getVisitorLastName(); ?>" ><br>
-
-			<label for="visitorEmail">Email:</label>
-			<input type="text" id="visitorEmail" disabled="disabled" name="visitorEmail" value="<?php echo $visitor->getVisitorEmail(); ?>" ><br>
-
-			<label for="visitorPhone">Phone Number:</label>
-			<input type="text" id="visitorPhone" disabled="disabled" name="visitorPhone" value="<?php echo $visitor->getVisitorPhone(); ?>" ><br>
-
-			<label for="adminProfileId">AdminProfileId</label>
-			<input type="text" id="adminProfileId" disabled="disabled" name="adminProfileId" value="<?php echo $invite->getAdminProfileId(); ?>" ><br>
-
-			<label for="vehicleMake">Vehicle Make:</label>
-			<input type="text" id="vehicleMake" name="vehicleMake" size="128" maxlength="128"><br>
-
-			<label for="vehicleModel">Vehicle Model:</label>
-			<input type="text" id="vehicleModel" name="vehicleModel" size="128" maxlength="128"><br>
-
-			<label for="vehicleYear">Vehicle Year:</label>
-			<input type="text" id="vehicleYear" name="vehicleYear" size="128" maxlength="128"><br>
-
-			<label for="vehicleColor">Vehicle Color:</label>
-			<input type="text" id="vehicleColor" name="vehicleColor" size="128" maxlength="128"><br>
-
-			<label for="vehiclePlate">Vehicle Plate #:</label>
-			<input type="text" id="vehiclePlateNumber" name="vehiclePlateNumber" size="128" maxlength="128"><br>
-
-			<label for="vehiclePlateState">Plate State:</label>
-			<select name="vehiclePlateState" id="vehiclePlateState" style="width:128px;">
+			<div class="form-group">
+				<label for="vehicleMake">Vehicle Make:</label>
+				<input type="text" class="form-control name" id="vehicleMake" name="vehicleMake" size="128" maxlength="128"><br>
+			</div>
+			<div class="form-group">
+				<label for="vehicleModel">Vehicle Model:</label>
+				<input type="text" class="form-control name" id="vehicleModel" name="vehicleModel" size="128" maxlength="128"><br>
+			</div>
+			<div class="form-group">
+				<label for="vehicleYear">Vehicle Year:</label>
+				<input type="text" class="form-control name" id="vehicleYear" name="vehicleYear" size="128" maxlength="128"><br>
+			</div>
+			<div class="form-group">
+				<label for="vehicleColor">Vehicle Color:</label>
+				<input type="text" class="form-control name" id="vehicleColor" name="vehicleColor" size="128" maxlength="128"><br>
+			</div>
+			<div class="form-group">
+				<label for="vehiclePlate">Vehicle Plate #:</label>
+				<input type="text" class="form-control name" id="vehiclePlateNumber" name="vehiclePlateNumber" size="128" maxlength="128"><br>
+			</div>
+			<div class="form-group">
+				<label for="vehiclePlateState">Plate State:</label>
+				<select name="vehiclePlateState" class="btn btn-default" id="vehiclePlateState" >
 				<option value="AL">AL</option>
 				<option value="AK">AK</option>
 				<option value="AZ">AZ</option>
@@ -122,20 +134,22 @@ try {
 				<option value="WI">WI</option>
 				<option value="WY">WY</option>
 			</select><br>
-
-			<label for"location">Parking Lot Location:</label>
-			<select name="location" id="location">
+			</div>
+			<div class="form-group">
+				<label for="location">Parking Lot Location:</label>
+				<select name="location" class="btn btn-default" id="location">
 				<option value="1">CNM - STEMulus Center</option>
 				<option value="2">CNM - Main Campus</option>
 			</select><br>
-
-			<label for="startDateTime">Start Date/Time</label>
-			<input type="text" id="startDateTime" name="startDateTime"><br>
-
+			</div>
+			<div class="form-group">
+				<label for="startDateTime">Start Date/Time</label>
+				<input type="text" class="form-control name" id="startDateTime" name="startDateTime"><br>
+			</div>
 			<label for="endDateTime">End Date/Time</label>
 			<input type="text" id="endDateTime" name="endDateTime"><br>
 
-			<button id="sendRequest" type="submit">Send Request</button>
+			<button id="sendRequest" class="btn btn-primary" type="submit">Send Request</button>
 		</form>
 		<p id="outputArea"></p>
 
