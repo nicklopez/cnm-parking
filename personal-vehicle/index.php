@@ -105,9 +105,6 @@ try {
 			<label for="vehicleColor">Vehicle Color:</label>
 			<input type="text" id="vehicleColor" name="vehicleColor" size="128" maxlength="128"><br>
 
-			<label for="vehiclePlateNumber">Vehicle Plate #:</label>
-			<input type="text" id="vehiclePlateNumber" name="vehiclePlateNumber" size="128" maxlength="128"><br>
-
 			<label for="vehiclePlate">Vehicle Plate #:</label>
 			<input type="text" id="vehiclePlateNumber" name="vehiclePlateNumber" size="128" maxlength="128"><br>
 
@@ -163,6 +160,12 @@ try {
 				<option value="WV">WV</option>
 				<option value="WI">WI</option>
 				<option value="WY">WY</option>
+			</select><br>
+
+			<label for"location">Parking Lot Location:</label>
+			<select name="location" id="location">
+				<option value="1">CNM - STEMulus Center</option>
+				<option value="2">CNM - Main Campus</option>
 			</select><br>
 
 			<label for="startDateTime">Start Date/Time</label>

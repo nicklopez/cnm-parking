@@ -23,6 +23,8 @@ try {
 
 	var_dump($_POST);
 
+	// $vehiclePlateState = $_POST["vehiclePlateState"];
+
 	// create and insert vehicle
 	$vehicle = new Vehicle(null, 4, $_POST["vehicleColor"], $_POST["vehicleMake"], $_POST["vehicleModel"], $_POST["vehiclePlateNumber"], $_POST["vehiclePlateState"], $_POST["vehicleYear"]);
 	$vehicle->insert($mysqli);
@@ -32,7 +34,7 @@ try {
 	$parkingPass->insert($mysqli);
 
 if(@isset($_POST["vehicleMake"]) === false || @isset($_POST["vehicleModel"]) === false || @isset($_POST["vehicleYear"]) === false ||
-	@isset($_POST["vehicleColor"]) === false || @isset($_POST["vehiclePlateNumber"]) === false || @isset($_POST["vehiclePlateState"]) === false || @isset($_POST["startDateTime"]) === false || @isset($_POST["endDateTime"]) === false) {
+	@isset($_POST["vehicleColor"]) === false || @isset($_POST["vehiclePlateNumber"]) === false || @isset($_GET["vehiclePlateState"]) === false || @isset($_POST["startDateTime"]) === false || @isset($_POST["endDateTime"]) === false) {
 	throw(new mysqli_sql_exception("form values not complete. verify the form and try again."));
 	}
 
@@ -80,6 +82,7 @@ if(@isset($_POST["vehicleMake"]) === false || @isset($_POST["vehicleModel"]) ===
 	}
 
 } catch(Exception $exception) {
+	var_dump($_POST);
 	echo "<div class=\"alert alert-danger\" role=\"alert\"><strong>Oh snap!</strong> " . $exception->getMessage() . "</div>";
 }
 ?>
