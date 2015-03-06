@@ -1,5 +1,6 @@
 <?php
-$pageTitle = "Manage Parking";
+$title = "Manage Parking";
+$headerTitle = "Manage locations & parking spots";
 require_once("../php/lib/header.php");
 require_once("../php/classes/location.php");
 require_once("../php/classes/parkingspot.php");
@@ -20,9 +21,6 @@ $mysqli = new mysqli($configArray["hostname"], $configArray["username"], $config
 $objects = Location::getAllLocationsAndParkingSpots($mysqli);
 
 ?>
-<header>
-	<h1>Manage locations & parking spots</h1>
-</header>
 
 <table id="example" class="hover row-border">
 	<thead>
