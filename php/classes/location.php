@@ -532,5 +532,61 @@ class Location {
 		$statement->close();
 		return($objects);
 	}
-}
+
+
+	/**
+	 * gets all locations as array with $locationId and $locationDescription
+	 *
+	 * @param resource $mysqli pointer to mySQL connection, by reference
+	 * @return mixed array of locationId and locationDescription
+	 * @throws mysqli_sql_exception when mySQL related errors occur
+	 **/
+	public static function getListOfLocations(&$mysqli) {
+		// handle degenerate cases
+		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
+			throw(new mysqli_sql_exception("input is not a mysqli object"));
+		}
+
+		// create query template
+		$query = "SELECT locationId, locationDescription FROM location";
+		$statement = $mysqli->prepare($query);
+		if($statement === false) {
+			throw(new mysqli_sql_exception("unable to prepare statement"));
+		}
+
+		// execute the statement
+		if($statement->execute() === false) {
+			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
+		}
+
+		// get result from the SELECT query
+		$result = $statement->get_result();
+		if($result === false) {
+			throw(new mysqli_sql_exception("unable to get result set"));
+		}
+
+		// handle degenerate cases
+		$numRows = $result->num_rows;
+		if($numRows === 0) {
+			return (null);
+		}
+
+	// grab the location from mySQL
+			$locations = array();
+			while(($row = $result->fetch_assoc()) !== null) {
+				try {
+					$location = [$row["locationId"], $row["locationDescription"]];
+					$locations[] = $location;
+				} catch(Exception $exception) {
+					// if the row couldn't be converted, rethrow it
+					throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
+				}
+			}
+
+		// free up memory and return the results
+		$result->free();
+		$statement->close();
+		return($locations);
+		}
+	}
 ?>
