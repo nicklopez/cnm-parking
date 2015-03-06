@@ -28,8 +28,8 @@ try {
 	$parkingPass = new ParkingPass(null, $_POST["adminProfileId"], 1, $vehicle->getVehicleId(), $_POST["endDateTime"], "2015-02-10 08:00:00", $_POST["startDateTime"], null);
 	$parkingPass->insert($mysqli);
 
-if(@isset($_POST["vehicleMake"]) === false || @isset($_POST["vehicleModel"]) === false || @isset($_POST["vehicleYear"]) === false ||
-	@isset($_POST["vehicleColor"]) === false || @isset($_POST["vehiclePlateNumber"]) === false || @isset($_GET["vehiclePlateState"]) === false || @isset($_POST["startDateTime"]) === false || @isset($_POST["endDateTime"]) === false) {
+if(@isset($_POST["vehicleMake"]) === false || @isset($_POST["vehicleModel"]) === false || @isset($_POST["vehicleYear"]) === false || @isset($_POST["vehicleColor"]) === false ||
+	@isset($_POST["vehiclePlateNumber"]) === false || @isset($_GET["vehiclePlateState"]) === false || @isset($_POST["startDateTime"]) === false || @isset($_POST["endDateTime"]) === false) {
 	throw(new mysqli_sql_exception("form values not complete. verify the form and try again."));
 	}
 
@@ -77,6 +77,6 @@ if(@isset($_POST["vehicleMake"]) === false || @isset($_POST["vehicleModel"]) ===
 	}
 
 } catch(Exception $exception) {
-	echo "<div class=\"alert alert-danger\" role=\"alert\"><strong>Oh snap!</strong> " . $exception->getMessage() . "</div>";
+	//echo "<div class=\"alert alert-danger\" role=\"alert\"><strong>Oh snap!</strong> " . $exception->getMessage() . "</div>";
 }
 ?>
