@@ -9,28 +9,32 @@ require_once("../php/lib/csrf.php");
 session_start();
 
 ?>
-
-	<form id="admin-registration" method="post" action="../php/controllers/admin-registration-post.php" novalidate="novalidate">
-		<?php echo generateInputTags(); ?>
-		<div class="form-group">
-			<label for="adminFirstName">First Name:</label>
-			<input type="text" class="form-control control" id="adminFirstName" name="adminFirstName" size="128" maxlength="128" placeholder="First Name"><br>
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-sm-12">
+			<form id="admin-registration" method="post" action="../php/controllers/admin-registration-post.php" novalidate="novalidate">
+				<?php echo generateInputTags(); ?>
+				<div class="form-group">
+					<label for="adminFirstName">First Name:</label>
+					<input type="text" class="form-control name" id="adminFirstName" name="adminFirstName" size="128" maxlength="128" placeholder="First Name"><br>
+				</div>
+				<div class="form-group">
+					<label for="AdminLastName">Last Name:</label>
+					<input type="text" class="form-control name" id="adminLastName" name="adminLastName" size="128" maxlength="128" placeholder="Last Name"><br>
+				</div>
+				<div class="form-group">
+					<label for="adminEmail">Email:</label>
+					<input type="text" class="form-control email" id="adminEmail" name="adminEmail" size="128" maxlength="128" placeholder="name@example.com"><br>
+				</div>
+				<div class="form-group">
+					<label for="password">Password:</label>
+					<input type="password" class="form-control name" id="password" name="password" size="128" maxlength="128" placeholder="********"><br>
+				</div>
+				<button id="register" class="btn btn-primary" type="submit">Register</button>
+			</form>
 		</div>
-		<div class="form-group">
-			<label for="AdminLastName">Last Name:</label>
-			<input type="text" class="form-control" id="adminLastName" name="adminLastName" size="128" maxlength="128" placeholder="Last Name"><br>
-		</div>
-		<div class="form-group">
-			<label for="adminEmail">Email:</label>
-			<input type="text" class="form-control" id="adminEmail" name="adminEmail" size="128" maxlength="128" placeholder="name@example.com"><br>
-		</div>
-		<div class="form-group">
-			<label for="password">Password:</label>
-			<input type="password" class="form-control" id="password" name="password" size="128" maxlength="128" placeholder="********"><br>
-		</div>
-
-		<button id="register" class="btn btn-primary" type="submit">Register</button>
-	</form>
+	</div>
+</div>
 	<p id="outputArea"></p>
 
 <?php
