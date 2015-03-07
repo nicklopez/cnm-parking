@@ -4,11 +4,12 @@ $title = "Parking Pass Invite";
 $headerTitle = "Request a parking pass invite";
 require_once("../php/lib/header.php");
 
-// start a PHP session for CSRF protection
-session_start();
-
 // require CSRF protection
 require_once("../php/lib/csrf.php");
+
+// start a PHP session
+session_start();
+
 ?>
 	<form id="request-invite" method="post" action="../php/controllers/request-invite-post.php" novalidate="novalidate">
 		<?php echo generateInputTags(); ?>

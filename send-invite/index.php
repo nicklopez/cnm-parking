@@ -4,9 +4,25 @@ $title = "Send Parking Pass Invite";
 $headerTitle = "Send a parking pass invite";
 require_once("../php/lib/header.php");
 
-// start a PHP session for CSRF protection
+// start a PHP session
 session_start();
+?>
 
+<nav class="navbar navbar-default">
+	<div class="container-fluid">
+		<a id="logout" href="../php/controllers/admin-logout.php" class="btn btn-primary navbar-btn pull-right">Log Out</a>
+		<p id="welcome" class="navbar-text pull-right">Welcome back, <?php echo $_SESSION["adminFirstName"]; ?></p>
+		<ul class="nav navbar-nav">
+			<li role="presentation" class="active"><a class="navbar-brand" href="../php/test-portal/test-portal.php">Home</a></li>
+			<li role="presentation"><a href="../personal-vehicle">Create Parking Pass</a></li>
+			<li role="presentation"><a href="../send-invite">Manage Invites</a></li>
+			<li role="presentation"><a href="../manage-parking">Manage Parking</a></li>
+			<li role="presentation"><a href="../reports">Reports</a></li>
+		</ul>
+	</div>
+</nav>
+
+<?php
 // require the encrypted configuration functions
 require_once("/etc/apache2/capstone-mysql/encrypted-config.php");
 
