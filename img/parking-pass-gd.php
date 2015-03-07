@@ -90,27 +90,30 @@ $pink = imagecolorallocate($image, 225, 192, 203);
 // fill background color
 imagefill($image, 0, 0, $white);
 
+// line thickness
+imagesetthickness($image, 105);
+
 // create image text
-imagettftext($image, 75, 0.0, 300, 100, $black, "./fonts/Helvetica.ttf", "CNM STEMulus Temporary Parking Pass");
+imagettftext($image, 75, 0.0, 450, 50, $black, "./fonts/Helvetica.ttf", "CNM STEMulus Temporary Parking Pass");
 
-imagettftext($image, 60, 0.0, 550, 400, $black, "./fonts/Helvetica.ttf", "Start Date/Time: 2015:04:15 12:00:00");
+imagettftext($image, 50, 0.0, 450, 365, $black, "./fonts/Helvetica.ttf", "Start Date/Time: 2015:04:15 12:00:00");
 
-imagettftext($image, 60.0, 0.0, 550, 600, $black, "./fonts/Helvetica.ttf", "End Date/Time: 2015:04:15 14:00:00");
+imagettftext($image, 50.0, 0.0, 450, 525, $black, "./fonts/Helvetica.ttf", "End Date/Time: 2015:04:15 14:00:00");
 
-imagettftext($image, 60.0, 0.0, 550, 800, $black, "./fonts/Helvetica.ttf", "License Plate #: DFX - 569");
+imagettftext($image, 50.0, 0.0, 450, 700, $black, "./fonts/Helvetica.ttf", "License Plate #: DFX - 569");
 
-imagettftext($image, 60.0, 0.0, 550, 1000, $black, "./fonts/Helvetica.ttf", "Location: CNM STEMulus Center");
+imagettftext($image, 50.0, 0.0, 450, 875, $black, "./fonts/Helvetica.ttf", "Location: CNM - STEMulus Center");
+
+imagettftext($image, 50.0, 0.0, 450, 1050, $black, "./fonts/Helvetica.ttf", "Placard #: 205");
 
 imagettftext($image, 25, 0.0, 150, 1300, $red, "./fonts/Helvetica.ttf", "LEGAL NOTICE: Duplication or manufacturing of a parking permit is a crime. Handwritten changes will VOID an temporary parking pass.
 Vehicles displaying such permits will be cited. Attempts to fraudulently obtain parking privileges at CNM may result in disciplinary action.");
 
-// imagettftext($image, )
 
-imagesetthickness($image, 105);
 
 // set content type header as jpeg
 header("Content-type: image/jpeg");
-header("Content-disposition: attachment; filename=\"parking-pass.jpg\"");
+// header("Content-disposition: attachment; filename=\"parking-pass.jpg\"");
 
 // test drawing a black line
 imageline($image, 0, 200, 2500, 200, $yellow);
