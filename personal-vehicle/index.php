@@ -66,7 +66,7 @@ try {
 				</div>
 			</div>
 
-			<div class="col-xs-8 col-md-3">
+			<div class="col-xs-8 col-md-2">
 				<div class="form-group">
 					<label for="vehicleYear">Vehicle Year:</label>
 					<input type="text" class="form-control name" id="vehicleYear" name="vehicleYear" size="128" maxlength="128">
@@ -142,7 +142,7 @@ try {
 				</div>
 			</div>
 
-			<div class="col-xs-12 col-md-4">
+			<div class="row">
 				<div class="form-group">
 					<label for="selectListLocation" class="control-label">Choose Location</label><br/>
 					<select id="selectListLocation" name="selectListLocation" class="form-control"  >
@@ -159,7 +159,7 @@ try {
 					</div>
 				</div>
 			</div>
-			<div class="col-xs-12 col-md-4">
+			<div class="col-xs-12 col-md-3">
 				<div class="form-group">
 					<label for="dateTimePickerDeparture" class="control-label">Departure</label><br/>
 					<div class="input-group date" id="dateTimePickerDeparture">
@@ -177,11 +177,10 @@ try {
 						<button id="sendRequest" class="btn btn-primary btn-lg pull-right" type="submit">Send Request</button>
 					</div>
 				</div>
+			</div>
 		</div>
-	</div>
 		<script type="text/javascript" src="../js/datetimepicker.js"></script>
 		<script type="text/javascript" src="../js/verify-availability.js"></script>
-
 	</form>
 </div>
 	<p id="outputArea"></p>
