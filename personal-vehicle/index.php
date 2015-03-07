@@ -12,7 +12,7 @@ session_start();
 
 try {
 	// verify $_GET["activation"] has an activation token; if not, throw an exception
-	if(!isset($_GET["activation"])) {
+	if(!isset($_GET["activation"]))   {
 		throw (new InvalidArgumentException("No activation token detected.  Resubmit request."));
 	}
 
@@ -142,7 +142,7 @@ try {
 				</div>
 			</div>
 
-			<div class="row">
+				<div class="col-xs-12 col-md-5">
 				<div class="form-group">
 					<label for="selectListLocation" class="control-label">Choose Location</label><br/>
 					<select id="selectListLocation" name="selectListLocation" class="form-control"  >
@@ -151,6 +151,7 @@ try {
 					</select>
 				</div>
 			</div>
+
 			<div class="col-xs-12 col-md-4">
 				<div class="form-group">
 					<label for="dateTimePickerArrival" class="control-label">Arrival</label><br/>
@@ -161,7 +162,7 @@ try {
 			</div>
 			<div class="col-xs-12 col-md-3">
 				<div class="form-group">
-					<label for="dateTimePickerDeparture" class="control-label">Departure</label><br/>
+					<label id="departure" for="dateTimePickerDeparture" class="control-label">Departure</label><br/>
 					<div class="input-group date" id="dateTimePickerDeparture">
 						<input type="text" class="xdsoft_datetimepicker xdsoft_inline" name="dateTimePickerDeparture" id="dateTimePickerDeparture"/>
 					</div>
