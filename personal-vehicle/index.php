@@ -39,9 +39,10 @@ try {
 <div class="container-fluid">
 	<form id="personal-vehicle" method="post" action="../php/controllers/personal-vehicle-post.php" >
 		<div class="row">
-			<div class="col-xs-12 col-md-4">
+			<div class="col-xs-12 col-md-3">
 				<div class="form-group">
 					<?php echo generateInputTags(); ?>
+
 					<!--hidden foreign key forms-->
 					<input hidden="hidden" type="text" id="adminProfileId" name="adminProfileId" value="<?php echo $invite->getAdminProfileId(); ?>" >
 					<input hidden="hidden" type="text" id="visitorId" name="visitorId" value="<?php echo $visitor->getVisitorId(); ?>" >
@@ -65,19 +66,16 @@ try {
 				</div>
 			</div>
 
-			<div class="col-xs-12 col-md-4">
+			<div class="col-xs-8 col-md-3">
 				<div class="form-group">
-					<label for="vehicleMake">Vehicle Make:</label>
-					<input type="text" class="form-control name" id="vehicleMake" name="vehicleMake" size="128" maxlength="128">
-
-
-					<label for="vehicleModel">Vehicle Model:</label>
-					<input type="text" class="form-control name" id="vehicleModel" name="vehicleModel" size="128" maxlength="128">
-
-
 					<label for="vehicleYear">Vehicle Year:</label>
 					<input type="text" class="form-control name" id="vehicleYear" name="vehicleYear" size="128" maxlength="128">
 
+					<label for="vehicleMake">Vehicle Make:</label>
+					<input type="text" class="form-control name" id="vehicleMake" name="vehicleMake" size="128" maxlength="128">
+
+					<label for="vehicleModel">Vehicle Model:</label>
+					<input type="text" class="form-control name" id="vehicleModel" name="vehicleModel" size="128" maxlength="128">
 
 					<label for="vehicleColor">Vehicle Color:</label>
 					<input type="text" class="form-control name" id="vehicleColor" name="vehicleColor" size="128" maxlength="128">
@@ -141,7 +139,6 @@ try {
 					<option value="WY">WY</option>
 				</select>
 				</div>
-
 				</div>
 			</div>
 
@@ -149,7 +146,7 @@ try {
 				<div class="form-group">
 					<label for="selectListLocation" class="control-label">Choose Location</label><br/>
 					<select id="selectListLocation" name="selectListLocation" class="form-control"  >
-						<option name="intLocationInput" value="1">CNM STEMulus Center</option>
+						<option name="intLocationInput" value="1">CNM - STEMulus Center</option>
 						<option name="intLocationInput" value="2">CNM - Main Campus</option>
 					</select>
 				</div>
@@ -166,20 +163,26 @@ try {
 				<div class="form-group">
 					<label for="dateTimePickerDeparture" class="control-label">Departure</label><br/>
 					<div class="input-group date" id="dateTimePickerDeparture">
-						<input type="text"class="xdsoft_datetimepicker xdsoft_inline" name="dateTimePickerDeparture" id="dateTimePickerDeparture"/>
+						<input type="text" class="xdsoft_datetimepicker xdsoft_inline" name="dateTimePickerDeparture" id="dateTimePickerDeparture"/>
+					</div>
+					<br>
+					<div>
+						<button id="verifyAvailabilitySubmit" class="btn btn-primary" type="submit">Verify Availability</button>
+						<br>
+						<br>
+						<br>
+						<br>
+						<br>
+						<br>
+						<button id="sendRequest" class="btn btn-primary btn-lg pull-right" type="submit">Send Request</button>
 					</div>
 				</div>
-			</div>
 		</div>
-		<div class="row">
-			<div class="col-xs-12">
-				<button id="verifyAvailabilitySubmit" class="btn btn-primary" type="submit">Verify Availability</button>
-			</div>
-		</div>
-</div>
-				<button id="sendRequest" class="btn btn-primary" type="submit">Send Request</button>
-		</form>
 	</div>
+		<script type="text/javascript" src="../js/datetimepicker.js"></script>
+		<script type="text/javascript" src="../js/verify-availability.js"></script>
+
+	</form>
 </div>
 	<p id="outputArea"></p>
 
