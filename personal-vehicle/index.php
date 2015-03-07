@@ -146,8 +146,10 @@ try {
 				<label for="startDateTime">Start Date/Time</label>
 				<input type="text" class="form-control name" id="startDateTime" name="startDateTime"><br>
 			</div>
+			<div class="form-group">
 			<label for="endDateTime">End Date/Time</label>
-			<input type="text" id="endDateTime" name="endDateTime"><br>
+			<input type="text" class="form-control name" id="endDateTime" name="endDateTime"><br>
+			</div>
 
 			<button id="sendRequest" class="btn btn-primary" type="submit">Send Request</button>
 		</form>

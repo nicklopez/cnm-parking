@@ -56,3 +56,9 @@ h1 {
 	font-weight: 400;
 	src: local("Lato Regular"), local("Lato-Regular"), url("../fonts/lato.woff2") format("woff2"), url("../fonts/lato.woff") format("woff");
 }
+
+.container-fluid {
+	width: 100%;
+	margin-left: auto;
+	margin-right: auto;
+}
