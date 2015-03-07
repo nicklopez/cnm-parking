@@ -34,6 +34,7 @@ try {
 	if($hash === $admin->getPassHash()) {
 		// assign session to logged in admin id
 		$adminProfile = AdminProfile::getAdminProfileByAdminId($mysqli, $admin->getAdminId());
+		$_SESSION["adminFirstName"] = $adminProfile->getAdminFirstName();
 		$_SESSION["adminProfile"] = array(
 			'id' => $adminProfile->getAdminProfileId()
 		);
