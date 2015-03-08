@@ -155,7 +155,7 @@ try {
 				<div class="form-group">
 					<label id="arrival" for="dateTimePickerArrival" class="control-label">Arrival</label>
 					<div class="input-group date" id="dateTimePickerArrival">
-						<input type="text" class="xdsoft_datetimepicker xdsoft_inline" name="dateTimePickerArrival" id="startDateTime">
+						<input type="text" class="xdsoft_datetimepicker xdsoft_inline" name="startDateTime" id="startDateTime">
 					</div>
 				</div>
 			</div>
@@ -163,7 +163,7 @@ try {
 				<div class="form-group">
 					<label id="departure" for="dateTimePickerDeparture" class="control-label">Departure</label>
 					<div class="input-group date" id="dateTimePickerDeparture">
-						<input type="text" class="xdsoft_datetimepicker xdsoft_inline" name="dateTimePickerDeparture" id="endDateTime">
+						<input type="text" class="xdsoft_datetimepicker xdsoft_inline" name="endDateTime" id="endDateTime">
 					</div>
 					<br>
 					<div>
