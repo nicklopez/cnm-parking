@@ -23,8 +23,10 @@ session_start();
 		</ul>
 	</div>
 </nav>
+<p id="outputArea"></p>
+
 <div class="container-fluid">
-	<form id="personal-vehicle" method="post" action="../php/controllers/personal-vehicle-post.php">
+	<form id="personal-vehicle" method="post" action="../php/controllers/personal-vehicle-post.php" novalidate="novalidate">
 		<div class="row">
 			<div class="col-xs-12 col-md-3">
 				<div class="form-group">
@@ -44,7 +46,7 @@ session_start();
 
 					<!--					<div class="form-group">-->
 					<label for="visitorEmail">Email:</label>
-					<input type="text" class="form-control email" id="visitorEmail" name="visitorEmail">
+					<input type="text" class="form-control email" id="visitorEmail" name="visitorEmail" onchange="showVisitor(this.value);">
 
 					<!--					<div class="form-group">-->
 					<label for="visitorPhone">Phone Number:</label>
