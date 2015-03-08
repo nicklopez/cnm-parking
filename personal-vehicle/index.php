@@ -79,8 +79,7 @@ try {
 
 					<label for="vehicleColor">Vehicle Color:</label>
 					<input type="text" class="form-control name" id="vehicleColor" name="vehicleColor" size="128" maxlength="128">
-
-				<div class="form-group">
+					<div class="form-group">
 					<label for="vehiclePlate">Vehicle Plate #:</label>
 					<input type="text" class="form-control name" id="vehiclePlateNumber" name="vehiclePlateNumber" size="128" maxlength="128">
 				</div>
@@ -154,9 +153,9 @@ try {
 
 			<div class="col-xs-12 col-md-4">
 				<div class="form-group">
-					<label for="dateTimePickerArrival" class="control-label">Arrival</label>
+					<label id="arrival" for="dateTimePickerArrival" class="control-label">Arrival</label>
 					<div class="input-group date" id="dateTimePickerArrival">
-						<input type="text" class="xdsoft_datetimepicker xdsoft_inline" name="dateTimePickerArrival" id="dateTimePickerArrival">
+						<input type="text" class="xdsoft_datetimepicker xdsoft_inline" name="dateTimePickerArrival" id="startDateTime">
 					</div>
 				</div>
 			</div>
@@ -164,7 +163,7 @@ try {
 				<div class="form-group">
 					<label id="departure" for="dateTimePickerDeparture" class="control-label">Departure</label>
 					<div class="input-group date" id="dateTimePickerDeparture">
-						<input type="text" class="xdsoft_datetimepicker xdsoft_inline" name="dateTimePickerDeparture" id="dateTimePickerDeparture">
+						<input type="text" class="xdsoft_datetimepicker xdsoft_inline" name="dateTimePickerDeparture" id="endDateTime">
 					</div>
 					<br>
 					<div>

@@ -30,6 +30,10 @@ session_start();
 					<label for="password">Password:</label>
 					<input type="password" class="form-control name" id="password" name="password" size="128" maxlength="128" placeholder="********"><br>
 				</div>
+				<div class="form-group">
+					<label for="cpassword">Confirm Password:</label>
+					<input type="password" class="form-control name" id="cpassword" name="cpassword" size="128" maxlength="128" placeholder="********"><br>
+				</div>
 				<button id="register" class="btn btn-primary" type="submit">Register</button>
 			</form>
 		</div>

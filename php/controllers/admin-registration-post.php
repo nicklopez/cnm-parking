@@ -1,6 +1,7 @@
 <?php
 // require_once("../../../lib/csrf.php");
-$pageTitle = "Success";
+$headerTitle = "Success";
+$title = "Success";
 require_once("/etc/apache2/capstone-mysql/encrypted-config.php");
 require_once("../classes/admin.php");
 require_once("../classes/adminprofile.php");
@@ -10,33 +11,33 @@ require_once("../lib/header.php");
 require_once("Mail.php");
 
 
-// create new admin
 try {
 
+
 // create a new salt and hash
-	$salt = bin2hex(openssl_random_pseudo_bytes(32));
-	$hash = hash_pbkdf2("sha512", $_POST["password"], $salt, 2048, 128);
+		$salt = bin2hex(openssl_random_pseudo_bytes(32));
+		$hash = hash_pbkdf2("sha512", $_POST["password"], $salt, 2048, 128);
 
-	// create an activation
-	$activation = bin2hex(openssl_random_pseudo_bytes(16));
+		// create an activation
+		$activation = bin2hex(openssl_random_pseudo_bytes(16));
 
-	// create an admin and admin profile object and insert them into mySQL
-	mysqli_report(MYSQLI_REPORT_STRICT);
-	$configArray = readConfig("/etc/apache2/capstone-mysql/cnmparking.ini");
-	$activation = bin2hex(openssl_random_pseudo_bytes(16));
-	$mysqli = new mysqli($configArray['hostname'], $configArray['username'], $configArray['password'], $configArray['database']);
+		// create an admin and admin profile object and insert them into mySQL
+		mysqli_report(MYSQLI_REPORT_STRICT);
+		$configArray = readConfig("/etc/apache2/capstone-mysql/cnmparking.ini");
+		$activation = bin2hex(openssl_random_pseudo_bytes(16));
+		$mysqli = new mysqli($configArray['hostname'], $configArray['username'], $configArray['password'], $configArray['database']);
 
-	$admin = new Admin(null, $activation, $_POST["adminEmail"], $hash, $salt);
-	$admin->insert($mysqli);
+		$admin = new Admin(null, $activation, $_POST["adminEmail"], $hash, $salt);
+		$admin->insert($mysqli);
 
-	$adminProfile = new AdminProfile(null, $admin->getAdminId(), $_POST["adminFirstName"], $_POST["adminLastName"]);
-	$adminProfile->insert($mysqli);
+		$adminProfile = new AdminProfile(null, $admin->getAdminId(), $_POST["adminFirstName"], $_POST["adminLastName"]);
+		$adminProfile->insert($mysqli);
 
 
-	// verify the form values have been submitted
-	if(@isset($_POST["adminFirstName"]) === false || @isset($_POST["adminLastName"]) === false || @isset($_POST["adminEmail"]) === false || @isset($_POST["password"]) === false) {
-		throw (new InvalidArgumentException("form values not complete. verify the form and try again."));
-	}
+		// verify the form values have been submitted
+		if(@isset($_POST["adminFirstName"]) === false || @isset($_POST["adminLastName"]) === false || @isset($_POST["adminEmail"]) === false || @isset($_POST["password"]) === false)	{
+			throw (new InvalidArgumentException("form values not complete. verify the form and try again."));
+		}
 } catch	(Exception $exception) {
 	echo "<p class=\"alert alert-danger\">Unable to complete request. Try again.</p>";
 	}
