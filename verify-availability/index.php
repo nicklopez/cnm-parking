@@ -51,7 +51,7 @@
 				</div>
 				<div class="row">
 					<div class="col-xs-12">
-					<button id="verifyAvailabilitySubmit" type="submit">Verify Availability</button>
+					<button id="verifyAvailabilitySubmit" type="submit" onclick="">Verify Availability</button>
 					</div>
 				</div>
 			</div>
