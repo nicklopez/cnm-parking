@@ -47,6 +47,8 @@ try {
 					<input hidden="hidden" type="text" id="adminProfileId" name="adminProfileId" value="<?php echo $invite->getAdminProfileId(); ?>">
 					<input hidden="hidden" type="text" id="visitorId" name="visitorId" value="<?php echo $visitor->getVisitorId(); ?>" >
 
+					<input type="text" id="startDateTime" name="startDateTime" value="<?php echo"
+
 
 					<label for="visitorFirstName">First Name:</label>
 					<input type="text" class="form-control name" id="visitorFirstName" disabled="disabled" name="visitorFirstName" value="<?php echo $visitor->getVisitorFirstName(); ?>">
