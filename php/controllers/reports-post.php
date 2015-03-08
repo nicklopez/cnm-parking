@@ -1,6 +1,10 @@
 <?php
 $title = "Results";
 $headerTitle = "Results";
+
+// start a PHP session
+session_start();
+
 require_once("../lib/header.php");
 
 require_once("../classes/parkingpass.php");
@@ -18,7 +22,20 @@ try {
 	$mysqli = new mysqli($configArray["hostname"], $configArray["username"], $configArray["password"], $configArray["database"]);
 
 	?>
-
+	<nav class="navbar navbar-default">
+		<div class="container-fluid">
+			<a id="logout" href="../../php/controllers/admin-logout.php" class="btn btn-primary navbar-btn pull-right">Log Out</a>
+			<p id="welcome" class="navbar-text pull-right">Welcome back, <?php echo $_SESSION["adminFirstName"]; ?></p>
+			<ul class="nav navbar-nav">
+				<li role="presentation" class="active"><a class="navbar-brand" href="../../php/test-portal/test-portal.php">Home</a></li>
+				<li role="presentation"><a href="../../create-pass">Create Parking Pass</a></li>
+				<li role="presentation"><a href="../../send-invite">Manage Invites</a></li>
+				<li role="presentation"><a href="../../manage-parking">Manage Parking</a></li>
+				<li role="presentation"><a href="../../reports">Reports</a></li>
+			</ul>
+		</div>
+	</nav>
+	<div class="container-fluid">
 	<table id="reports" class="hover row-border">
 		<thead>
 			<th>Location</th>
@@ -59,6 +76,7 @@ EOF;
 
 	echo "</tbody>";
 	echo "</table>";
+	echo "</div>";
 	$mysqli->close();
 
 } catch(Exception $exception) {

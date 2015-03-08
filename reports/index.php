@@ -3,7 +3,7 @@ $title = "Visitor Parking Data";
 $headerTitle = "Visitor Parking Data";
 require_once("../php/lib/header.php");
 require_once("../php/lib/csrf.php");
-// start a PHP session for CSRF protection
+// start a PHP session
 session_start();
 ?>
 
@@ -23,15 +23,15 @@ session_start();
 <div class="container-fluid">
 	<div class="row">
 		<div class="col-sm-12">
-			<form method="post" action="../php/controllers/reports-post.php">
+				<form id="reports-form" method="post" action="../php/controllers/reports-post.php">
 				<?php echo generateInputTags(); ?>
 				<div class="form-group">
 					<label for="startDate">Start Date</label>
-					<input type="date" class="form-control date" id="startDate" name="startDate">
+					<input type="date" class="form-control date" id="startDate" name="startDate" placeholder="mm/dd/yyyy">
 				</div>
 				<div class="form-group">
 					<label for="endDate">End Date</label>
-					<input type="date" class="form-control date" id="endDate" name="endDate">
+					<input type="date" class="form-control date" id="endDate" name="endDate" placeholder="mm/dd/yyyy">
 				</div>
 				<button type="submit" class="btn btn-primary">Run Report</button>
 			</form>
