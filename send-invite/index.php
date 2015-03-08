@@ -1,6 +1,6 @@
 <?php
 // require the header file
-$title = "Send Parking Pass Invite";
+$title = "Parking Pass Invite";
 $headerTitle = "Send a parking pass invite";
 require_once("../php/lib/header.php");
 
