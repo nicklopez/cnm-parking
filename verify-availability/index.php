@@ -19,7 +19,8 @@
 		<title>Verify Availability</title>
 	</head>
 	<body>
-		<form id="verifyAvailabilityForm" method="post" action="../php/controllers/verify-availability-post.php">
+		<form id="verifyAvailabilityForm">
+<!--		<form id="verifyAvailabilityForm" method="post" action="../php/controllers/verify-availability-post.php">-->
 			<div class="container">
 				<div class="row">
 					<div class="col-xs-12 col-md-4">
@@ -51,7 +52,7 @@
 				</div>
 				<div class="row">
 					<div class="col-xs-12">
-					<button id="verifyAvailabilitySubmit" type="submit" onclick="">Verify Availability</button>
+					<button id="verifyAvailabilitySubmit" type="submit" onclick="getAvailability();">Verify Availability</button>
 					</div>
 				</div>
 			</div>

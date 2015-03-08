@@ -137,17 +137,17 @@ try {
 					<option value="WY">WY</option>
 				</select>
 				</div>
-					<?php
-					require_once("../verify-availability/index.php");
-					?>
+
 					<button id="sendRequest" class="btn btn-primary btn-lg pull-right" type="submit">Send Request</button>
 				</div>
 			</div>
 		</div>
-	</form>
+			</form>
 </div>
 	<p id="outputArea"></p>
-
+<?php
+require_once("../verify-availability/index.php");
+?>
 
 
 <?php
