@@ -2,8 +2,8 @@
 // start session
 session_start();
 
-$title = "Admin Portal";
-$headerTitle = "Admin Portal";
+$title = "CNM Admin Portal";
+$headerTitle = "CNM Admin Portal";
 
 // require necessary files
 require_once("../lib/header.php");

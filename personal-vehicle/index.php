@@ -34,34 +34,34 @@ try {
 	// actually, echo the exception since this is the end of the line
 		echo "<p class=\"alert alert-danger\">" . $exception->getMessage() . "</p>";
 	}
-
 ?>
+
 <div class="container-fluid">
-	<form id="personal-vehicle" method="post" action="../php/controllers/personal-vehicle-post.php" >
+	<form id="personal-vehicle" method="post" action="../php/controllers/personal-vehicle-post.php">
 		<div class="row">
 			<div class="col-xs-12 col-md-3">
 				<div class="form-group">
 					<?php echo generateInputTags(); ?>
 
 					<!--hidden foreign key forms-->
-					<input hidden="hidden" type="text" id="adminProfileId" name="adminProfileId" value="<?php echo $invite->getAdminProfileId(); ?>" >
+					<input hidden="hidden" type="text" id="adminProfileId" name="adminProfileId" value="<?php echo $invite->getAdminProfileId(); ?>">
 					<input hidden="hidden" type="text" id="visitorId" name="visitorId" value="<?php echo $visitor->getVisitorId(); ?>" >
 
 
 					<label for="visitorFirstName">First Name:</label>
-					<input type="text" class="form-control name" id="visitorFirstName" disabled="disabled" name="visitorFirstName" value="<?php echo $visitor->getVisitorFirstName(); ?>" ><br>
+					<input type="text" class="form-control name" id="visitorFirstName" disabled="disabled" name="visitorFirstName" value="<?php echo $visitor->getVisitorFirstName(); ?>">
 
 					<!--					<div class="form-group">-->
 					<label for="visitorLastName">Last Name:</label>
-					<input type="text" class="form-control name" id="visitorLastName" disabled="disabled" name="visitorLastName" value="<?php echo $visitor->getVisitorLastName(); ?>" ><br>
+					<input type="text" class="form-control name" id="visitorLastName" disabled="disabled" name="visitorLastName" value="<?php echo $visitor->getVisitorLastName(); ?>">
 
 					<!--					<div class="form-group">-->
 					<label for="visitorEmail">Email:</label>
-					<input type="text" class="form-control email" id="visitorEmail" disabled="disabled" name="visitorEmail" value="<?php echo $visitor->getVisitorEmail(); ?>" ><br>
+					<input type="text" class="form-control email" id="visitorEmail" disabled="disabled" name="visitorEmail" value="<?php echo $visitor->getVisitorEmail(); ?>">
 
 					<!--					<div class="form-group">-->
 					<label for="visitorPhone">Phone Number:</label>
-					<input type="text" class="form-control phone" id="visitorPhone" disabled="disabled" name="visitorPhone" value="<?php echo $visitor->getVisitorPhone(); ?>" ><br>
+					<input type="text" class="form-control phone" id="visitorPhone" disabled="disabled" name="visitorPhone" value="<?php echo $visitor->getVisitorPhone(); ?>">
 
 				</div>
 			</div>
@@ -86,7 +86,7 @@ try {
 				</div>
 				<div class="form-group">
 					<label for="vehiclePlateState">Plate State:</label>
-					<select name="vehiclePlateState" class="btn btn-default" id="vehiclePlateState" >
+					<select name="vehiclePlateState" class="btn btn-default" id="vehiclePlateState">
 					<option value="AL">AL</option>
 					<option value="AK">AK</option>
 					<option value="AZ">AZ</option>
@@ -144,8 +144,8 @@ try {
 
 				<div class="col-xs-12 col-md-5">
 				<div class="form-group">
-					<label for="selectListLocation" class="control-label">Choose Location</label><br/>
-					<select id="selectListLocation" name="selectListLocation" class="form-control"  >
+					<label for="selectListLocation" class="control-label">Choose Location</label>
+					<select id="selectListLocation" name="selectListLocation" class="form-control">
 						<option name="intLocationInput" value="1">CNM - STEMulus Center</option>
 						<option name="intLocationInput" value="2">CNM - Main Campus</option>
 					</select>
@@ -154,17 +154,17 @@ try {
 
 			<div class="col-xs-12 col-md-4">
 				<div class="form-group">
-					<label for="dateTimePickerArrival" class="control-label">Arrival</label><br/>
+					<label for="dateTimePickerArrival" class="control-label">Arrival</label>
 					<div class="input-group date" id="dateTimePickerArrival">
-						<input type="text" class="xdsoft_datetimepicker xdsoft_inline" name="dateTimePickerArrival" id="dateTimePickerArrival"/>
+						<input type="text" class="xdsoft_datetimepicker xdsoft_inline" name="dateTimePickerArrival" id="dateTimePickerArrival">
 					</div>
 				</div>
 			</div>
 			<div class="col-xs-12 col-md-3">
 				<div class="form-group">
-					<label id="departure" for="dateTimePickerDeparture" class="control-label">Departure</label><br/>
+					<label id="departure" for="dateTimePickerDeparture" class="control-label">Departure</label>
 					<div class="input-group date" id="dateTimePickerDeparture">
-						<input type="text" class="xdsoft_datetimepicker xdsoft_inline" name="dateTimePickerDeparture" id="dateTimePickerDeparture"/>
+						<input type="text" class="xdsoft_datetimepicker xdsoft_inline" name="dateTimePickerDeparture" id="dateTimePickerDeparture">
 					</div>
 					<br>
 					<div>
@@ -185,11 +185,6 @@ try {
 	</form>
 </div>
 	<p id="outputArea"></p>
-
-
-
-
-
 
 <?php
 require_once("../php/lib/footer.php");

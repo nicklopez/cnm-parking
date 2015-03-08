@@ -14,7 +14,7 @@ session_start();
 		<p id="welcome" class="navbar-text pull-right">Welcome back, <?php echo $_SESSION["adminFirstName"]; ?></p>
 		<ul class="nav navbar-nav">
 			<li role="presentation" class="active"><a class="navbar-brand" href="../php/test-portal/test-portal.php">Home</a></li>
-			<li role="presentation"><a href="../personal-vehicle">Create Parking Pass</a></li>
+			<li role="presentation"><a href="../create-pass">Create Parking Pass</a></li>
 			<li role="presentation"><a href="../send-invite">Manage Invites</a></li>
 			<li role="presentation"><a href="../manage-parking">Manage Parking</a></li>
 			<li role="presentation"><a href="../reports">Reports</a></li>
