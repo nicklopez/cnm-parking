@@ -47,9 +47,6 @@ try {
 					<input hidden="hidden" type="text" id="adminProfileId" name="adminProfileId" value="<?php echo $invite->getAdminProfileId(); ?>">
 					<input hidden="hidden" type="text" id="visitorId" name="visitorId" value="<?php echo $visitor->getVisitorId(); ?>" >
 
-					<input type="text" id="startDateTime" name="startDateTime" value="<?php echo"
-
-
 					<label for="visitorFirstName">First Name:</label>
 					<input type="text" class="form-control name" id="visitorFirstName" disabled="disabled" name="visitorFirstName" value="<?php echo $visitor->getVisitorFirstName(); ?>">
 
@@ -140,6 +137,9 @@ try {
 					<option value="WY">WY</option>
 				</select>
 				</div>
+					<?php
+					require_once("../verify-availability/index.php");
+					?>
 					<button id="sendRequest" class="btn btn-primary btn-lg pull-right" type="submit">Send Request</button>
 				</div>
 			</div>
@@ -147,9 +147,7 @@ try {
 	</form>
 </div>
 
-<?php
-require_once("../verify-availability/index.php");
-?>
+
 <!--<div class="container-fluid">-->
 <!--	<form id="verifyAvailabilityForm" method="post" action="../php/controllers/verify-availability-post.php">-->
 <!--		<div class="container">-->

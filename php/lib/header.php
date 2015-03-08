@@ -19,7 +19,7 @@
 		<script type="text/javascript" src="../js/admin-login.js"></script>
 		<script type="text/javascript" src="../../js/admin-login.js"></script>
 <!--		<script type="text/javascript" src="../js/datetimepicker.js"></script>-->
-<!--		<script type="text/javascript" src="../js/verify-availability.js"></script>-->
+		<script type="text/javascript" src="../js/verify-availability.js"></script>
 
 		<script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 		<link type="text/css" href="//cdn.datatables.net/1.10.5/css/jquery.dataTables.css" rel="stylesheet">
@@ -30,6 +30,7 @@
 		<link type="text/css" href="../css/custom.css" rel="stylesheet">
 		<link type="text/css" href="../../css/custom.css" rel="stylesheet">
 		<link type="text/css" href="../css/datetimepicker.css" rel="stylesheet"/>
+
 		<title><?php echo $title ?></title>
 	</head>
 	<div class="headBegin">
