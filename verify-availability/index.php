@@ -27,9 +27,7 @@
 						<div class="form-group">
 							<label for="selectListLocation" class="control-label">Choose Location</label><br/>
 							<select id="selectListLocation" name="selectListLocation" class="form-control"  >
-								<option name="intLocationInput" value="1">City Lot 1</option>
-								<option name="intLocationInput" value="2">City Lot 2</option>
-								<option name="intLocationInput" value="3">City Lot 3</option>
+								<?php require_once("../php/controllers/list-of-locations.php") ?>
 							</select>
 						</div>
 					</div>
