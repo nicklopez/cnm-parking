@@ -3,7 +3,9 @@ require_once("/etc/apache2/capstone-mysql/encrypted-config.php");
 require_once("../php/classes/vehicle.php");
 require_once("../php/classes/parkingpass.php");
 require_once("../php/classes/parkingspot.php");
+session_start();
 
+//if(@isset($_GET[""]))
 /**
  * sets the JPEG file to the specified resolution
  *
@@ -51,7 +53,7 @@ function setDpi($jpg, $dpi)
 	rename("$jpg.temp", $jpg);
 }
 try {
-
+	$parkingPassId = 369;
 	// create a low resolution image of the proper pixel size
 	$tempfile = tempnam("/tmp", "PASS");
 	$image = imagecreatetruecolor(2400, 1500);
@@ -63,11 +65,16 @@ try {
 	$image = imagecreatefromjpeg($tempfile);
 	unlink($tempfile);
 
-// get the pass id from $_GET
-$parkingPassId = 42;
- //$parkingPassId = $_GET["parkingPassId"];
+	$arrivalDate = $_SESSION["arrivalDate"];
+	$departureDate = $_SESSION["departureDate"];
 
-// use the parkingPassId to get a ParkingPass object from mySQL
+	// get the pass id from $_GET
+	//$parkingPassId = $parkingPass->getParkingPassId();
+
+	// use the parkingPassId to get a ParkingPass object from mySQL
+	$parkingPass = ParkingPass::getParkingPassByParkingPassId($mysqli, $parkingPassId);
+	$parkingSpot = ParkingSpot::getParkingSpotByParkingSpotId($mysqli, $parkingPass->getParkingSpotId());
+	$vehicle = Vehicle::getVehicleByVehicleId($mysqli, $parkingPass->getVehicleId());
 
 
 	//set up connection
@@ -94,18 +101,24 @@ imagefill($image, 0, 0, $white);
 // line thickness
 imagesetthickness($image, 105);
 
+// timeFormat
+$timeFormat = "M j, y g:i a";
+
+// font Helvetica
+$font = "./fonts/Helvetica.ttf";
+
 // create image text
-imagettftext($image, 75, 0.0, 350, 90, $black, "./fonts/Helvetica.ttf", "CNM STEMulus Temporary Parking Pass");
+imagettftext($image, 75, 0.0, 350, 90, $black, $font, "CNM STEMulus Temporary Parking Pass");
 
-imagettftext($image, 50, 0.0, 450, 365, $black, "./fonts/Helvetica.ttf", "Start Date/Time: 2015:04:15 12:00:00");
+imagettftext($image, 50, 0.0, 450, 365, $black, $font, "Start Date/Time: " . $parkingPass->getStartDateTime()->format($timeFormat) );
 
-imagettftext($image, 50.0, 0.0, 450, 525, $black, "./fonts/Helvetica.ttf", "End Date/Time: 2015:04:15 14:00:00");
+imagettftext($image, 50.0, 0.0, 450, 525, $black, $font, "End Date/Time: " . $parkingPass->getEndDateTime()->format($timeFormat));
 
-imagettftext($image, 50.0, 0.0, 450, 700, $black, "./fonts/Helvetica.ttf", "License Plate #: " . $_POST["vehiclePlateState"]);
+imagettftext($image, 50.0, 0.0, 450, 700, $black, $font, "License Plate #: " . $vehicle->getVehiclePlateNumber());
 
-imagettftext($image, 50.0, 0.0, 450, 875, $black, "./fonts/Helvetica.ttf", "Location: " . $_POST["locationDescription"]);
+imagettftext($image, 50.0, 0.0, 450, 875, $black, $font, "Location: " . $location->getLocationDescription());
 
-imagettftext($image, 50.0, 0.0, 450, 1050, $black, "./fonts/Helvetica.ttf", "Placard #: " . $_POST["placardNumber"]);
+imagettftext($image, 50.0, 0.0, 450, 1050, $black, $font, "Placard #: " . $parkingSpot->getPlacardNumber());
 
 imagettftext($image, 25, 0.0, 150, 1300, $red, "./fonts/Helvetica.ttf", "LEGAL NOTICE: Duplication or manufacturing of a parking permit is a crime. Handwritten changes will VOID an temporary parking pass.
 Vehicles displaying such permits will be cited. Attempts to fraudulently obtain parking privileges at CNM may result in disciplinary action.");
