@@ -26,11 +26,11 @@ try {
 	$vehicle->insert($mysqli);
 
 	// create and insert parking pass
-	$parkingPass = new ParkingPass(null, $_POST["adminProfileId"], 1, $vehicle->getVehicleId(), $_POST["dateTimePickerDeparture"], "2015-02-10 08:00:00", $_POST["dateTimePickerArrival"], null);
+	$parkingPass = new ParkingPass(null, $_POST["adminProfileId"], 1, $vehicle->getVehicleId(), $_POST["departureDate"], "2015-02-10 08:00:00", $_POST["arrivalDate"], null);
 	$parkingPass->insert($mysqli);
 
 if(@isset($_POST["vehicleMake"]) === false || @isset($_POST["vehicleModel"]) === false || @isset($_POST["vehicleYear"]) === false || @isset($_POST["vehicleColor"]) === false ||
-	@isset($_POST["vehiclePlateNumber"]) === false || @isset($_POST["vehiclePlateState"]) === false || @isset($_POST["dateTimePickerArrival"]) === false || @isset($_POST["dateTimePickerDeparture"]) === false) {
+	@isset($_POST["vehiclePlateNumber"]) === false || @isset($_POST["vehiclePlateState"]) === false || @isset($_POST["arrivalDate"]) === false || @isset($_POST["departureDate"]) === false) {
 	throw(new mysqli_sql_exception("form values not complete. verify the form and try again."));
 	}
 
