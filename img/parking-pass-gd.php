@@ -1,11 +1,4 @@
 <?php
-require_once("/etc/apache2/capstone-mysql/encrypted-config.php");
-require_once("../php/classes/vehicle.php");
-require_once("../php/classes/parkingpass.php");
-require_once("../php/classes/parkingspot.php");
-session_start();
-
-//if(@isset($_GET[""]))
 /**
  * sets the JPEG file to the specified resolution
  *
@@ -16,8 +9,7 @@ session_start();
  * @see http://develobert.blogspot.com/2008/11/php-jpegjpg-dpi-function.html
  * @see http://bytes.com/topic/php/answers/5948-dpi-php-gd
  **/
-function setDpi($jpg, $dpi)
-{
+function setDpi($jpg, $dpi) {
 	// handle degenerate cases
 	$dpi = filter_var($dpi, FILTER_VALIDATE_INT);
 	if($dpi === false || $dpi <= 0) {
@@ -52,90 +44,77 @@ function setDpi($jpg, $dpi)
 	unlink($jpg);
 	rename("$jpg.temp", $jpg);
 }
-try {
-	$parkingPassId = 369;
-	// create a low resolution image of the proper pixel size
-	$tempfile = tempnam("/tmp", "PASS");
-	$image = imagecreatetruecolor(2400, 1500);
-	imagejpeg($image, $tempfile, 90);
-	imagedestroy($image);
 
-	// convert the resolution to 300 dpi and reopen the image
-	setDpi($tempfile, 300);
-	$image = imagecreatefromjpeg($tempfile);
-	unlink($tempfile);
+function generatePassImage($mysqli, $parkingPass, $vehicle, $font) {
 
-	$arrivalDate = $_SESSION["arrivalDate"];
-	$departureDate = $_SESSION["departureDate"];
-
-	// get the pass id from $_GET
-	//$parkingPassId = $parkingPass->getParkingPassId();
-
-	// use the parkingPassId to get a ParkingPass object from mySQL
-	$parkingPass = ParkingPass::getParkingPassByParkingPassId($mysqli, $parkingPassId);
-	$parkingSpot = ParkingSpot::getParkingSpotByParkingSpotId($mysqli, $parkingPass->getParkingSpotId());
-	$vehicle = Vehicle::getVehicleByVehicleId($mysqli, $parkingPass->getVehicleId());
+	try {
 
 
-	//set up connection
-	mysqli_report(MYSQLI_REPORT_STRICT);
-	$configArray = readConfig("/etc/apache2/capstone-mysql/cnmparking.ini");
-	$mysqli = new mysqli($configArray['hostname'], $configArray['username'], $configArray['password'], $configArray['database']);
-	$parkingPass = ParkingPass::getParkingPassByParkingPassId($mysqli, $parkingPassId);
-} catch(Exception $exception) {
-	echo "<div class=\"alert alert-danger\" role=\"alert\"><strong>Oh snap!</strong> " . $exception->getMessage() . "</div>";
-	exit;
-}
+		// create a low resolution image of the proper pixel size
+		$tempfile = tempnam("/tmp", "PASS");
+		$image = imagecreatetruecolor(2400, 1500);
+		imagejpeg($image, $tempfile, 90);
+		imagedestroy($image);
+
+		// convert the resolution to 300 dpi and reopen the image
+		setDpi($tempfile, 300);
+		$image = imagecreatefromjpeg($tempfile);
+		unlink($tempfile);
+
+		//set up connection
+		$parkingSpot = ParkingSpot::getParkingSpotByParkingSpotId($mysqli, $parkingPass->getParkingSpotId());
+		$location = Location::getLocationByLocationId($mysqli, $parkingSpot->getLocationId());
+	} catch
+	(Exception $exception) {
+		throw(new RuntimeException($exception->getMessage(), 0, $exception));
+	}
 
 //create colors
-$black = imagecolorallocate($image, 0, 0, 0);
-$white = imagecolorallocate($image, 255, 255, 255);
-$yellow = imagecolorallocate($image,255, 255, 0);
-$blue = imagecolorallocate($image, 0, 0, 205);
-$red = imagecolorallocate($image,225, 0,0);
-$pink = imagecolorallocate($image, 225, 192, 203);
+	$black = imagecolorallocate($image, 0, 0, 0);
+	$white = imagecolorallocate($image, 255, 255, 255);
+	$yellow = imagecolorallocate($image, 255, 255, 0);
+	$blue = imagecolorallocate($image, 0, 0, 205);
+	$red = imagecolorallocate($image, 225, 0, 0);
+	$pink = imagecolorallocate($image, 225, 192, 203);
 
 // fill background color
-imagefill($image, 0, 0, $white);
+	imagefill($image, 0, 0, $white);
 
 // line thickness
-imagesetthickness($image, 105);
+	imagesetthickness($image, 105);
 
 // timeFormat
-$timeFormat = "M j, y g:i a";
-
-// font Helvetica
-$font = "./fonts/Helvetica.ttf";
+	$timeFormat = "M j, y g:i a";
 
 // create image text
-imagettftext($image, 75, 0.0, 350, 90, $black, $font, "CNM STEMulus Temporary Parking Pass");
+	imagettftext($image, 75, 0.0, 350, 90, $black, $font, "CNM STEMulus Temporary Parking Pass");
 
-imagettftext($image, 50, 0.0, 450, 365, $black, $font, "Start Date/Time: " . $parkingPass->getStartDateTime()->format($timeFormat) );
+	imagettftext($image, 50, 0.0, 450, 365, $black, $font, "Start Date/Time: " . $parkingPass->getStartDateTime()->format($timeFormat));
 
-imagettftext($image, 50.0, 0.0, 450, 525, $black, $font, "End Date/Time: " . $parkingPass->getEndDateTime()->format($timeFormat));
+	imagettftext($image, 50.0, 0.0, 450, 525, $black, $font, "End Date/Time: " . $parkingPass->getEndDateTime()->format($timeFormat));
 
-imagettftext($image, 50.0, 0.0, 450, 700, $black, $font, "License Plate #: " . $vehicle->getVehiclePlateNumber());
+	imagettftext($image, 50.0, 0.0, 450, 700, $black, $font, "License Plate #: " . $vehicle->getVehiclePlateNumber());
 
-imagettftext($image, 50.0, 0.0, 450, 875, $black, $font, "Location: " . $location->getLocationDescription());
+	imagettftext($image, 50.0, 0.0, 450, 875, $black, $font, "Location: " . $location->getLocationDescription());
 
-imagettftext($image, 50.0, 0.0, 450, 1050, $black, $font, "Placard #: " . $parkingSpot->getPlacardNumber());
+	imagettftext($image, 50.0, 0.0, 450, 1050, $black, $font, "Placard #: " . $parkingSpot->getPlacardNumber());
 
-imagettftext($image, 25, 0.0, 150, 1300, $red, "./fonts/Helvetica.ttf", "LEGAL NOTICE: Duplication or manufacturing of a parking permit is a crime. Handwritten changes will VOID an temporary parking pass.
+	imagettftext($image, 25, 0.0, 150, 1300, $red, $font, "LEGAL NOTICE: Duplication or manufacturing of a parking permit is a crime. Handwritten changes will VOID an temporary parking pass.
 Vehicles displaying such permits will be cited. Attempts to fraudulently obtain parking privileges at CNM may result in disciplinary action.");
 
-
-
-// set content type header as jpeg
-header("Content-type: image/jpeg");
-// header("Content-disposition: attachment; filename=\"parking-pass.jpg\"");
-
 // test drawing a black line
-imageline($image, 0, 200, 2500, 200, $yellow);
-imageline($image, 0, 1200, 2500, 1200, $blue);
+	imageline($image, 0, 200, 2500, 200, $yellow);
+	imageline($image, 0, 1200, 2500, 1200, $blue);
 
 // output image
-imagejpeg($image);
+	ob_start();
+	imagejpeg($image);
+	$jpegData = ob_get_contents();
+	ob_end_clean();
 
 // free up memory
-imagedestroy($image);
+	imagedestroy($image);
+
+	return ($jpegData);
+}
 ?>

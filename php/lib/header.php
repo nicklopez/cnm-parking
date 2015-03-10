@@ -39,8 +39,9 @@
 	<div class="headBegin">
 		<h2></h2>
 	</div>
-	<div class="header">
-		<h1><?php echo $headerTitle; ?></h1>
+	<div class="container-fluid header">
+		<h1><span><?php echo $headerTitle; ?></span>
+			<img src="https://images.efollett.com/htmlroot/images/templates/storeLogos/CA/402.gif" align="right"</h1>
 	</div>
 	<div class="headEnd">
 		<h2></h2>
