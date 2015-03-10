@@ -36,11 +36,17 @@ if(empty($location) === true) {
 $arrival = filter_input(INPUT_POST, "dateTimePickerArrival", FILTER_SANITIZE_STRING);
 if(empty($arrival) === true) {
 	throw(new InvalidArgumentException("Input contains hostile code"));
+} else {
+	$arrival[strlen($arrival)-1] = '0';
+	$arrival[strlen($arrival)-2] = '0';
 }
 
 $departure = filter_input(INPUT_POST, "dateTimePickerDeparture", FILTER_SANITIZE_STRING);
 if(empty($departure) === true) {
 	throw(new InvalidArgumentException("Input contains hostile code"));
+} else {
+	$departure[strlen($departure)-1] = '0';
+	$departure[strlen($departure)-2] = '0';
 }
 
 $availableSpot = ParkingPass::getParkingPassAvailability($mysqli, $location, $arrival, $departure);
