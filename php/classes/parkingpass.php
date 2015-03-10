@@ -1024,12 +1024,12 @@ class ParkingPass {
 
 		// create query template
 		$query = "SELECT parkingSpotId FROM parkingSpot WHERE parkingSpotId NOT IN
-			  (SELECT parkingSpot.parkingSpotId FROM parkingSpot INNER JOIN parkingPass ON parkingSpot.parkingSpotId = parkingPass.parkingSpotId WHERE
-				  (locationId = ? AND ? <= endDateTime AND
+					(SELECT parkingSpot.parkingSpotId FROM parkingSpot INNER JOIN parkingPass ON parkingSpot.parkingSpotId = parkingPass.parkingSpotId WHERE
+		  			(locationId = ? AND ? <= endDateTime AND
 					((? > startDateTime AND ? <= startDateTime) OR
-					 (? >= startDateTime)))) AND
-			  locationId = ?
-			LIMIT 1";
+			 		(? >= startDateTime)))) AND
+					locationId = ?
+					LIMIT 1";
 		$statement = $mysqli->prepare($query);
 		if($statement === false) {
 			throw(new mysqli_sql_exception(" unable to prepare statement"));
