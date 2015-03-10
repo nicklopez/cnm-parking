@@ -16,6 +16,7 @@ try {
 		throw (new InvalidArgumentException("No activation token detected.  Resubmit request."));
 	}
 
+
 	//set up connection
 	mysqli_report(MYSQLI_REPORT_STRICT);
 	$configArray = readConfig("/etc/apache2/capstone-mysql/cnmparking.ini");
@@ -35,6 +36,9 @@ try {
 	echo "<p class=\"alert alert-danger\">" . $exception->getMessage() . "</p>";
 }
 ?>
+<?php
+require_once("../verify-availability/index.php");
+?>
 
 <div class="container-fluid">
 	<form id="personal-vehicle" method="post" action="../php/controllers/personal-vehicle-post.php">
@@ -44,8 +48,9 @@ try {
 					<?php echo generateInputTags(); ?>
 
 					<!--hidden foreign key forms-->
-					<input hidden="hidden" type="text" id="adminProfileId" name="adminProfileId" value="<?php echo $invite->getAdminProfileId(); ?>">
-					<input hidden="hidden" type="text" id="visitorId" name="visitorId" value="<?php echo $visitor->getVisitorId(); ?>" >
+					<input type="hidden" id="adminProfileId" name="adminProfileId" value="<?php echo $invite->getAdminProfileId(); ?>">
+					<input type="hidden" id="visitorId" name="visitorId" value="<?php echo $visitor->getVisitorId(); ?>" >
+					<input type="hidden" id="activation" name="activation" value="<?php echo $_GET["activation"]; ?>">
 
 					<label for="visitorFirstName">First Name:</label>
 					<input type="text" class="form-control name" id="visitorFirstName" disabled="disabled" name="visitorFirstName" value="<?php echo $visitor->getVisitorFirstName(); ?>">
@@ -139,17 +144,17 @@ try {
 							<option value="WY">WY</option>
 						</select>
 					</div>
-
 					<button id="sendRequest" class="btn btn-primary btn-lg pull-right" type="submit">Send Request</button>
 				</div>
+
 			</div>
 		</div>
 	</form>
 </div>
 <p id="outputArea"></p>
 <?php
-require_once("../verify-availability/index.php");
-?>
+//require_once("../verify-availability/index.php");
+//?>
 
 
 <?php
