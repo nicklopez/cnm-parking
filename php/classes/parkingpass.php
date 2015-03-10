@@ -1038,10 +1038,11 @@ class ParkingPass {
 		// bind the member variables to the place holders in the template
 		$sunrise = $sunrise->format("Y-m-d H:i:s");
 		$sunset = $sunset->format("Y-m-d H:i:s");
-		$wasClean = $statement->bind_param("issssi", $location,$sunrise, $sunrise, $sunset, $sunrise, $location);
+		$wasClean = $statement->bind_param("issssi", $location, $sunrise, $sunrise, $sunset, $sunrise, $location);
 		if($wasClean === false) {
 			throw(new mysqli_sql_exception("unable to bind parameters"));
 		}
+
 		// execute the statement
 		if($statement->execute() === false) {
 			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));

@@ -5,7 +5,6 @@
  * @Author Kyle Dozier <kyle@kedlogic.com>
  */
 
-
 /**
  * require the encrypted config functions
  */
