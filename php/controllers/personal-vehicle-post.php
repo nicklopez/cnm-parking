@@ -85,7 +85,7 @@ EOF;
 	$mimeMessage = new Mail_mime($mimeOptions);
 	$mimeMessage->setTXTBody($plaintext);
 	$mimeMessage->setHTMLBody($message);
-	$mimeMessage->addAttachment($imageData, "image/jpeg", "parking-pass-" . $parkingPass->getStartDateTime()->format("MdY") .".jpg", false, "base64", "inline");
+	$mimeMessage->addAttachment($imageData, "image/jpeg", "parking-pass-" . $parkingPass->getStartDateTime()->format("mdY") .".jpg", false, "base64", "inline");
 
 	// send the email
 	error_reporting(E_ALL & ~(E_STRICT | E_NOTICE | E_DEPRECATED));
