@@ -15,9 +15,9 @@ try {
 } catch (mysqli_sql_exception $Exception) {
 	echo "<div class=\"alert alert-danger\" role=\"alert\"><strong>Visitor not found.</strong>" . $exception->getMessage() . "</div>";
 }
-$json = json_encode(array("firstName" => $visitor->getVisitorFirstName(), "lastName" => $visitor->getVisitorLastName()));
 
-echo $json;
+$result = $visitor->getVisitorFirstName() . "," . $visitor->getVisitorLastName() . "," . $visitor->getVisitorPhone() . "," . $visitor->getVisitorId();
 
-var_dump($json)
+print_r($result);
+
 ?>

@@ -25,28 +25,32 @@ session_start();
 </nav>
 <p id="outputArea"></p>
 
+<?php
+require_once("../verify-availability/index.php");
+?>
+
 <div class="container-fluid">
-	<form id="personal-vehicle" method="post" action="../php/controllers/personal-vehicle-post.php" novalidate="novalidate">
+	<form id="personal-vehicle" method="post" action="../php/controllers/personal-vehicle-post.php">
 		<div class="row">
 			<div class="col-xs-12 col-md-3">
 				<div class="form-group">
 					<?php echo generateInputTags(); ?>
 
 					<!--hidden foreign key forms-->
-					<input hidden="hidden" type="text" id="adminProfileId" name="adminProfileId">
-					<input hidden="hidden" type="text" id="visitorId" name="visitorId">
+					<input type="hidden" id="adminProfileId" name="adminProfileId" value="<?php echo $_SESSION["adminProfileId"]; ?>">
+					<input type="hidden" id="visitorId" name="visitorId">
+					<input type="hidden" id="activation" name="activation">
 
+					<!--					<div class="form-group">-->
+					<label for="visitorEmail">Email: (you can search visitor by email)</label>
+					<input type="text" class="form-control email" id="visitorEmail" name="visitorEmail" onchange="showVisitor(this.value);">
 
 					<label for="visitorFirstName">First Name:</label>
 					<input type="text" class="form-control name" id="visitorFirstName" name="visitorFirstName">
 
 					<!--					<div class="form-group">-->
 					<label for="visitorLastName">Last Name:</label>
-					<input type="text" class="form-control name" id="visitorLastName" name="visitorLastName">
-
-					<!--					<div class="form-group">-->
-					<label for="visitorEmail">Email:</label>
-					<input type="text" class="form-control email" id="visitorEmail" name="visitorEmail" onchange="showVisitor(this.value);">
+					<input type="text" class="form-control name" id="visitorLastName"  name="visitorLastName">
 
 					<!--					<div class="form-group">-->
 					<label for="visitorPhone">Phone Number:</label>
@@ -68,10 +72,11 @@ session_start();
 
 					<label for="vehicleColor">Vehicle Color:</label>
 					<input type="text" class="form-control name" id="vehicleColor" name="vehicleColor" size="128" maxlength="128">
-
 					<div class="form-group">
 						<label for="vehiclePlate">Vehicle Plate #:</label>
 						<input type="text" class="form-control name" id="vehiclePlateNumber" name="vehiclePlateNumber" size="128" maxlength="128">
+						<input hidden="hidden" type="text" id="arrivalDate" name="arrivalDate">
+						<input hidden="hidden" type="text" id="departureDate" name="departureDate">
 					</div>
 					<div class="form-group">
 						<label for="vehiclePlateState">Plate State:</label>
@@ -128,52 +133,18 @@ session_start();
 							<option value="WY">WY</option>
 						</select>
 					</div>
+					<button id="sendRequest" class="btn btn-primary btn-lg pull-right" type="submit">Send Request</button>
 				</div>
-			</div>
 
-			<div class="col-xs-12 col-md-5">
-				<div class="form-group">
-					<label for="selectListLocation" class="control-label">Choose Location</label>
-					<select id="selectListLocation" name="selectListLocation" class="form-control">
-						<option name="intLocationInput" value="1">CNM - STEMulus Center</option>
-						<option name="intLocationInput" value="2">CNM - Main Campus</option>
-					</select>
-				</div>
-			</div>
-
-			<div class="col-xs-12 col-md-4">
-				<div class="form-group">
-					<label for="dateTimePickerArrival" class="control-label">Arrival</label>
-					<div class="input-group date" id="dateTimePickerArrival">
-						<input type="text" class="xdsoft_datetimepicker xdsoft_inline" name="dateTimePickerArrival" id="dateTimePickerArrival">
-					</div>
-				</div>
-			</div>
-			<div class="col-xs-12 col-md-3">
-				<div class="form-group">
-					<label id="departure" for="dateTimePickerDeparture" class="control-label">Departure</label>
-					<div class="input-group date" id="dateTimePickerDeparture">
-						<input type="text" class="xdsoft_datetimepicker xdsoft_inline" name="dateTimePickerDeparture" id="dateTimePickerDeparture">
-					</div>
-					<br>
-					<div>
-						<button id="verifyAvailabilitySubmit" class="btn btn-primary" type="submit">Verify Availability</button>
-						<br>
-						<br>
-						<br>
-						<br>
-						<br>
-						<br>
-						<button id="sendRequest" class="btn btn-primary btn-lg pull-right" type="submit">Send Request</button>
-					</div>
-				</div>
 			</div>
 		</div>
-		<script type="text/javascript" src="../js/datetimepicker.js"></script>
-		<script type="text/javascript" src="../js/verify-availability.js"></script>
 	</form>
 </div>
 <p id="outputArea"></p>
+<?php
+//require_once("../verify-availability/index.php");
+//?>
+
 
 <?php
 require_once("../php/lib/footer.php");
