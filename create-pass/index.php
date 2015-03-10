@@ -39,6 +39,7 @@ require_once("../verify-availability/index.php");
 					<!--hidden foreign key forms-->
 					<input type="hidden" id="adminProfileId" name="adminProfileId" value="<?php echo $_SESSION["adminProfileId"]; ?>">
 					<input type="hidden" id="visitorId" name="visitorId">
+					<input type="hidden" id="parkingSpotId" name="parkingSpotId">
 					<input type="hidden" id="activation" name="activation">
 
 					<!--					<div class="form-group">-->

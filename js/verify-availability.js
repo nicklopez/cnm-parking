@@ -71,12 +71,14 @@ $(document).ready(
 					},
 					// success is an event that happens when the server replies
 					success: function(ajaxOutput) {
+						var result = ajaxOutput.split(",")
 						// clear the output area's formatting
 						$("#outputArea").css("display", "");
 						// write the server's reply to the output area
 						$("#outputArea").html(ajaxOutput);
 						$("#arrivalDate").val($("#dateTimePickerArrival").val());
 						$("#departureDate").val($("#dateTimePickerDeparture").val());
+						$("#parkingSpotId").val(result[1]);
 						// reset the form if it was successful
 						// this makes it easier to reuse the form again
 						if($(".alert-success").length >= 1) {

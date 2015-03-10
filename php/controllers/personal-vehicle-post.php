@@ -34,7 +34,7 @@ try {
 	$vehicle->insert($mysqli);
 
 	// create and insert parking pass
-	$parkingPass = new ParkingPass(null, $_POST["adminProfileId"], 1, $vehicle->getVehicleId(), $_POST["departureDate"], "2015-02-10 08:00:00", $_POST["arrivalDate"], null);
+	$parkingPass = new ParkingPass(null, $_POST["adminProfileId"], $_POST["parkingSpotId"], $vehicle->getVehicleId(), $_POST["departureDate"], "2015-02-10 08:00:00", $_POST["arrivalDate"], null);
 	$parkingPass->insert($mysqli);
 
 	if(@isset($_POST["vehicleMake"]) === false || @isset($_POST["vehicleModel"]) === false || @isset($_POST["vehicleYear"]) === false || @isset($_POST["vehicleColor"]) === false ||
