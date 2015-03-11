@@ -1,6 +1,6 @@
 <?php
-$headerTitle = "Visitor Vehicle Information";
-$title = "CNM Visitor Vehicle Parking Information";
+$title = "Parking Pass";
+$headerTitle = "Create a parking pass";
 require_once("../php/lib/header.php");
 require_once("/etc/apache2/capstone-mysql/encrypted-config.php");
 require_once("../php/classes/visitor.php");
