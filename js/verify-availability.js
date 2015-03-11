@@ -75,7 +75,7 @@ $(document).ready(
 						// clear the output area's formatting
 						$("#outputArea").css("display", "");
 						// write the server's reply to the output area
-						$("#outputArea").html(ajaxOutput);
+						$("#outputArea").html(result[0]);
 						$("#arrivalDate").val($("#dateTimePickerArrival").val());
 						$("#departureDate").val($("#dateTimePickerDeparture").val());
 						$("#parkingSpotId").val(result[1]);
