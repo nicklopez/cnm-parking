@@ -40,10 +40,10 @@ try {
 require_once("../verify-availability/index.php");
 ?>
 
-<div class="container-fluid">
+<div class="container">
 	<form id="personal-vehicle" method="post" action="../php/controllers/personal-vehicle-post.php">
 		<div class="row">
-			<div class="col-xs-12 col-md-3">
+			<div class="col-xs-12 col-md-6">
 				<div class="form-group">
 					<?php echo generateInputTags(); ?>
 
@@ -71,7 +71,7 @@ require_once("../verify-availability/index.php");
 				</div>
 			</div>
 
-			<div class="col-xs-8 col-md-2">
+			<div class="col-xs-8 col-md-6">
 				<div class="form-group">
 					<label for="vehicleYear">Vehicle Year:</label>
 					<input type="text" class="form-control name" id="vehicleYear" name="vehicleYear" size="128" maxlength="128">
