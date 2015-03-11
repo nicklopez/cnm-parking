@@ -49,8 +49,7 @@ if(empty($departure) === true) {
 	$departure[strlen($departure)-2] = '0';
 
 }
-var_dump($arrival);
-var_dump($departure);
+
 $availableSpot = ParkingPass::getParkingPassAvailability($mysqli, $location, $arrival, $departure);
 if($availableSpot !== null) {
 
@@ -59,5 +58,4 @@ if($availableSpot !== null) {
 	$isAvailable = "No parking spots are available during the given time window" . "," . $availableSpot["parkingSpotId"];
 }
 
-echo $isAvailable;
-
+echo "<span class='alert alert-success' role='alert'>$isAvailable</span>";
