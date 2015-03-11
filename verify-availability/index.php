@@ -28,7 +28,7 @@
 			<!--		<form id="verifyAvailabilityForm" method="post" action="../php/controllers/verify-availability-post.php">-->
 			<div class="container">
 				<div class="row">
-					<div class="col-xs-12 col-md-4">
+					<div class="col-xs-12 col-md-12">
 						<div class="form-group">
 							<h3>Choose Location</h3>
 							<label for="selectListLocation" class="control-label"></label>
@@ -37,7 +37,7 @@
 							</select>
 						</div>
 					</div>
-					<div class="col-xs-12 col-md-4">
+					<div class="col-xs-12 col-md-6">
 						<div class="form-group">
 							<h3>Arrival</h3>
 							<label for="dateTimePickerArrival" class="control-label"></label>
@@ -46,7 +46,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="col-xs-12 col-md-4">
+					<div class="col-xs-12 col-md-6">
 						<div class="form-group">
 							<h3>Departure</h3>
 							<label for="dateTimePickerDeparture" class="control-label"></label>
