@@ -11,7 +11,7 @@ session_start();
 ?>
 <div class="container-fluid">
 	<div class="row">
-		<div class="col-sm-12">
+		<div class="col-xs-12">
 			<form id="admin-registration" method="post" action="../php/controllers/admin-registration-post.php" novalidate="novalidate">
 				<?php echo generateInputTags(); ?>
 				<div class="form-group">
