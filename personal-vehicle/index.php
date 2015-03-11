@@ -55,6 +55,8 @@ require_once("../verify-availability/index.php");
 					<input type="hidden" id="adminProfileId" name="adminProfileId" value="<?php echo $invite->getAdminProfileId(); ?>">
 					<input type="hidden" id="visitorId" name="visitorId" value="<?php echo $visitor->getVisitorId(); ?>" >
 					<input type="hidden" id="activation" name="activation" value="<?php echo $_GET["activation"]; ?>">
+					<input type="hidden" id="parkingSpotId" name="parkingSpotId">
+
 <!--				</div>-->
 			</div>
 				<div class="col-xs-12 col-md-6">
