@@ -47,7 +47,7 @@ require_once("../verify-availability/index.php");
 	<hr>
 	<form id="personal-vehicle" method="post" action="../php/controllers/personal-vehicle-post.php">
 		<div class="row">
-			<div class="col-xs-12 col-md-2">
+<!--			<div class="col-xs-12 col-md-1">-->
 				<div class="form-group">
 					<?php echo generateInputTags(); ?>
 
@@ -55,7 +55,7 @@ require_once("../verify-availability/index.php");
 					<input type="hidden" id="adminProfileId" name="adminProfileId" value="<?php echo $invite->getAdminProfileId(); ?>">
 					<input type="hidden" id="visitorId" name="visitorId" value="<?php echo $visitor->getVisitorId(); ?>" >
 					<input type="hidden" id="activation" name="activation" value="<?php echo $_GET["activation"]; ?>">
-				</div>
+<!--				</div>-->
 			</div>
 				<div class="col-xs-12 col-md-6">
 					<div class="form-group">
@@ -76,7 +76,7 @@ require_once("../verify-availability/index.php");
 					</div>
 				</div>
 <!--			</div>-->
-			<div class="col-xs-12 col-md-4">
+			<div class="col-xs-12 col-md-6">
 				<div class="form-group">
 					<label for="vehicleYear">Vehicle Year:</label>
 					<input type="text" class="form-control name" id="vehicleYear" name="vehicleYear" size="128" maxlength="128">
@@ -98,7 +98,7 @@ require_once("../verify-availability/index.php");
 							<input type="text" class="form-control name" id="vehiclePlateNumber" name="vehiclePlateNumber" size="128" maxlength="128">
 							<input hidden="hidden" type="text" id="arrivalDate" name="arrivalDate">
 							<input hidden="hidden" type="text" id="departureDate" name="departureDate">
-							<input type="text" id="parkingSpotId" name="parkingSpotId">
+
 						</div>
 						<div class="form-group">
 						<label for="vehiclePlateState">Plate State:</label>
