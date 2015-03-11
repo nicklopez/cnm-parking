@@ -30,9 +30,7 @@
 					<div class="col-xs-3">
 						<button id="verifyAvailabilitySubmit" class="btn btn-primary btn-lg" type="submit" onclick="getAvailability();">Verify Availability</button>
 					</div>
-					<div id="outputArea" class="col-xs-9">
-<!--							Output from post-->
-					</div>
+						<span id="outputArea"class='alert col-xs-9' role='alert'></span>
 			</div>
 		</form>
 

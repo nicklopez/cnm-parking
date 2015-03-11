@@ -58,4 +58,4 @@ if($availableSpot !== null) {
 	$isAvailable = "No parking spots are available during the given time window" . "," . $availableSpot["parkingSpotId"];
 }
 
-echo "<span class='alert alert-success' role='alert'>$isAvailable</span>";
+echo $isAvailable;

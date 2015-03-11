@@ -1,6 +1,6 @@
 <?php
-$title = "Processing...";
-$headerTitle = "Processing...";
+$title = "Parking Pass";
+$headerTitle = "Done!";
 require_once("/etc/apache2/capstone-mysql/encrypted-config.php");
 require_once("../../img/parking-pass-gd.php");
 require_once("../lib/header.php");
