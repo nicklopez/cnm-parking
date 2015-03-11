@@ -49,9 +49,8 @@ if(empty($departure) === true) {
 	$departure[strlen($departure)-2] = '0';
 
 }
-echo $arrival;
-echo $departure;
-
+var_dump($arrival);
+var_dump($departure);
 $availableSpot = ParkingPass::getParkingPassAvailability($mysqli, $location, $arrival, $departure);
 if($availableSpot !== null) {
 

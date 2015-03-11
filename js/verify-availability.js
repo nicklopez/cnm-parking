@@ -7,14 +7,14 @@ $(document).ready(
 	function getAvailability() {
 
 		$('#dateTimePickerArrival').datetimepicker({
-			format: 'Y-m-d H:i:s ',
+			format: 'Y-m-d H:i:s',
 			inline: true,
 			lang: 'en',
 			minDate: '0'
 
 		});
 		$('#dateTimePickerDeparture').datetimepicker({
-			format: 'Y-m-d  H:i:s',
+			format: 'Y-m-d H:i:s',
 			inline: true,
 			lang: 'en'
 		});
