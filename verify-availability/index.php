@@ -58,7 +58,7 @@
 				</div>
 				<div class="row">
 					<div class="col-xs-12">
-						<button id="verifyAvailabilitySubmit" class="btn btn-primary" type="submit" onclick="getAvailability();">Verify Availability</button>
+						<button id="verifyAvailabilitySubmit" class="btn btn-primary btn-lg" type="submit" onclick="getAvailability();">Verify Availability</button>
 					</div>
 				</div>
 			</div>
