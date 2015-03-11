@@ -47,7 +47,7 @@ require_once("../verify-availability/index.php");
 	<hr>
 	<form id="personal-vehicle" method="post" action="../php/controllers/personal-vehicle-post.php">
 		<div class="row">
-			<div class="col-xs-12 col-md-1">
+			<div class="col-xs-12 col-md-2">
 				<div class="form-group">
 					<?php echo generateInputTags(); ?>
 
@@ -57,7 +57,7 @@ require_once("../verify-availability/index.php");
 					<input type="hidden" id="activation" name="activation" value="<?php echo $_GET["activation"]; ?>">
 				</div>
 			</div>
-				<div class="col-xs-12 col-md-3">
+				<div class="col-xs-12 col-md-6">
 					<div class="form-group">
 						<label for="visitorFirstName">First Name:</label>
 						<input type="text" class="form-control name" id="visitorFirstName" disabled="disabled" name="visitorFirstName" value="<?php echo $visitor->getVisitorFirstName(); ?>">
@@ -66,7 +66,7 @@ require_once("../verify-availability/index.php");
 						<label for="visitorLastName">Last Name:</label>
 						<input type="text" class="form-control name" id="visitorLastName" disabled="disabled" name="visitorLastName" value="<?php echo $visitor->getVisitorLastName(); ?>">
 					</div>
-						<div class="form-group">
+					<div class="form-group">
 						<label for="visitorEmail">Email:</label>
 						<input type="text" class="form-control email" id="visitorEmail" disabled="disabled" name="visitorEmail" value="<?php echo $visitor->getVisitorEmail(); ?>">
 					</div>
@@ -75,7 +75,7 @@ require_once("../verify-availability/index.php");
 						<input type="text" class="form-control phone" id="visitorPhone" disabled="disabled" name="visitorPhone" value="<?php echo $visitor->getVisitorPhone(); ?>">
 					</div>
 				</div>
-			</div>
+<!--			</div>-->
 			<div class="col-xs-12 col-md-4">
 				<div class="form-group">
 					<label for="vehicleYear">Vehicle Year:</label>
@@ -155,19 +155,19 @@ require_once("../verify-availability/index.php");
 							<option value="WY">WY</option>
 						</select><br>
 						</div>
-						<div class="form-group">
+					</div>
+
+					<div class="row">
+						<div class="col-xs-12">
 						<button id="sendRequest" class="btn btn-primary btn-lg " type="submit">Send Request</button>
 						</div>
-					</div>
-				</div>
+<!--					</div>-->
+<!--				</div>-->
 			</div>
 		</form>
 	</div>
-
 <p id="outputArea"></p>
-<?php
-//require_once("../verify-availability/index.php");
-//?>
+
 
 
 <?php
