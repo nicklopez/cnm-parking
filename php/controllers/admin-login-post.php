@@ -21,7 +21,7 @@ try {
 	$configArray = readConfig("/etc/apache2/capstone-mysql/cnmparking.ini");
 	$mysqli = new mysqli($configArray['hostname'], $configArray['username'], $configArray['password'], $configArray['database']);
 
-
+var_dump($_SESSION);
 	if(@isset($_POST["adminEmail"]) === true && @isset($_POST["password"]) === true) {
 		// query admin email and hash compare
 		$admin = Admin::getAdminByAdminEmail($mysqli, $_POST["adminEmail"]);

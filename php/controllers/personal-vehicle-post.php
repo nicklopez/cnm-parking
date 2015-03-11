@@ -60,14 +60,7 @@ try {
 	$headers["From"] = $from;
 	$headers["Reply-To"] = $from;
 	$headers["Subject"] = $visitor->getVisitorFirstName() . " " . $visitor->getVisitorLastName() . ", CNM Temporary Parking Pass";
-//	$headers["MIME-Version"] = "1.0";
-//	$headers["Content-Type"] = "text/html; charset=UTF-8";
 
-	// build message
-	// $pageName = end(explode("/", $_SERVER["i"], 5));
-//	$url = "https://" . $_SERVER["SERVER_NAME"] . "/img/parking-pass-gd.php";
-////	$url = str_replace($pageName, "parking-pass-gd.php", $url);
-//	$url = "$url?parkingPassId=$parkingPassId" . $parkingPass->getParkingPassId();
 	$message = <<< EOF
 <html>
 	<body>
