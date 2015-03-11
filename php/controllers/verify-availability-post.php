@@ -38,6 +38,7 @@ if(empty($arrival) === true) {
 } else {
 	$arrival[strlen($arrival)-1] = '0';
 	$arrival[strlen($arrival)-2] = '0';
+
 }
 
 $departure = filter_input(INPUT_POST, "dateTimePickerDeparture", FILTER_SANITIZE_STRING);
@@ -46,7 +47,10 @@ if(empty($departure) === true) {
 } else {
 	$departure[strlen($departure)-1] = '0';
 	$departure[strlen($departure)-2] = '0';
+
 }
+echo $arrival;
+echo $departure;
 
 $availableSpot = ParkingPass::getParkingPassAvailability($mysqli, $location, $arrival, $departure);
 if($availableSpot !== null) {
@@ -56,7 +60,5 @@ if($availableSpot !== null) {
 	$isAvailable = "No parking spots are available during the given time window" . "," . $availableSpot["parkingSpotId"];
 }
 
-echo $arrival;
-echo $departure;
 echo $isAvailable;
 
