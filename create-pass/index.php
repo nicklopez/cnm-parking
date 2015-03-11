@@ -23,8 +23,8 @@ session_start();
 		</ul>
 	</div>
 </nav>
-<p id="outputArea"></p>
 
+<!--Require the Verify Availability Form-->
 <?php
 require_once("../verify-availability/index.php");
 ?>
@@ -149,15 +149,12 @@ require_once("../verify-availability/index.php");
 				<div class="col-xs-12">
 					<button id="sendRequest" class="btn btn-primary btn-lg " type="submit">Send Request</button>
 				</div>
-				<!--					</div>-->
-				<!--				</div>-->
 			</div>
 	</form>
 </div>
-<p id="outputArea"></p>
 
 
-
+<!--Require the footer-->
 <?php
 require_once("../php/lib/footer.php");
 ?>
