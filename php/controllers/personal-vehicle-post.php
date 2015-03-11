@@ -17,8 +17,7 @@ require_once("../classes/parkingspot.php");
 // require PEAR::Mail <http://pear.php.net/package/Mail> to send mail
 require_once("Mail.php");
 require_once("Mail/mime.php");
-//$file = './files/example.zip';
-//$mime->addAttachment($file,'application/octet-stream');
+
 
 session_start();
 
@@ -42,10 +41,6 @@ try {
 	) {
 		throw(new mysqli_sql_exception("form values not complete. verify the form and try again."));
 		}
-
-
-	$_SESSION["arrivalDate"] = $_POST["arrivalDate"];
-	$_SESSION["departureDate"] = $_POST["departureDate"];
 
 
 	// email the visitor a URL with token
