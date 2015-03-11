@@ -56,5 +56,7 @@ if($availableSpot !== null) {
 	$isAvailable = "No parking spots are available during the given time window" . "," . $availableSpot["parkingSpotId"];
 }
 
+echo $arrival;
+echo $departure;
 echo $isAvailable;
 
