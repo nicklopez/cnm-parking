@@ -21,16 +21,16 @@ try {
 	$configArray = readConfig("/etc/apache2/capstone-mysql/cnmparking.ini");
 	$mysqli = new mysqli($configArray['hostname'], $configArray['username'], $configArray['password'], $configArray['database']);
 
-var_dump($_SESSION);
 	if(@isset($_POST["adminEmail"]) === true && @isset($_POST["password"]) === true) {
 		// query admin email and hash compare
 		$admin = Admin::getAdminByAdminEmail($mysqli, $_POST["adminEmail"]);
-		$hash = hash_pbkdf2("sha512", $_POST["password"], $admin->getSalt(), 2048, 128);
-
 	} else {
 		throw (new InvalidArgumentException("form values not complete. verify the form and try again."));
 	}
-
+	if(count($admin) === 0) {
+		throw (new mysqli_sql_exception(" incorrect email or password. Try again."));
+	}
+	$hash = hash_pbkdf2("sha512", $_POST["password"], $admin->getSalt(), 2048, 128);
 	if($hash === $admin->getPassHash()) {
 		// assign session to logged in admin id
 		$adminProfile = AdminProfile::getAdminProfileByAdminId($mysqli, $admin->getAdminId());
@@ -53,3 +53,4 @@ var_dump($_SESSION);
 
 require_once("../lib/footer.php");
 ?>
+
