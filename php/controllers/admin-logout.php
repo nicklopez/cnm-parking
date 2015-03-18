@@ -1,7 +1,7 @@
 <?php
 $title = "CNM Parking Admin Portal";
 $headerTitle = "CNM Parking Admin Portal";
-require_once("/etc/apache2/capstone-mysql/encrypted-config.php");
+require_once("/home/cnmparki/etc/mysql/encrypted-config.php");
 
 session_start();
 $_SESSION = array();

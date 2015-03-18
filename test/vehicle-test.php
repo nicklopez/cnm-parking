@@ -4,7 +4,7 @@
 require_once("/usr/lib/php5/simpletest/autorun.php");
 
 //next, require the encrypted configuration functions
-require_once("/etc/apache2/capstone-mysql/encrypted-config.php");
+require_once("/home/cnmparki/etc/mysql/encrypted-config.php");
 
 // next, require the class from the project under scrutiny
 require_once("../php/classes/vehicle.php");
@@ -98,7 +98,7 @@ class VehicleTest extends UnitTestCase {
 	public function setUp() {
 		// now retrieve the configuration parameters
 		try {
-			$configFile = "/etc/apache2/capstone-mysql/cnmparking.ini";
+			$configFile = "/home/cnmparki/etc/mysql/cnmparking.ini";
 			$configArray = readConfig($configFile);
 		} catch (InvalidArgumentException $invalidArgument) {
 		// re-throw the exception to the caller

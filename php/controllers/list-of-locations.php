@@ -9,10 +9,10 @@
 	require_once("../php/classes/location.php");
 
 	// require the mysqli config files
-	require_once("/etc/apache2/capstone-mysql/encrypted-config.php");
+	require_once("/home/cnmparki/etc/mysql/encrypted-config.php");
 
 	// define mysqli connection info and connect
-	$configFile = "/etc/apache2/capstone-mysql/cnmparking.ini";
+	$configFile = "/home/cnmparki/etc/mysql/cnmparking.ini";
 	$configArray = readConfig($configFile);
 
 	mysqli_report(MYSQLI_REPORT_STRICT);

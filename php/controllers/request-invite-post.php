@@ -1,7 +1,7 @@
 <?php
 
 // require encrypted configuration files
-require_once("/etc/apache2/capstone-mysql/encrypted-config.php");
+require_once("/home/cnmparki/etc/mysql/encrypted-config.php");
 
 // require the mySQL enabled Visitor class
 require_once("../classes/visitor.php");
@@ -23,7 +23,7 @@ try {
 	$activation = bin2hex(openssl_random_pseudo_bytes(16));
 
 	// create a Visitor (if required) and Invite object and insert them into mySQL
-	$config = readConfig("/etc/apache2/capstone-mysql/cnmparking.ini");
+	$config = readConfig("/home/cnmparki/etc/mysql/cnmparking.ini");
 	$mysqli = new mysqli($config["hostname"], $config["username"], $config["password"], $config["database"]);
 
 	// query mySQL to see if visitor exists

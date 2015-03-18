@@ -39,7 +39,7 @@ try {
 	 * connect to mySQL
 	 */
 	mysqli_report(MYSQLI_REPORT_STRICT);
-	$config = readConfig("/etc/apache2/capstone-mysql/cnmparking.ini");
+	$config = readConfig("/home/cnmparki/etc/mysql/cnmparking.ini");
 	$mysqli = new mysqli($config["hostname"], $config["username"], $config["password"], $config["database"]);
 
 	/**

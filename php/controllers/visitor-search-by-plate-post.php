@@ -9,7 +9,7 @@
 /**
  * require the encrypted config functions
  */
-require_once("/etc/apache2/capstone-mysql/encrypted-config.php");
+require_once("/home/cnmparki/etc/mysql/encrypted-config.php");
 
 /**
  * require the classes

@@ -2,7 +2,7 @@
 session_start();
 $title = "CNM Admin Portal";
 $headerTitle = "CNM Admin Portal";
-require_once("/etc/apache2/capstone-mysql/encrypted-config.php");
+require_once("/home/cnmparki/etc/mysql/encrypted-config.php");
 require_once("../classes/adminprofile.php");
 require_once("../../php/lib/header.php");
 ?>

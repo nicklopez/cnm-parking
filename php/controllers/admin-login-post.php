@@ -7,7 +7,7 @@ $headerTitle = "CNM Admin Portal";
 
 // require necessary files
 require_once("../lib/header.php");
-require_once("/etc/apache2/capstone-mysql/encrypted-config.php");
+require_once("/home/cnmparki/etc/mysql/encrypted-config.php");
 require_once("../classes/admin.php");
 require_once("../classes/adminprofile.php");
 
@@ -18,7 +18,7 @@ $_SESSION["login user"] = $_POST["adminEmail"];
 try {
 	// connect to database
 	mysqli_report(MYSQLI_REPORT_STRICT);
-	$configArray = readConfig("/etc/apache2/capstone-mysql/cnmparking.ini");
+	$configArray = readConfig("/home/cnmparki/etc/mysql/cnmparking.ini");
 	$mysqli = new mysqli($configArray['hostname'], $configArray['username'], $configArray['password'], $configArray['database']);
 
 	if(@isset($_POST["adminEmail"]) === true && @isset($_POST["password"]) === true) {

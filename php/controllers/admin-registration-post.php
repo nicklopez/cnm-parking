@@ -2,7 +2,7 @@
 // require_once("../../../lib/csrf.php");
 $headerTitle = "Success";
 $title = "Success";
-require_once("/etc/apache2/capstone-mysql/encrypted-config.php");
+require_once("/home/cnmparki/etc/mysql/encrypted-config.php");
 require_once("../classes/admin.php");
 require_once("../classes/adminprofile.php");
 require_once("../lib/header.php");
@@ -23,7 +23,7 @@ try {
 
 		// create an admin and admin profile object and insert them into mySQL
 		mysqli_report(MYSQLI_REPORT_STRICT);
-		$configArray = readConfig("/etc/apache2/capstone-mysql/cnmparking.ini");
+		$configArray = readConfig("/home/cnmparki/etc/mysql/cnmparking.ini");
 		$activation = bin2hex(openssl_random_pseudo_bytes(16));
 		$mysqli = new mysqli($configArray['hostname'], $configArray['username'], $configArray['password'], $configArray['database']);
 

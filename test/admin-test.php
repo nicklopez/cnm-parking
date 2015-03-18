@@ -1,6 +1,6 @@
 <?php
 // require the encrypted config functions
-require_once("/etc/apache2/capstone-mysql/encrypted-config.php");
+require_once("/home/cnmparki/etc/mysql/encrypted-config.php");
 
 // first, require the SimpleTest framework <http://simpletest.org/>
 // this path is *NOT* universal, but deployed on the bootcamp-coders server
@@ -54,7 +54,7 @@ class AdminTest extends UnitTestCase {
 	public function setUp() {
 		// connect to mysqli
 		mysqli_report(MYSQLI_REPORT_STRICT);
-		$configArray = readConfig("/etc/apache2/capstone-mysql/cnmparking.ini");
+		$configArray = readConfig("/home/cnmparki/etc/mysql/cnmparking.ini");
 		$this->mysqli = new mysqli($configArray["hostname"], $configArray["username"], $configArray["password"], $configArray["database"]);
 
 		// second, create an instance of the object under scrutiny

@@ -8,7 +8,7 @@
 /**
  * require the encrypted config functions
  */
-require_once("/etc/apache2/capstone-mysql/encrypted-config.php");
+require_once("/home/cnmparki/etc/mysql/encrypted-config.php");
 
 require_once ("../classes/parkingpass.php");
 require_once ("../classes/parkingspot.php");
@@ -17,7 +17,7 @@ require_once ("../classes/parkingspot.php");
  * connect to mySQL
  */
 mysqli_report(MYSQLI_REPORT_STRICT);
-$config = readConfig("/etc/apache2/capstone-mysql/cnmparking.ini");
+$config = readConfig("/home/cnmparki/etc/mysql/cnmparking.ini");
 $mysqli = new mysqli($config["hostname"], $config["username"], $config["password"], $config["database"]);
 
 /**

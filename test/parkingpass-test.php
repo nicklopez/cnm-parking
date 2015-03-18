@@ -1,6 +1,6 @@
 <?php
 // require the encrypted config functions
-require_once("/etc/apache2/capstone-mysql/encrypted-config.php");
+require_once("/home/cnmparki/etc/mysql/encrypted-config.php");
 
 
 // require the SimpleTest framework <http://www.simpletest.org/>
@@ -56,7 +56,7 @@ class ParkingPassTest extends UnitTestCase {
 		mysqli_report(MYSQLI_REPORT_STRICT);
 
 		// connect to mySQL
-		$config = readConfig("/etc/apache2/capstone-mysql/cnmparking.ini");
+		$config = readConfig("/home/cnmparki/etc/mysql/cnmparking.ini");
 		$this->mysqli = new mysqli($config["hostname"], $config["username"], $config["password"], $config["database"]);
 
 		// create an instance of the objects under scrutiny

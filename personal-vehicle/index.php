@@ -2,7 +2,7 @@
 $title = "Parking Pass";
 $headerTitle = "Create a parking pass";
 require_once("../php/lib/header.php");
-require_once("/etc/apache2/capstone-mysql/encrypted-config.php");
+require_once("/home/cnmparki/etc/mysql/encrypted-config.php");
 require_once("../php/classes/visitor.php");
 require_once("../php/classes/invite.php");
 require_once("../php/lib/csrf.php");
@@ -21,7 +21,7 @@ try {
 
 	//set up connection
 	mysqli_report(MYSQLI_REPORT_STRICT);
-	$configArray = readConfig("/etc/apache2/capstone-mysql/cnmparking.ini");
+	$configArray = readConfig("/home/cnmparki/etc/mysql/cnmparking.ini");
 	$mysqli = new mysqli($configArray['hostname'], $configArray['username'], $configArray['password'], $configArray['database']);
 
 	$activation = $_GET["activation"];

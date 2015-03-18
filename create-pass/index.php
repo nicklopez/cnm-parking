@@ -2,7 +2,7 @@
 $title = "Parking Pass";
 $headerTitle = "Create a parking pass";
 require_once("../php/lib/header.php");
-require_once("/etc/apache2/capstone-mysql/encrypted-config.php");
+require_once("/home/cnmparki/etc/mysql/encrypted-config.php");
 require_once("../php/classes/visitor.php");
 require_once("../php/classes/invite.php");
 require_once("../php/lib/csrf.php");

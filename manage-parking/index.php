@@ -25,11 +25,11 @@ session_start();
 
 <?php
 // require the encrypted configuration functions
-require_once("/etc/apache2/capstone-mysql/encrypted-config.php");
+require_once("/home/cnmparki/etc/mysql/encrypted-config.php");
 
 try {
 // now retrieve the configuration parameters
-$configFile = "/etc/apache2/capstone-mysql/cnmparking.ini";
+$configFile = "/home/cnmparki/etc/mysql/cnmparking.ini";
 $configArray = readConfig($configFile);
 
 // first, connect to mysqli
