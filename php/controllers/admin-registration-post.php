@@ -64,10 +64,7 @@ try {
 	$headers["Content-Type"] = "text/html; charset=UTF-8";
 
 	// build message
-//	$path = explode("/", $_SERVER["PHP_SELF"], 4);
-//	$pageName = end($path);
 	$url = "http://cnmparking.com/admin-login";
-//	$url = str_replace($pageName, "admin-login", $url);
 	$message = <<< EOF
 <html>
 	<body>
@@ -85,7 +82,7 @@ EOF;
 	if(PEAR::isError($status) === true) {
 		echo "<div class=\"alert alert-danger\" role=\"alert\"><strong>Oh snap!</strong> Unable to send mail message:" . $status->getMessage() . "</div>";
 	} else {
-		echo "<div class=\"alert alert-success\" role=\"alert\"><strong>Sign up successful!</strong> Please check your Email to complete the registration process.</div>";
+		echo "<div class=\"alert alert-success\" role=\"alert\"><strong>Sign up successful!</strong> Please check your email to complete the registration process.</div>";
 	}
 } catch(Exception $exception) {
 	echo "<div class=\"alert alert-danger\" role=\"alert\"><strong>Oh snap!</strong> Unable to sign up: " . $exception->getMessage() . "</div>";
