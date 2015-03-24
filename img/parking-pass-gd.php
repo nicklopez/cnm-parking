@@ -114,7 +114,6 @@ Vehicles displaying such permits will be cited. Attempts to fraudulently obtain 
 
 // free up memory
 	imagedestroy($image);
-
 	return ($jpegData);
 }
 ?>
