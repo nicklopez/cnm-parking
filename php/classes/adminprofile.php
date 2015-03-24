@@ -191,7 +191,7 @@ class AdminProfile {
 	/**
 	 * inserts the AdminProfile into mySQL
 	 *
-	 * @param PDO $mysqli pointer to mySQL connection, by reference
+	 * @param PDO $pdo pointer to mySQL connection, by reference
 	 * @throws mysqli_sql_exception when mySQL related errors occur
 	 **/
 	public function insert(PDO &$pdo) {
@@ -216,7 +216,7 @@ class AdminProfile {
 	/**
 	 * deletes the AdminProfile from mySQL
 	 *
-	 * @param PDO $mysqli pointer to mySQL connection, by reference
+	 * @param PDO $pdo pointer to mySQL connection, by reference
 	 * @throws mysqli_sql_exception when mySQL related errors occur
 	 **/
 	public function delete(PDO &$pdo) {
@@ -260,7 +260,7 @@ class AdminProfile {
 	 * gets the AdminProfile by admin id
 	 *
 	 * @param PDO $pdo pointer to mySQL connection, by reference
-	 * @param int $adminId to search for admin profile
+	 * @param int $adminProfileId to search for admin profile
 	 * @return mixed array of Admin profiles found, Admin profile found, or null if not found
 	 * @throws mysqli_sql_exception when mySQL related errors occur
 	 **/
@@ -342,58 +342,44 @@ class AdminProfile {
 	/**
 	 * gets all Admin Profile by admin first name
 	 *
-	 * @param resource $mysqli pointer to mySQL connection, by reference
-	 * @param string $adminFristName to search AdminProfile for by first name
+	 * @param PDO $pdo pointer to mySQL connection, by reference
+	 * @param string $adminFirstName to search AdminProfile for by first name
 	 * @return mixed admin if found or null if not found
-	 * @throws mysqli_sql_exception when mySQL related errors occur
+	 * @throws PDOException when mySQL related errors occur
 	 **/
-	public static function getAdminProfileByAdminFirstName(&$mysqli, $adminFirstName) {
-		// handle degenerate cases
-		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
-			throw(new mysqli_sql_exception("input is not a mysqli object"));
-		}
+	public static function getAdminProfileByAdminFirstName(&$pdo, $adminFirstName) {
+
 
 		// sanitize the adminFirstName before searching
 		$adminFirstName = trim($adminFirstName);
 		$adminFirstName = filter_var($adminFirstName, FILTER_SANITIZE_STRING);
 		if(empty($adminFirstName) === true) {
-			throw(new InvalidArgumentException("admin first name is empty or insecure"));
+			throw(new PDOException("admin first name is empty or insecure"));
 		}
 
 		// create query template
-		$query = "SELECT adminProfileId, adminId, adminFirstName, adminLastName FROM adminProfile WHERE adminFirstName LIKE ?";
-		$statement = $mysqli->prepare($query);
-		if($statement === false) {
-			throw(new mysqli_sql_exception("unable to prepare statement"));
-		}
+		$query = "SELECT adminProfileId, adminId, adminFirstName, adminLastName FROM adminProfile WHERE adminFirstName LIKE :adminFirstName";
+		$statement = $pdo->prepare($query);
 
 		// bind the adminFirstName to the place holder in the template
 		$adminFirstName = "%$adminFirstName%";
-		$wasClean = $statement->bind_param("s", $adminFirstName);
-		if($wasClean === false) {
-			throw(new mysqli_sql_exception("unable to bind parameters"));
-		}
+		$parameters = array("adminFirstName" => $adminFirstName);
+		$statement->execute($parameters);
 
-		// execute the statement
-		if($statement->execute() === false) {
-			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
-		}
+		$statement->setFetchMode(PDO::FETCH_ASSOC);
 
-		// get result from the SELECT query
-		$result = $statement->get_result();
-		if($result === false) {
-			throw(new mysqli_sql_exception("unable to get result set"));
-		}
+		//
 
 		// grab the adminProfile from mySQL
 		$admins = array();
-		while(($row = $result->fetch_assoc()) !== null) {
+		$row = $statement->fetch();
+		while($row !== null) {
 			try {
 				$admin = new AdminProfile($row["adminProfileId"], $row["adminId"], $row["adminFirstName"], $row["adminLastName"]);
 				$admins[] = $admin;
 			} catch(Exception $exception) {
 				// if the row couldn't be converted, rethrow it
-				throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
+				throw(new PDOException($exception->getMessage(), 0, $exception));
 			}
 		}
 		// count the results in the array and return:
@@ -409,58 +395,40 @@ class AdminProfile {
 	/**
 	 * gets all Admin Profiles by admin last Name
 	 *
-	 * @param resource $mysqli pointer to mySQL connection, by reference
+	 * @param PDO $pdo pointer to mySQL connection, by reference
 	 * @param string $adminLastName to search AdminProfile for last name
 	 * @return mixed admin if not found or null if not found
-	 * @throws mysqli_sql_exception when mySQL related errors occur
+	 * @throws PDOException when mySQL related errors occur
 	 **/
-	public static function getAdminProfileByAdminLastName(&$mysqli, $adminLastName) {
-		// handle degenerate cases
-		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
-			throw(new mysqli_sql_exception("input is not a mysqli object"));
-		}
-
+	public static function getAdminProfileByAdminLastName(&$pdo, $adminLastName) {
 		// sanitize the adminLastName before searching
 		$adminLastName = trim($adminLastName);
 		$adminLastName = filter_var($adminLastName, FILTER_SANITIZE_STRING);
 		if(empty($adminLastName) === true) {
-			throw(new InvalidArgumentException("admin first last is empty or insecure"));
+			throw(new PDOException("admin first last is empty or insecure"));
 		}
 
 		// create query template
-		$query = "SELECT adminProfileId, adminId, adminFirstName, adminLastName FROM adminProfile WHERE adminLastName LIKE ?";
-		$statement = $mysqli->prepare($query);
-		if($statement === false) {
-			throw(new mysqli_sql_exception("unable to prepare statement"));
-		}
+		$query = "SELECT adminProfileId, adminId, adminFirstName, adminLastName FROM adminProfile WHERE adminLastName LIKE :adminLastName";
+		$statement = $pdo->prepare($query);
 
 		// bind the adminFirstName to the place holder in the template
 		$adminLastName = "%$adminLastName%";
-		$wasClean = $statement->bind_param("s", $adminLastName);
-		if($wasClean === false) {
-			throw(new mysqli_sql_exception("unable to bind parameters"));
-		}
+		$parameters = array("adminLastName" => $adminLastName);
+		$statement->execute($parameters);
 
-		// execute the statement
-		if($statement->execute() === false) {
-			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
-		}
-
-		// get result from the SELECT query
-		$result = $statement->get_result();
-		if($result === false) {
-			throw(new mysqli_sql_exception("unable to get result set"));
-		}
+		$statement->setFetchMode(PDO::FETCH_ASSOC);
 
 		// grab the adminProfile from mySQL
 		$admins = array();
-		while(($row = $result->fetch_Assoc()) !== null) {
+		$row = $statement->fetch();
+		while($row !== null) {
 			try {
 				$admin = new AdminProfile($row["adminProfileId"], $row["adminId"], $row["adminFirstName"], $row["adminLastName"]);
 				$admins[] = $admin;
 			} catch(Exception $exception) {
 				// if the row couldn't be converted, rethrow it
-				throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
+				throw(new PDOException($exception->getMessage(), 0, $exception));
 			}
 		}
 		// count the results in the array and return:

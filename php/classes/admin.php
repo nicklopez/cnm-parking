@@ -403,19 +403,30 @@ class Admin {
 		$parameters = array("adminEmail" => $adminEmail);
 		$statement->execute($parameters);
 
+		$statement->setFetchMode(PDO::FETCH_ASSOC);
+
 		// build email array
-		try {
-			$adminEmail = null;
-			$statement->setFetchMode(PDO::FETCH_ASSOC);
-			$row = $statement->fetch();
-			if($row !== null) {
-				$adminEmail = new Admin($row["adminId"], $row["activation"], $row["adminEmail"], $row["passHash"], $row["salt"]);
+		$admins = array();
+		$row = $statement->fetch();
+		while($row !== null); {
+			try {
+				$admin = new Admin($row["adminId"], $row["activation"], $row["adminEmail"], $row["passHash"], $row["salt"]);
+				$admins[] = $admin;
+			} catch(Exception $exception) {
+				// if the row couldn't be converted, rethrow it
+				throw(new PDOException($exception->getMessage(), 0, $exception));
 			}
-		} catch(Exception $exception) {
-			// if the row couldn't be converted, rethrow it
-			throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
 		}
-		return($adminEmail);
+		// count the results in the array and return:
+		// 1) null if 0 results
+		// 2) the entire array if > 1 result
+		$numberOfAdmins = count($admins);
+		if($numberOfAdmins === 0) {
+			return (null);
+		} else {
+			return ($admins);
+		}
 	}
 }
+
 ?>
