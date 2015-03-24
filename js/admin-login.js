@@ -11,7 +11,7 @@ $(document).ready(
 				url: "login-session.php",
 				data: {adminProfileId: adminProfileId}
 			}).done(function() {
-				location.href = "../test-portal/test-portal.php";
+				location.href = "//cnmparking.com/php/test-portal/test-portal.php";
 			});
 		});
 	});
