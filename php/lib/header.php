@@ -13,26 +13,21 @@
 		<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/jquery-ui.min.js"></script>
 
 		<!--		Custom JavaScript-->
-		<script type="text/javascript" src="../js/request-invite.js"></script>
-		<script type="text/javascript" src="../js/send-invite.js"></script>
-		<script type="text/javascript" src="../js/location-row-grouping.js"></script>
-		<script type="text/javascript" src="../js/reports.js"></script>
-		<script type="text/javascript" src="../../js/reports.js"></script>
-		<script type="text/javascript" src="../js/admin-login.js"></script>
-		<script type="text/javascript" src="../../js/admin-login.js"></script>
-		<script type="text/javascript" src="../js/datetimepicker.js"></script>
-		<script type="text/javascript" src="../js/verify-availability.js"></script>
-		<script type="text/javascript" src="../js/visitorLookup.js"></script>
+		<script type="text/javascript" src="//cnmparking.com/js/request-invite.js"></script>
+		<script type="text/javascript" src="//cnmparking.com/js/send-invite.js"></script>
+		<script type="text/javascript" src="//cnmparking.com/js/location-row-grouping.js"></script>
+		<script type="text/javascript" src="//cnmparking.com/js/reports.js"></script>
+		<script type="text/javascript" src="//cnmparking.com/js/admin-login.js"></script>
+		<script type="text/javascript" src="//cnmparking.com/js/datetimepicker.js"></script>
+		<script type="text/javascript" src="//cnmparking.com/js/verify-availability.js"></script>
+		<script type="text/javascript" src="//cnmparking.com/js/visitorLookup.js"></script>
 
 		<script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 		<link type="text/css" href="//cdn.datatables.net/1.10.5/css/jquery.dataTables.css" rel="stylesheet">
-		<link type="text/css" href="../fonts/lato.woff" rel="stylesheet">
-		<link type="text/css" href="../fonts/lato.woff2" rel="stylesheet">
-		<link type="text/css" href="../../fonts/lato.woff" rel="stylesheet">
-		<link type="text/css" href="../../fonts/lato.woff2" rel="stylesheet">
-		<link type="text/css" href="../css/custom.css" rel="stylesheet">
-		<link type="text/css" href="../../css/custom.css" rel="stylesheet">
-		<link type="text/css" href="../css/datetimepicker.css" rel="stylesheet"/>
+		<link type="text/css" href="//cnmparking.com/fonts/lato.woff" rel="stylesheet">
+		<link type="text/css" href="//cnmparking.com/fonts/lato.woff2" rel="stylesheet">
+		<link type="text/css" href="//cnmparking.com/css/custom.css" rel="stylesheet">
+		<link type="text/css" href="//cnmparking.com/css/datetimepicker.css" rel="stylesheet"/>
 
 		<title><?php echo $title ?></title>
 	</head>

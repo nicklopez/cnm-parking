@@ -1064,15 +1064,15 @@ class ParkingPass {
 	/**
 	 * gets parkingPass and visitor data by DateTime range of startDateTime - endDateTime
 	 *
-	 * @param resource $mysqli pointer to mySQL connection, by reference
-	 * @param string $startDateTime, $endDateTime startDateTime to endDateTime range to search for
-	 * @throws mixed array of DateTime Ranges found or null if not found
-	 * @throws mysqli_sql_exception when mySQL related errors occur
+	 * @param PDO $pdo pointer to mySQL connection, by reference
+	 * @param datetime $startDateTime, $endDateTime startDateTime to endDateTime range to search for
+	 * @return mixed visitor parking data found or null if not found
+	 * @throws PDOException when mySQL related errors occur
 	 */
-	public static function getVisitorParkingDataByDateRange(&$mysqli, $startDateTime, $endDateTime) {
+	public static function getVisitorParkingDataByDateRange(PDO &$pdo, $startDateTime, $endDateTime) {
 		// handle degenerate cases
-		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
-			throw(new mysqli_sql_exception("input is not a mysqli object"));
+		if(gettype($pdo) !== "object" || get_class($pdo) !== "PDO") {
+			throw(new PDOException("input is not a PDO object"));
 		}
 
 		// sanitize before searching - Using static function
@@ -1092,38 +1092,30 @@ class ParkingPass {
 		INNER JOIN parkingSpot ON parkingSpot.parkingSpotId = parkingPass.parkingSpotId
 		INNER JOIN location ON location.locationId = parkingSpot.locationId
 		INNER JOIN visitor ON visitor.visitorId = vehicle.visitorId
-		WHERE startDateTime >= ? AND endDateTime <= ?";
-		$statement = $mysqli->prepare($query);
+		WHERE startDateTime >= :startDateTime AND endDateTime <= :endDateTime";
+		$statement = $pdo->prepare($query);
 		if($statement === false) {
-			throw(new mysqli_sql_exception(" unable to prepare statement"));
+			throw(new PDOException(" unable to prepare statement"));
 		}
 
 		// bind the member variables to the place holders in the template
 		$sunrise = $sunrise->format("Y-m-d H:i:s");
 		$sunset = $sunset->format("Y-m-d H:i:s");
-		$wasClean = $statement->bind_param("ss", $sunrise, $sunset);
-		if($wasClean === false) {
-			throw(new mysqli_sql_exception("unable to bind parameters"));
-		}
-		// execute the statement
-		if($statement->execute() === false) {
-			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
-		}
+		$parameters = array("startDateTime" => $sunrise, "endDateTime" => $sunset);
 
+		// execute the statement
+		$statement->execute($parameters);
+		$statement->setFetchMode(PDO::FETCH_ASSOC);
 		// get result from SELECT query
-		$result = $statement->get_result();
-		if($result === false) {
-			throw(new mysqli_sql_exception("unable to get result set"));
-		}
 
 		// build array of parkingPass
 		$visitorData = array();
-		while(($row = $result->fetch_assoc()) !== null) {
+		while(($row = $statement->fetch()) !== false) {
 			try {
 				$visitorData[] = $row;
 			} catch(Exception $exception) {
 				// if the row couldn't be converted, rethrow it
-				throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
+				throw(new PDOException($exception->getMessage(), 0, $exception));
 			}
 		}
 

@@ -23,19 +23,26 @@ try {
 	$activation = bin2hex(openssl_random_pseudo_bytes(16));
 
 	// create a Visitor (if required) and Invite object and insert them into mySQL
-	$config = readConfig("/home/cnmparki/etc/mysql/cnmparking.ini");
-	$mysqli = new mysqli($config["hostname"], $config["username"], $config["password"], $config["database"]);
+	$configArray = readConfig("/home/cnmparki/etc/mysql/cnmparking.ini");
+
+	// Connect to mySQL
+	$host = $configArray["hostname"];
+	$db = $configArray["database"];
+	$dsn = "mysql:host=$host;dbname=$db";
+	$options = array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8");
+	$pdo = new PDO($dsn, $configArray["username"], $configArray["password"], $options);
+	$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
 
 	// query mySQL to see if visitor exists
-	$visitor = Visitor::getVisitorByVisitorEmail($mysqli, $_POST["emailAddress"]);
+	$visitor = Visitor::getVisitorByVisitorEmail($pdo, $_POST["emailAddress"]);
 	if(count($visitor) === 0) {
 		$newVisitor = new Visitor(null, $_POST["emailAddress"], $_POST["firstName"], $_POST["lastName"], $_POST["phone"]);
-		$newVisitor->insert($mysqli);
+		$newVisitor->insert($pdo);
 		$invite = new Invite(null, null, $activation, null, null, null, $newVisitor->getVisitorId());
-		$invite->insert($mysqli);
+		$invite->insert($pdo);
 	} else {
 		$invite = new Invite(null, null, $activation, null, null, null, $visitor->getVisitorId());
-		$invite->insert($mysqli);
+		$invite->insert($pdo);
 	}
 
 	// email the CNM admin and inform them of the request

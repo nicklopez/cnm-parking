@@ -245,7 +245,7 @@ class Admin {
 		}
 
 		// create query template
-		$query	 = "INSERT INTO admin(activation, adminEmail, passHash, salt) VALUES(:activation, :adminEmail, :passHaah, :salt)";
+		$query	 = "INSERT INTO admin(activation, adminEmail, passHash, salt) VALUES(:activation, :adminEmail, :passHash, :salt)";
 		$statement = $pdo->prepare($query);
 
 		// bind the member variables to the place holders in the template
@@ -348,7 +348,7 @@ class Admin {
 	 * @return int array of Admins found or null if not found
 	 * @throws PDOException when mySQL related errors occur
 	 **/
-	public static function getAllAdmins(&$pdo) {
+	public static function getAllAdmins(PDO &$pdo) {
 
 		// create query template
 		$query	 = "SELECT adminId, activation, adminEmail, passHash, salt FROM admin";
@@ -408,15 +408,15 @@ class Admin {
 		// build email array
 		$admins = array();
 		$row = $statement->fetch();
-		while($row !== null); {
+//		while($row !== null); {
 			try {
 				$admin = new Admin($row["adminId"], $row["activation"], $row["adminEmail"], $row["passHash"], $row["salt"]);
-				$admins[] = $admin;
+//				$admins[] = $admin;
 			} catch(Exception $exception) {
 				// if the row couldn't be converted, rethrow it
 				throw(new PDOException($exception->getMessage(), 0, $exception));
 			}
-		}
+//		}
 		// count the results in the array and return:
 		// 1) null if 0 results
 		// 2) the entire array if > 1 result
@@ -424,7 +424,7 @@ class Admin {
 		if($numberOfAdmins === 0) {
 			return (null);
 		} else {
-			return ($admins);
+			return ($admin);
 		}
 	}
 }

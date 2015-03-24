@@ -32,16 +32,12 @@ try {
 $configFile = "/home/cnmparki/etc/mysql/cnmparking.ini";
 $configArray = readConfig($configFile);
 
-// first, connect to mysqli
+// first, connect to mySQL
 $host = $configArray["hostname"];
 $db = $configArray["database"];
-
-$dsn = "mysql:host=localhost;dbname=--DBNAME--";
+$dsn = "mysql:host=$host;dbname=$db";
 $options = array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8");
-$pdo = new PDO($dsn, $username, $password, $options);
-
-//$pdo = new PDO($dsn, $configArray["username"], $configArray["password"], $options);
-
+$pdo = new PDO($dsn, $configArray["username"], $configArray["password"], $options);
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
 
 $objects = Location::getAllLocationsAndParkingSpots($pdo);

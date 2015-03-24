@@ -192,7 +192,7 @@ class AdminProfile {
 	 * inserts the AdminProfile into mySQL
 	 *
 	 * @param PDO $pdo pointer to mySQL connection, by reference
-	 * @throws mysqli_sql_exception when mySQL related errors occur
+	 * @throws PDOException when mySQL related errors occur
 	 **/
 	public function insert(PDO &$pdo) {
 
@@ -217,7 +217,7 @@ class AdminProfile {
 	 * deletes the AdminProfile from mySQL
 	 *
 	 * @param PDO $pdo pointer to mySQL connection, by reference
-	 * @throws mysqli_sql_exception when mySQL related errors occur
+	 * @throws PDOException when mySQL related errors occur
 	 **/
 	public function delete(PDO &$pdo) {
 		// enforce the adminProfileId is not null (i.e., don't delete an admin profile that hasn't been inserted)
@@ -244,15 +244,15 @@ class AdminProfile {
 
 		// enforce the admin profile Id is not null (i.e., don't update an admin profile that hasn't been inserted)
 		if($this->adminProfileId === null) {
-			throw(new mysqli_sql_exception("unable to update an admin profile that does not exist"));
+			throw(new PDOException("unable to update an admin profile that does not exist"));
 		}
 
 		// create query template
-		$query = "UPDATE adminProfile SET adminId = :adminId, adminFirstName = :adminFirstName, adminLastName = :adminLastName WHERE adminProfileId = :adminProfileId";
+		$query = "UPDATE adminProfile SET adminFirstName = :adminFirstName, adminLastName = :adminLastName WHERE adminProfileId = :adminProfileId";
 		$statement = $pdo->prepare($query);
 
 		// bind the member variables to the place holders in the template
-		$parameters = array("adminId" => $this->adminId, "adminFirstName" => $this->adminFirstName, "adminLastName" => $this->adminLastName, "adminProfileId" => $this->adminProfileId);
+		$parameters = array("adminFirstName" => $this->adminFirstName, "adminLastName" => $this->adminLastName, "adminProfileId" => $this->adminProfileId);
 		$statement->execute($parameters);
 	}
 
@@ -260,18 +260,18 @@ class AdminProfile {
 	 * gets the AdminProfile by admin id
 	 *
 	 * @param PDO $pdo pointer to mySQL connection, by reference
-	 * @param int $adminProfileId to search for admin profile
+	 * @param int $adminId to search for admin profile
 	 * @return mixed array of Admin profiles found, Admin profile found, or null if not found
-	 * @throws mysqli_sql_exception when mySQL related errors occur
+	 * @throws PDOException when mySQL related errors occur
 	 **/
-	public static function getAdminProfileByAdminId(PDO &$pdo, $adminProfileId) {
+	public static function getAdminProfileByAdminId(PDO &$pdo, $adminId) {
 		// validate the int before searching
-		$adminId = filter_var($adminProfileId, FILTER_VALIDATE_INT);
+		$adminId = filter_var($adminId, FILTER_VALIDATE_INT);
 		if($adminId === false) {
-			throw(new mysqli_sql_exception("admin profile id is not an integer"));
+			throw(new PDOException("admin profile id is not an integer"));
 		}
 		if($adminId <=0) {
-			throw(new mysqli_sql_exception("admin profile id is not positive"));
+			throw(new PDOException("admin profile id is not positive"));
 		}
 
 		// create query template
@@ -279,7 +279,7 @@ class AdminProfile {
 		$statement = $pdo->prepare($query);
 
 		// bind the admin id to the place holder in the template
-		$parameters = array("adminProfileId" => $adminProfileId);
+		$parameters = array("adminId" => $adminId);
 		$statement->execute($parameters);
 
 		// build an array of admin profiles
@@ -306,7 +306,7 @@ class AdminProfile {
 	 * @return mixed AdminProfile found or null if not found
 	 * @throws PDOException when mySQL related errors occur
 	 **/
-	public static function getAdminProfileByAdminProfileId(&$pdo, $adminProfileId) {
+	public static function getAdminProfileByAdminProfileId(PDO &$pdo, $adminProfileId) {
 		// sanitize the admin profile Id before searching
 		$adminProfileId = filter_var($adminProfileId, FILTER_VALIDATE_INT);
 		if($adminProfileId === false) {
@@ -334,7 +334,7 @@ class AdminProfile {
 			}
 		} catch(Exception $exception) {
 			// if the row couldn't be converted, rethrow it
-			throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
+			throw(new PDOException($exception->getMessage(), 0, $exception));
 		}
 		return($adminProfile);
 	}
@@ -347,7 +347,7 @@ class AdminProfile {
 	 * @return mixed admin if found or null if not found
 	 * @throws PDOException when mySQL related errors occur
 	 **/
-	public static function getAdminProfileByAdminFirstName(&$pdo, $adminFirstName) {
+	public static function getAdminProfileByAdminFirstName(PDO &$pdo, $adminFirstName) {
 
 
 		// sanitize the adminFirstName before searching
@@ -367,8 +367,6 @@ class AdminProfile {
 		$statement->execute($parameters);
 
 		$statement->setFetchMode(PDO::FETCH_ASSOC);
-
-		//
 
 		// grab the adminProfile from mySQL
 		$admins = array();
@@ -400,7 +398,7 @@ class AdminProfile {
 	 * @return mixed admin if not found or null if not found
 	 * @throws PDOException when mySQL related errors occur
 	 **/
-	public static function getAdminProfileByAdminLastName(&$pdo, $adminLastName) {
+	public static function getAdminProfileByAdminLastName(PDO &$pdo, $adminLastName) {
 		// sanitize the adminLastName before searching
 		$adminLastName = trim($adminLastName);
 		$adminLastName = filter_var($adminLastName, FILTER_SANITIZE_STRING);

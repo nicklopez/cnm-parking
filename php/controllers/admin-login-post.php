@@ -17,23 +17,30 @@ $_SESSION["login user"] = $_POST["adminEmail"];
 
 try {
 	// connect to database
-	mysqli_report(MYSQLI_REPORT_STRICT);
 	$configArray = readConfig("/home/cnmparki/etc/mysql/cnmparking.ini");
-	$mysqli = new mysqli($configArray['hostname'], $configArray['username'], $configArray['password'], $configArray['database']);
+
+	$host = $configArray["hostname"];
+	$db = $configArray["database"];
+	$dsn = "mysql:host=$host;dbname=$db";
+	$options = array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8");
+	$pdo = new PDO($dsn, $configArray["username"], $configArray["password"], $options);
+	$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
 
 	if(@isset($_POST["adminEmail"]) === true && @isset($_POST["password"]) === true) {
 		// query admin email and hash compare
-		$admin = Admin::getAdminByAdminEmail($mysqli, $_POST["adminEmail"]);
+		$admin = Admin::getAdminByAdminEmail($pdo, $_POST["adminEmail"]);
 	} else {
 		throw (new InvalidArgumentException("form values not complete. verify the form and try again."));
 	}
 	if(count($admin) === 0) {
-		throw (new mysqli_sql_exception(" incorrect email or password. Try again."));
+		throw (new PDOException(" incorrect email or password. Try again."));
 	}
 	$hash = hash_pbkdf2("sha512", $_POST["password"], $admin->getSalt(), 2048, 128);
+	var_dump($hash);
+	var_dump($admin->getPassHash());
 	if($hash === $admin->getPassHash()) {
 		// assign session to logged in admin id
-		$adminProfile = AdminProfile::getAdminProfileByAdminId($mysqli, $admin->getAdminId());
+		$adminProfile = AdminProfile::getAdminProfileByAdminId($pdo, $admin->getAdminId());
 		$_SESSION["adminFirstName"] = $adminProfile->getAdminFirstName();
 		$_SESSION["adminProfile"] = array(
 			'id' => $adminProfile->getAdminProfileId()
@@ -45,7 +52,7 @@ try {
 		echo "<p>Click to Continue</p>";
 
 	} else {
-		throw (new mysqli_sql_exception(" incorrect email or password. Try again."));
+		throw (new PDOException(" incorrect email or password. Try again."));
 	}
 } catch	(Exception $exception) {
 	echo "<p class=\"alert alert-danger\">" . $exception->getMessage() . "</p>";

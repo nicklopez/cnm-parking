@@ -16,11 +16,18 @@ require_once("Mail.php");
 
 try {
 	// create a Visitor (if required) and Invite object and insert them into mySQL
-	$config = readConfig("/home/cnmparki/etc/mysql/cnmparking.ini");
-	$mysqli = new mysqli($config["hostname"], $config["username"], $config["password"], $config["database"]);
+	$configArray = readConfig("/home/cnmparki/etc/mysql/cnmparking.ini");
+
+	// Connect to mySQL
+	$host = $configArray["hostname"];
+	$db = $configArray["database"];
+	$dsn = "mysql:host=$host;dbname=$db";
+	$options = array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8");
+	$pdo = new PDO($dsn, $configArray["username"], $configArray["password"], $options);
+	$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
 
 	// query mySQL to see if visitor exists
-	$objects = Invite::getInviteByActivation($mysqli, $_POST["token"]);
+	$objects = Invite::getInviteByActivation($pdo, $_POST["token"]);
 	$invite = $objects["invite"];
 	$invite->setAdminProfileId($_SESSION["adminProfileId"]);
 	$invite->setActionDateTime(new DateTime());
@@ -31,7 +38,7 @@ try {
 		$invite->setApproved($_POST["decline"]);
 	}
 
-	$invite->update($mysqli);
+	$invite->update($pdo);
 
 	// email the visitor a URL with token
 	$visitor = $objects["visitor"];

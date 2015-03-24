@@ -15,35 +15,40 @@ try {
 
 
 // create a new salt and hash
-		$salt = bin2hex(openssl_random_pseudo_bytes(32));
-		$hash = hash_pbkdf2("sha512", $_POST["password"], $salt, 2048, 128);
+	$salt = bin2hex(openssl_random_pseudo_bytes(32));
+	$hash = hash_pbkdf2("sha512", $_POST["password"], $salt, 2048, 128);
 
-		// create an activation
-		$activation = bin2hex(openssl_random_pseudo_bytes(16));
+	// create an activation
+	$activation = bin2hex(openssl_random_pseudo_bytes(16));
 
-		// create an admin and admin profile object and insert them into mySQL
-		mysqli_report(MYSQLI_REPORT_STRICT);
-		$configArray = readConfig("/home/cnmparki/etc/mysql/cnmparking.ini");
-		$activation = bin2hex(openssl_random_pseudo_bytes(16));
-		$mysqli = new mysqli($configArray['hostname'], $configArray['username'], $configArray['password'], $configArray['database']);
+	// create an admin and admin profile object and insert them into mySQL
+	$configArray = readConfig("/home/cnmparki/etc/mysql/cnmparking.ini");
+	$activation = bin2hex(openssl_random_pseudo_bytes(16));
 
-		$admin = new Admin(null, $activation, $_POST["adminEmail"], $hash, $salt);
-		$admin->insert($mysqli);
+	$host = $configArray["hostname"];
+	$db = $configArray["database"];
+	$dsn = "mysql:host=$host;dbname=$db";
+	$options = array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8");
+	$pdo = new PDO($dsn, $configArray["username"], $configArray["password"], $options);
+	$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
 
-		$adminProfile = new AdminProfile(null, $admin->getAdminId(), $_POST["adminFirstName"], $_POST["adminLastName"]);
-		$adminProfile->insert($mysqli);
+	$admin = new Admin(null, $activation, $_POST["adminEmail"], $hash, $salt);
+	$admin->insert($pdo);
+
+	$adminProfile = new AdminProfile(null, $admin->getAdminId(), $_POST["adminFirstName"], $_POST["adminLastName"]);
+	$adminProfile->insert($pdo);
 
 
-		// verify the form values have been submitted
-		if(@isset($_POST["adminFirstName"]) === false || @isset($_POST["adminLastName"]) === false || @isset($_POST["adminEmail"]) === false || @isset($_POST["password"]) === false)	{
-			throw (new InvalidArgumentException("form values not complete. verify the form and try again."));
-		}
+	// verify the form values have been submitted
+	if(@isset($_POST["adminFirstName"]) === false || @isset($_POST["adminLastName"]) === false || @isset($_POST["adminEmail"]) === false || @isset($_POST["password"]) === false)	{
+		throw (new InvalidArgumentException("form values not complete. verify the form and try again."));
+	}
 } catch	(Exception $exception) {
 	echo "<p class=\"alert alert-danger\">Unable to complete request. Try again.</p>";
-	}
+}
 
 try {
-	$objects = Admin::getAdminByAdminEmail($mysqli, $_POST["adminEmail"]);
+	$objects = Admin::getAdminByAdminEmail($pdo, $_POST["adminEmail"]);
 	// email the visitor a URL with token
 	$admin = $objects->getAdminEmail();
 	$to = $objects->getAdminEmail();
