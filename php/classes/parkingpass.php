@@ -371,51 +371,42 @@ class ParkingPass {
 	/**
 	 * inserts this ParkingPass in mySQL
 	 *
-	 * @param resource $mysqli pointer to mySQL connection, by reference
-	 * @throws mysqli_sql_exception when mySQL related errors occur
+	 * @param PDO $pdo pointer to mySQL connection, by reference
+	 * @throws PDOException when mySQL related errors occur
 	 */
-	public function  insert(&$mysqli) {
+	public function  insert(PDO &$pdo) {
 		// handle degenerate cases
-		if (gettype($mysqli) !== "object" || get_class($mysqli) !=="mysqli") {
-			throw(new mysqli_sql_exception("input is not a mysqli object"));
+		if (gettype($pdo) !== "object" || get_class($pdo) !=="PDO") {
+			throw(new PDOException("input is not a PDO object"));
 		}
 
 		// enforce that parkingPassId is null
 		if($this->parkingPassId !== null) {
-			throw(new mysqli_sql_exception("not a new parkingPass"));
+			throw(new PDOException("not a new parkingPass"));
 		}
 
 		// create query template
-		$query = "INSERT INTO parkingPass(adminProfileId, parkingSpotId, vehicleId, endDateTime, issuedDateTime, startDateTime, uuId) VALUES(?, ?, ?, ?, ?, ?, UUID())";
-		$statement = $mysqli->prepare($query);
+		$query = "INSERT INTO parkingPass(adminProfileId, parkingSpotId, vehicleId, endDateTime, issuedDateTime, startDateTime, uuId) VALUES(:adminProfileId, :parkingSpotId, :vehicleId, :endDateTime, :issuedDateTime, :startDateTime, UUID())";
+		$statement = $pdo->prepare($query);
 		if($statement === false) {
-			throw(new mysqli_sql_exception("unable to prepare statement"));
+			throw(new PDOException("unable to prepare statement"));
 		}
 
 		// bind the member variables to the place holders in the template
 		$formatEnd = $this->endDateTime->format("Y-m-d H:i:s");
 		$formatIssued = $this->issuedDateTime->format("Y-m-d H:i:s");
 		$formatStart = $this->startDateTime->format("Y-m-d H:i:s");
-		$wasClean = $statement->bind_param("iiisss", $this->adminProfileId, $this->parkingSpotId, $this->vehicleId, $formatEnd, $formatIssued,  $formatStart);
-		if($wasClean === false) {
-			throw(new mysqli_sql_exception("unable to bind paramaters"));
-		}
+		$parameters = array("adminProfileId" => $this->adminProfileId, "parkingSpotId" => $this->parkingSpotId, "vehicleId" => $this->vehicleId, "endDateTime" => $formatEnd, "issuedDateTime" => $formatIssued,  "startDateTime" => $formatStart);
 
 		// execute the statement
-		if($statement->execute() === false) {
-			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
-		}
+		$statement->execute($parameters);
 
 		// update the null parkingPassId with what mySQL just gave us
-		$this->parkingPassId = $mysqli->insert_id;
-
-		// clean up the statement
-		$statement->close();
+		$this->parkingPassId = $pdo->lastInsertId();
 
 		// regrab from mySQl to store the generated uuId
-		$parkingPass = self::getParkingPassByParkingPassId($mysqli, $this->parkingPassId);
+		$parkingPass = self::getParkingPassByParkingPassId($pdo, $this->parkingPassId);
 		$this->setUuId($parkingPass->getUuId());
-
 	}
 
 	/**

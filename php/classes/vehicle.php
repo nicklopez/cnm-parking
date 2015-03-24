@@ -343,43 +343,34 @@ class Vehicle {
 	/**
 	 * inserts vehicle into mySQL
 	 *
-	 * @param resource $mysqli pointer to mySQL connection, by reference
-	 * @throws mysqli_sql_exception when mySQL related errors occur
+	 * @param PDO $pdo pointer to mySQL connection, by reference
+	 * @throws PDOException when mySQL related errors occur
 	 **/
-	public function insert(&$mysqli) {
+	public function insert(PDO &$pdo) {
 		// handle degenerate cases
-		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
-			throw(new mysqli_sql_exception("input is not a mysqli object"));
+		if(gettype($pdo) !== "object" || get_class($pdo) !== "PDO") {
+			throw(new PDOException("input is not a PDO object"));
 		}
 
 		// enforce the vehicleId is null (i.e., don't insert a vehicle that already exists)
 		if($this->vehicleId!== null) {
-			throw(new mysqli_sql_exception("not a new vehicle"));
+			throw(new PDOException("not a new vehicle"));
 		}
 
 		// create query template
-		$query	 = "INSERT INTO vehicle(visitorId, vehicleColor, vehicleMake, vehicleModel, vehiclePlateNumber, vehiclePlateState, vehicleYear) VALUES(?, ?, ?, ?, ?, ?, ?)";
-		$statement = $mysqli->prepare($query);
+		$query = "INSERT INTO vehicle(visitorId, vehicleColor, vehicleMake, vehicleModel, vehiclePlateNumber, vehiclePlateState, vehicleYear) VALUES(:visitorId, :vehicleColor, :vehicleMake, :vehicleModel, :vehiclePlateNumber, :vehiclePlateState, :vehicleYear)";
+		$statement = $pdo->prepare($query);
 		if($statement === false) {
-			throw(new mysqli_sql_exception("unable to prepare statement"));
+			throw(new PDOException("unable to prepare statement"));
 		}
 
 		// bind the vehicle variables to the place holders in the template
-		$wasClean	  = $statement->bind_param("isssssi", $this->visitorId, $this->vehicleColor, $this->vehicleMake, $this->vehicleModel, $this->vehiclePlateNumber, $this->vehiclePlateState, $this->vehicleYear);
-		if($wasClean === false) {
-			throw(new mysqli_sql_exception("unable to bind parameters"));
-		}
+		$parameters = array("visitorId" => $this->visitorId, "vehicleColor" => $this->vehicleColor, "vehicleMake" => $this->vehicleMake, "vehicleModel" => $this->vehicleModel, "vehiclePlateNumber" => $this->vehiclePlateNumber, "vehiclePlateState" => $this->vehiclePlateState, "vehicleYear" => $this->vehicleYear);
 
-		// execute the statement
-		if($statement->execute() === false) {
-			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
-		}
+		$statement->execute($parameters);
 
 		// update the null vehicleId with what mySQL just gave us
-		$this->vehicleId= $mysqli->insert_id;
-
-		// clean up the statement
-		$statement->close();
+		$this->vehicleId= $pdo->lastInsertId();
 	}
 
 	/**

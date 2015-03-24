@@ -24,27 +24,33 @@ session_start();
 try {
 
 	//set up connection
-	mysqli_report(MYSQLI_REPORT_STRICT);
 	$configArray = readConfig("/home/cnmparki/etc/mysql/cnmparking.ini");
-	$mysqli = new mysqli($configArray['hostname'], $configArray['username'], $configArray['password'], $configArray['database']);
+
+	// Connect to mySQL
+	$host = $configArray["hostname"];
+	$db = $configArray["database"];
+	$dsn = "mysql:host=$host;dbname=$db";
+	$options = array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8");
+	$pdo = new PDO($dsn, $configArray["username"], $configArray["password"], $options);
+	$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
 
 	// create and insert vehicle
 	$vehicle = new Vehicle(null, $_POST["visitorId"], $_POST["vehicleColor"], $_POST["vehicleMake"], $_POST["vehicleModel"], $_POST["vehiclePlateNumber"], $_POST["vehiclePlateState"], $_POST["vehicleYear"]);
-	$vehicle->insert($mysqli);
+	$vehicle->insert($pdo);
 
 	// create and insert parking pass
 	$parkingPass = new ParkingPass(null, $_POST["adminProfileId"], $_POST["parkingSpotId"], $vehicle->getVehicleId(), $_POST["departureDate"], "2015-02-10 08:00:00", $_POST["arrivalDate"], null);
-	$parkingPass->insert($mysqli);
+	$parkingPass->insert($pdo);
 
 	if(@isset($_POST["vehicleMake"]) === false || @isset($_POST["vehicleModel"]) === false || @isset($_POST["vehicleYear"]) === false || @isset($_POST["vehicleColor"]) === false ||
 		@isset($_POST["vehiclePlateNumber"]) === false || @isset($_POST["vehiclePlateState"]) === false || @isset($_POST["arrivalDate"]) === false || @isset($_POST["departureDate"]) === false
 	) {
-		throw(new mysqli_sql_exception("form values not complete. verify the form and try again."));
+		throw(new PDOException("form values not complete. verify the form and try again."));
 		}
 
 
 	// email the visitor a URL with token
-	$objects = Invite::getInviteByActivation($mysqli, $_POST["activation"]);
+	$objects = Invite::getInviteByActivation($pdo, $_POST["activation"]);
 	$visitor = $objects["visitor"];
 	$to = $visitor->getVisitorEmail();
 	$from = "noreply@cnm.edu";
@@ -62,12 +68,12 @@ try {
 		<h1>Temporary CNM Parking Pass</h1>
 		<hr />
 		<p>Welcome to CNM! Print out this E-Permit. It must be fully displayed on the dashboard of your vehicle. This permit is valid for any non-restricted parking space.
-		Permit is not valid for meters, loading zones, fire lanes, or any other restricted spaces including spaces marked Parking by Special Permit sign.</p>
+		Permit is not valid for meters, loading zones, fire lanes, or any other restricted spaces including spaces marked "Parking by Special Permit" sign.</p>
 	</body>
 </html>
 EOF;
 
-	$imageData = generatePassImage($mysqli, $parkingPass, $vehicle, "../../img/fonts/Helvetica.ttf");
+	$imageData = generatePassImage($pdo, $parkingPass, $vehicle, "../../img/fonts/Helvetica.ttf");
 	$plaintext = strip_tags($message);
 	$mimeOptions = array("head_charset" => "UTF-8", "html_charset" => "UTF-8", "text_charset" => "UTF-8", "eol" => "\n");
 	$mimeMessage = new Mail_mime($mimeOptions);
@@ -84,7 +90,7 @@ EOF;
 	if(PEAR::isError($status) === true) {
 		echo "<div class=\"alert alert-danger\" role=\"alert\"><strong>Oh snap!</strong> Unable to send mail message:" . $status->getMessage() . "</div>";
 	} else {
-		echo "<div class=\"alert alert-success\" role=\"alert\"><strong>Sign up successful!</strong> Please check your for your temporary parking pass.</div>";
+		echo "<div class=\"alert alert-success\" role=\"alert\"><strong>Sign up successful!</strong> Please check your email for your parking pass.</div>";
 	}
 
 

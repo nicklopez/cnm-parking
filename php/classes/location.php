@@ -531,33 +531,22 @@ class Location {
 
 		$statement->setFetchMode(PDO::FETCH_ASSOC);
 
-		// get result from the SELECT query
-		$row = $statement->fetch();
-		if($row === false) {
-			throw(new PDOException("unable to get result set"));
-		}
-
 		// handle degenerate cases
-		$numRows = $row->num_rows;
+		$numRows = $statement->rowCount();
 		if($numRows === 0) {
 			return (null);
 		}
 
 	// grab the location from mySQL
 			$locations = array();
-			while($row !== null) {
+			while(($row = $statement->fetch()) !== false) {
 				try {
-					$location = [$row["locationId"], $row["locationDescription"]];
-					$locations[] = $location;
+					$locations[] = $row;
 				} catch(Exception $exception) {
 					// if the row couldn't be converted, rethrow it
 					throw(new PDOException($exception->getMessage(), 0, $exception));
 				}
 			}
-
-		// free up memory and return the results
-		$row->free();
-		$statement->close();
 		return($locations);
 		}
 	}
