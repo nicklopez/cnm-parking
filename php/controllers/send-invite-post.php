@@ -59,8 +59,7 @@ try {
 	// build message
 	$activation = $invite->getActivation();
 	$pageName = end(explode("/", $_SERVER["PHP_SELF"], 4));
-	$url = "http://" . $_SERVER["SERVER_NAME"] . $_SERVER["PHP_SELF"];
-	$url = str_replace($pageName, "personal-vehicle", $url);
+	$url = "http://cnmparking.com/personal-vehicle";
 	$url = "$url?activation=$activation";
 	if(isset($_POST["accept"])) {
 		$message = <<< EOF
