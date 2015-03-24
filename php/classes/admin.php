@@ -34,7 +34,7 @@ class Admin {
 	 ** @param int $newAdminId id of the new admin
 	 * @param string $newActivation string containing the activation message
 	 * @param string $newAdminEmail string containing the admin's email
-	 * @param string $newPassHass string containing the password hashing
+	 * @param string $newPassHash string containing the password hashing
 	 * @param string $newSalt string containing the salt
 	 * @throws InvalidArgumentException if data types are not valid
 	 * @throws RangeException if data values are out of bounds (e.g., strings too long, negative integers)
@@ -225,7 +225,7 @@ class Admin {
 		}
 		//verify the pass hash is a hex value
 		if (ctype_xdigit($newSalt) === false) {
-			throw(new InvalidArgumentException("salt is not a hex "));
+			throw(new InvalidArgumentException("salt is not a hex"));
 		}
 		// store the salt
 		$this->salt = $newSalt;
@@ -235,221 +235,130 @@ class Admin {
 	/**
 	 * inserts the Admin into mySQL
 	 *
-	 * @param resource $mysqli pointer to mySQL connection, by reference
-	 * @throws mysqli_sql_exception when mySQL related errors occur
+	 * @param PDO $pdo pointer to PDO connection, by reference
+	 * @throws PDOException when mySQL related errors occur
 	 **/
-	public function insert(&$mysqli) {
-		// handle degenerate cases
-		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
-			throw(new mysqli_sql_exception("input is not a mysqli object"));
-		}
-
+	public function insert(PDO &$pdo) {
 		// enforce the admin id is null (i.e., don't insert an admin that already exists)
 		if($this->adminId !== null) {
-			throw(new mysqli_sql_exception("not a new admin"));
+			throw(new PDOException("not a new admin"));
 		}
 
 		// create query template
-		$query	 = "INSERT INTO admin(activation, adminEmail, passHash, salt) VALUES(?, ?, ?, ?)";
-		$statement = $mysqli->prepare($query);
-		if($statement === false) {
-			throw(new mysqli_sql_exception("unable to prepare statement"));
-		}
+		$query	 = "INSERT INTO admin(activation, adminEmail, passHash, salt) VALUES(:activation, :adminEmail, :passHaah, :salt)";
+		$statement = $pdo->prepare($query);
 
 		// bind the member variables to the place holders in the template
-		$wasClean	  = $statement->bind_param("ssss", $this->activation, $this->adminEmail, $this->passHash, $this->salt);
-		if($wasClean === false) {
-			throw(new mysqli_sql_exception("unable to bind parameters"));
-		}
-
-		// execute the statement
-		if($statement->execute() === false) {
-			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
-		}
+		$parameters = array("activation" => $this->activation, "adminEmail" => $this->adminEmail, "passHash" => $this->passHash, "salt" => $this->salt);
+		$statement->execute($parameters);
 
 		// update the null adminId with what mySQL just gave us
-		$this->adminId = $mysqli->insert_id;
-
-		// clean up the statement
-		$statement->close();
+		$this->adminId = intval($pdo->lastInsertId());
 	}
 
 	/**
 	 * deletes the Admin from mySQL
 	 *
-	 * @param resource $mysqli pointer to mySQL connection, by reference
-	 * @throws mysqli_sql_exception when mySQL related errors occur
+	 * @param PDO $pdo pointer to PDO connection, by reference
+	 * @throws PDOException when mySQL related errors occur
 	 **/
-	public function delete(&$mysqli) {
-		// handle degenerate cases
-		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
-			throw(new mysqli_sql_exception("input is not a mysqli object"));
-		}
+	public function delete(PDO &$pdo) {
 
 		// enforce the adminId is not null (i.e., don't delete an admin that hasn't been inserted)
 		if($this->adminId === null) {
-			throw(new mysqli_sql_exception("unable to delete an admin that does not exist"));
+			throw(new PDOException("unable to delete an admin that does not exist"));
 		}
 
 		// create query template
-		$query	 = "DELETE FROM admin WHERE adminId = ?";
-		$statement = $mysqli->prepare($query);
-		if($statement === false) {
-			throw(new mysqli_sql_exception("unable to prepare statement"));
-		}
+		$query	 = "DELETE FROM admin WHERE adminId = :adminId";
+		$statement = $pdo->prepare($query);
 
 		// bind the member variables to the place holder in the template
-		$wasClean = $statement->bind_param("i", $this->adminId);
-		if($wasClean === false) {
-			throw(new mysqli_sql_exception("unable to bind parameters"));
-		}
-
-		// execute the statement
-		if($statement->execute() === false) {
-			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
-		}
-
-		// clean up the statement
-		$statement->close();
+		$parameters = array("adminId" => $this->adminId);
+		$statement->execute($parameters);
 	}
 
 	/**
 	 * updates the Admin in mySQL
 	 *
-	 * @param resource $mysqli pointer to mySQL connection, by reference
-	 * @throws mysqli_sql_exception when mySQL related errors occur
+	 * @param PDO $pdo pointer to PDO connection, by reference
+	 * @throws PDOException when mySQL related errors occur
 	 **/
-	public function update(&$mysqli) {
-		// handle degenerate cases
-		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
-			throw(new mysqli_sql_exception("input is not a mysqli object"));
-		}
-
+	public function update(PDO &$pdo) {
 		// enforce the adminId is not null (i.e., don't update an admin that hasn't been inserted)
 		if($this->adminId === null) {
-			throw(new mysqli_sql_exception("unable to update an admin that does not exist"));
+			throw(new PDOException("unable to update an admin that does not exist"));
 		}
 
 		// create query template
-		$query	 = "UPDATE admin SET activation = ?, adminEmail = ?, passHash = ?, salt = ? WHERE adminId = ?";
-		$statement = $mysqli->prepare($query);
-		if($statement === false) {
-			throw(new mysqli_sql_exception("unable to prepare statement"));
-		}
+		$query	 = "UPDATE admin SET activation = :activation, adminEmail = :adminEmail, passHash = :passHash, salt = :salt WHERE adminId = :adminId";
+		$statement = $pdo->prepare($query);
 
 		// bind the member variables to the place holders in the template
-		$wasClean = $statement->bind_param("ssssi", $this->activation, $this->adminEmail, $this->passHash, $this->salt, $this->adminId);
-		if($wasClean === false) {
-			throw(new mysqli_sql_exception("unable to bind parameters"));
-		}
-
-		// execute the statement
-		if($statement->execute() === false) {
-			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
-		}
-
-		// clean up the statement
-		$statement->close();
+		$parameters = array("activation" => $this->activation, "adminEmail" => $this->adminEmail, "passHash" => $this->passHash, "salt" => $this->salt, "adminId" => $this->adminId);
+		$statement->execute($parameters);
 	}
+
+
 	/**
 	 * get the Admin by adminId
 	 *
-	 * @param resource $mysqli pointer to mySQL connection, by reference
+	 * @param PDO $pdo pointer to PDO connection, by reference
 	 * @param int $adminId admin content to search for
 	 * @return mixed Admin found or null if not found
-	 * @throws mysqli_sql_exception when mySQL related errors occur
+	 * @throws PDOException when mySQL related errors occur
 	 **/
-	public static function getAdminByAdminId(&$mysqli, $adminId) {
-		// handle degenerate cases
-		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
-			throw(new mysqli_sql_exception("input is not a mysqli object"));
-		}
-
+	public static function getAdminByAdminId(PDO &$pdo, $adminId) {
 		// sanitize the adminId before searching
 		$adminId = filter_var($adminId, FILTER_VALIDATE_INT);
 		if($adminId === false) {
-			throw(new mysqli_sql_exception("admin id is not an integer"));
+			throw(new PDOException("admin id is not an integer"));
 		}
 		if($adminId <= 0) {
-			throw(new mysqli_sql_exception("admin id is not positive"));
+			throw(new PDOException("admin id is not positive"));
 		}
 
 		// create query template
-		$query	 = "SELECT adminId, activation, adminEmail, passHash, salt FROM admin WHERE adminId = ?";
-		$statement = $mysqli->prepare($query);
-		if($statement === false) {
-			throw(new mysqli_sql_exception("unable to prepare statement"));
-		}
+		$query	 = "SELECT adminId, activation, adminEmail, passHash, salt FROM admin WHERE adminId = :adminId";
+		$statement = $pdo->prepare($query);
 
 		// bind the admin content to the place holder in the template
-		$wasClean = $statement->bind_param("i", $adminId);
-		if($wasClean === false) {
-			throw(new mysqli_sql_exception("unable to bind parameters"));
-		}
-
-		// execute the statement
-		if($statement->execute() === false) {
-			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
-		}
-
-		// get result from the SELECT query
-		$result = $statement->get_result();
-		if($result === false) {
-			throw(new mysqli_sql_exception("unable to get result set"));
-		}
+		$parameters = array("adminId" => $adminId);
+		$statement->execute($parameters);
 
 		// grab the admin from mySQL
 		try {
 			$admin = null;
-			$row = $result->fetch_assoc();
+			$statement->setFetchMode(PDO::FETCH_ASSOC);
+			$row = $statement->fetch();
 			if($row !== null) {
 				$admin = new Admin($row["adminId"], $row["activation"], $row["adminEmail"], $row["passHash"], $row["salt"]);
 			}
 		} catch(Exception $exception) {
 			// if the row couldn't be converted, rethrow it
-			throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
+			throw(new PDOException($exception->getMessage(), 0, $exception));
 		}
-
-		// free up memory and return the result
-		$result->free();
-		$statement->close();
 		return($admin);
 	}
 
 	/**
 	 * gets all Admins
 	 *
-	 * @param resource $mysqli pointer to mySQL connection, by reference
+	 * @param PDO $pdo pointer to PDO connection, by reference
 	 * @return int array of Admins found or null if not found
-	 * @throws mysqli_sql_exception when mySQL related errors occur
+	 * @throws PDOException when mySQL related errors occur
 	 **/
-	public static function getAllAdmins(&$mysqli) {
-		// handle degenerate cases
-		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
-			throw(new mysqli_sql_exception("input is not a mysqli object"));
-		}
+	public static function getAllAdmins(&$pdo) {
 
 		// create query template
 		$query	 = "SELECT adminId, activation, adminEmail, passHash, salt FROM admin";
-		$statement = $mysqli->prepare($query);
-		if($statement === false) {
-			throw(new mysqli_sql_exception("unable to prepare statement"));
-		}
-
-		// execute the statements
-		if($statement->execute() === false) {
-			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
-		}
-
-		// get result from the SELECT query
-		$result = $statement->get_result();
-		if($result === false) {
-			throw(new mysqli_sql_exception("unable to get result set"));
-		}
+		$statement = $pdo->prepare($query);
+		$statement->execute();
 
 		// build an array of admins
 		$admins = array();
-		while(($row = $result->fetch_assoc()) !== null) {
+		$statement->setFetchMode(PDO::FETCH_ASSOC);
+		while(($row = $statement->fetch()) !== false) {
 			try {
 				$admin	= new Admin($row["adminId"], $row["activation"], $row["adminEmail"], $row["passHash"], $row["salt"]);
 				$admins[] = $admin;
@@ -472,63 +381,41 @@ class Admin {
 	/**
 	 * gets Admins by Admin Email
 	 *
-	 * @param resource $mysqli pointer to mySQL connection, by reference
+	 * @param PDO $pdo pointer to PDO connection, by reference
 	 * @param string $adminEmail to search Admin for Admin Email
 	 * @return mixed array of $adminEmail if not found or null if not found
-	 * @throws mysqli_sql_exception when mySQL related errors occur
+	 * @throws PDOException when mySQL related errors occur
 	 **/
-	public static function getAdminByAdminEmail(&$mysqli, $adminEmail) {
-		// handle degenerate cases
-		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
-			throw(new mysqli_sql_exception("input is not a mysqli object"));
-		}
+	public static function getAdminByAdminEmail(PDO &$pdo, $adminEmail) {
 
 		// sanitize the adminEmail before searching
 		$adminEmail = trim($adminEmail);
 		$adminEmail = filter_var($adminEmail, FILTER_SANITIZE_STRING);
 		if(empty($adminEmail) === true) {
-			throw(new InvalidArgumentException("admin email is empty or insecure"));
+			throw(new PDOException("admin email is empty or insecure"));
 		}
 
 		// create query template
-		$query = "SELECT adminId, activation, adminEmail, passHash, salt FROM admin WHERE adminEmail = ?";
-		$statement = $mysqli->prepare($query);
-		if($statement === false) {
-			throw(new mysqli_sql_exception("unable to prepare statement"));
-		}
+		$query = "SELECT adminId, activation, adminEmail, passHash, salt FROM admin WHERE adminEmail = :adminEmail";
+		$statement = $pdo->prepare($query);
 
 		// bind the adminEmail to the place holder in the template
-		$wasClean = $statement->bind_param("s", $adminEmail);
-		if($wasClean === false) {
-			throw(new mysqli_sql_exception("unable to bind parameters"));
-		}
+		$parameters = array("adminEmail" => $adminEmail);
+		$statement->execute($parameters);
 
-		// execute the statement
-		if($statement->execute() === false) {
-			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
-		}
-
-		// get result from the SELECT query
-		$result = $statement->get_result();
-		if($result === false) {
-			throw(new mysqli_sql_exception("unable to get result set"));
-		}
-
-		// grab the adminProfile from mySQL
+		// build email array
 		try {
-			$admin = null;
-			$row = $result->fetch_assoc();
+			$adminEmail = null;
+			$statement->setFetchMode(PDO::FETCH_ASSOC);
+			$row = $statement->fetch();
 			if($row !== null) {
-				$admin = new Admin($row["adminId"], $row["activation"], $row["adminEmail"], $row["passHash"], $row["salt"]);
+				$adminEmail = new Admin($row["adminId"], $row["activation"], $row["adminEmail"], $row["passHash"], $row["salt"]);
 			}
 		} catch(Exception $exception) {
 			// if the row couldn't be converted, rethrow it
 			throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
 		}
-		// free up memory and return the result
-		$result->free();
-		$statement->close();
-		return($admin);
+		return($adminEmail);
 	}
 }
 ?>

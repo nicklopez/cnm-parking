@@ -191,95 +191,56 @@ class AdminProfile {
 	/**
 	 * inserts the AdminProfile into mySQL
 	 *
-	 * @param resource $mysqli pointer to mySQL connection, by reference
+	 * @param PDO $mysqli pointer to mySQL connection, by reference
 	 * @throws mysqli_sql_exception when mySQL related errors occur
 	 **/
-	public function insert(&$mysqli) {
-		// handle degenerate cases
-		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
-			throw(new mysqli_sql_exception("input is not a mysqli object"));
-		}
+	public function insert(PDO &$pdo) {
 
 		// enforce the adminId is null (i.e., don't insert an admin that already exists)
 		if($this->adminProfileId !== null) {
-			throw(new mysqli_sql_exception("not a new admin profile"));
+			throw(new PDOException("not a new admin profile"));
 		}
 
 		// create query template
-		$query	 = "INSERT INTO adminProfile(adminId, adminFirstName, adminLastName) VALUES (?, ?, ?)";
-		$statement = $mysqli->prepare($query);
-		if($statement === false) {
-			throw(new mysqli_sql_exception("unable to prepare statement"));
-		}
+		$query	 = "INSERT INTO adminProfile(adminId, adminFirstName, adminLastName) VALUES (:adminId, :adminFirstName, :adminLastName)";
+		$statement = $pdo->prepare($query);
 
 		// bind the member variables to the place holders in the template
-		$wasClean	  = $statement->bind_param("iss", $this->adminId, $this->adminFirstName, $this->adminLastName);
-		if($wasClean === false) {
-			throw(new mysqli_sql_exception("unable to bind parameters"));
-		}
-
-		// execute the statement
-		if($statement->execute() === false) {
-			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
-		}
+		$parameters = array("adminId" => $this->adminId, "adminFirstName" => $this->adminFirstName, "adminLastName" => $this->adminLastName);
+		$statement->execute($parameters);
 
 		// update the null admin profile id with what mySQL just gave us
-		$this->adminProfileId = $mysqli->insert_id;
-
-		// clean up the statement
-		$statement->close();
+		$this->adminProfileId = intval($pdo->lastInsertId());
 	}
 
 	/**
 	 * deletes the AdminProfile from mySQL
 	 *
-	 * @param resource $mysqli pointer to mySQL connection, by reference
+	 * @param PDO $mysqli pointer to mySQL connection, by reference
 	 * @throws mysqli_sql_exception when mySQL related errors occur
 	 **/
-	public function delete(&$mysqli) {
-		// handle degenerate cases
-		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
-			throw(new mysqli_sql_exception("input is not a mysqli object"));
-		}
-
+	public function delete(PDO &$pdo) {
 		// enforce the adminProfileId is not null (i.e., don't delete an admin profile that hasn't been inserted)
 		if($this->adminProfileId === null) {
-			throw(new mysqli_sql_exception("unable to delete an admin profile that does not exist"));
+			throw(new PDOException("unable to delete an admin profile that does not exist"));
 		}
 
 		// create query template
-		$query	 = "DELETE FROM adminProfile WHERE adminProfileId = ?";
-		$statement = $mysqli->prepare($query);
-		if($statement === false) {
-			throw(new mysqli_sql_exception("unable to prepare statement"));
-		}
+		$query	 = "DELETE FROM adminProfile WHERE adminProfileId = :adminProfileId";
+		$statement = $pdo->prepare($query);
 
 		// bind the member variables to the place holder in the template
-		$wasClean = $statement->bind_param("i", $this->adminProfileId);
-		if($wasClean === false) {
-			throw(new mysqli_sql_exception("unable to bind parameters"));
-		}
-
-		// execute the statement
-		if($statement->execute() === false) {
-			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
-		}
-
-		// clean up the statement
-		$statement->close();
+		$parameters = array("adminProfileId" => $this->adminProfileId);
+		$statement->execute($parameters);
 	}
 
 	/**
 	 * updates the AdminProfile in mySQL
 	 *
-	 * @param resource $mysqli pointer to mySQL connection, by reference
-	 * @throws mysqli_sql_exception when mySQL related errors occur
+	 * @param PDO $pdo pointer to PDO connection, by reference
+	 * @throws PDOException when mySQL related errors occur
 	 **/
-	public function update(&$mysqli) {
-		// handle degenerate cases
-		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
-			throw(new mysqli_sql_exception("input is not a mysqli object"));
-		}
+	public function update(PDO &$pdo) {
 
 		// enforce the admin profile Id is not null (i.e., don't update an admin profile that hasn't been inserted)
 		if($this->adminProfileId === null) {
@@ -287,43 +248,25 @@ class AdminProfile {
 		}
 
 		// create query template
-		$query	 = "UPDATE adminProfile SET adminFirstName = ?, adminLastName = ? WHERE adminProfileId = ?";
-		$statement = $mysqli->prepare($query);
-		if($statement === false) {
-			throw(new mysqli_sql_exception("unable to prepare statement"));
-	}
+		$query = "UPDATE adminProfile SET adminId = :adminId, adminFirstName = :adminFirstName, adminLastName = :adminLastName WHERE adminProfileId = :adminProfileId";
+		$statement = $pdo->prepare($query);
 
 		// bind the member variables to the place holders in the template
-		$wasClean = $statement->bind_param("ssi", $this->adminFirstName, $this->adminLastName, $this->adminProfileId);
-		if($wasClean === false) {
-			throw(new mysqli_sql_exception("unable to bind parameters"));
-		}
-
-		// execute the statement
-		if($statement->execute() === false) {
-			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
-		}
-
-		// clean up the statement
-		$statement->close();
+		$parameters = array("adminId" => $this->adminId, "adminFirstName" => $this->adminFirstName, "adminLastName" => $this->adminLastName, "adminProfileId" => $this->adminProfileId);
+		$statement->execute($parameters);
 	}
 
 	/**
 	 * gets the AdminProfile by admin id
 	 *
-	 * @param resource $mysqli pointer to mySQL connection, by reference
+	 * @param PDO $pdo pointer to mySQL connection, by reference
 	 * @param int $adminId to search for admin profile
 	 * @return mixed array of Admin profiles found, Admin profile found, or null if not found
 	 * @throws mysqli_sql_exception when mySQL related errors occur
 	 **/
-	public static function getAdminProfileByAdminId(&$mysqli, $adminId) {
-		// handle degenerate cases
-		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
-			throw(new mysqli_sql_exception("input is not a mysqli object"));
-		}
-
+	public static function getAdminProfileByAdminId(PDO &$pdo, $adminProfileId) {
 		// validate the int before searching
-		$adminId = filter_var($adminId, FILTER_VALIDATE_INT);
+		$adminId = filter_var($adminProfileId, FILTER_VALIDATE_INT);
 		if($adminId === false) {
 			throw(new mysqli_sql_exception("admin profile id is not an integer"));
 		}
@@ -332,44 +275,25 @@ class AdminProfile {
 		}
 
 		// create query template
-		$query = "SELECT adminProfileId, adminId, adminFirstName, adminLastName FROM adminProfile WHERE adminId = ?";
-		$statement = $mysqli->prepare($query);
-		if($statement === false) {
-			throw(new mysqli_sql_exception("unable to prepare statement"));
-		}
+		$query = "SELECT adminProfileId, adminId, adminFirstName, adminLastName FROM adminProfile WHERE adminId = :adminId";
+		$statement = $pdo->prepare($query);
 
 		// bind the admin id to the place holder in the template
-		$wasClean = $statement->bind_param("i", $adminId);
-		if($wasClean === false) {
-			throw(new mysqli_sql_exception("unable to bind parameters"));
-		}
-
-		// execute the statement
-		if($statement->execute() === false) {
-			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
-		}
-
-		// get result from the SELECT query
-		$result = $statement->get_result();
-		if($result === false) {
-			throw(new mysqli_sql_exception("unable to get result set"));
-		}
+		$parameters = array("adminProfileId" => $adminProfileId);
+		$statement->execute($parameters);
 
 		// build an array of admin profiles
 		try {
 			$adminProfile = null;
-			$row = $result->fetch_assoc();
-			if($row !== null) {
+			$statement->setFetchMode(PDO::FETCH_ASSOC);
+			$row = $statement->fetch();
+			if($row !== false) {
 				$adminProfile = new AdminProfile($row["adminProfileId"], $row["adminId"], $row["adminFirstName"], $row["adminLastName"]);
 			}
 		} catch(Exception $exception) {
 			// if the row couldn't be converted, rethrow it
-			throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
+			throw(new PDOException($exception->getMessage(), 0, $exception));
 		}
-
-		// free up memory and return result
-		$result->free();
-		$statement->close();
 		return($adminProfile);
 
 	}
@@ -377,54 +301,34 @@ class AdminProfile {
 	/**
 	 * gets the AdminProfile by adminProfileId
 	 *
-	 * @param resource $mysqli pointer to mySQL connection, by reference
+	 * @param PDO $pdo pointer to mySQL connection, by reference
 	 * @param int $adminProfileId admin profile content to search for
 	 * @return mixed AdminProfile found or null if not found
-	 * @throws mysqli_sql_exception when mySQL related errors occur
+	 * @throws PDOException when mySQL related errors occur
 	 **/
-	public static function getAdminProfileByAdminProfileId(&$mysqli, $adminProfileId) {
-		// handle degenerate cases
-		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
-			throw(new mysqli_sql_exception("input is not a mysqli object"));
-		}
-
+	public static function getAdminProfileByAdminProfileId(&$pdo, $adminProfileId) {
 		// sanitize the admin profile Id before searching
 		$adminProfileId = filter_var($adminProfileId, FILTER_VALIDATE_INT);
 		if($adminProfileId === false) {
-			throw(new mysqli_sql_exception("admin profile id is not an integer"));
+			throw(new PDOException("admin profile id is not an integer"));
 		}
 		if($adminProfileId <= 0) {
-			throw(new mysqli_sql_exception("admin profile id is not positive"));
+			throw(new PDOException("admin profile id is not positive"));
 		}
 
 		// create query template
-		$query	 = "SELECT adminProfileId, adminId, adminFirstName, adminLastName FROM adminProfile WHERE adminProfileId = ?";
-		$statement = $mysqli->prepare($query);
-		if($statement === false) {
-			throw(new mysqli_sql_exception("unable to prepare statement"));
-		}
+		$query	 = "SELECT adminProfileId, adminId, adminFirstName, adminLastName FROM adminProfile WHERE adminProfileId = :adminProfileId";
+		$statement = $pdo->prepare($query);
 
 		// bind the admin content to the place holder in the template
-		$wasClean = $statement->bind_param("i", $adminProfileId);
-		if($wasClean === false) {
-			throw(new mysqli_sql_exception("unable to bind parameters"));
-		}
-
-		// execute the statement
-		if($statement->execute() === false) {
-			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
-		}
-
-		// get result from the SELECT query
-		$result = $statement->get_result();
-		if($result === false) {
-			throw(new mysqli_sql_exception("unable to get result set"));
-		}
+		$parameters = array("adminProfileId" => $adminProfileId);
+		$statement->execute($parameters);
 
 		// grab the adminProfile from mySQL
 		try {
 			$adminProfile = null;
-			$row = $result->fetch_assoc();
+			$statement->setFetchMode(PDO::FETCH_ASSOC);
+			$row = $statement->fetch();
 			if($row !== null) {
 				$adminProfile = new AdminProfile($row["adminProfileId"], $row["adminId"], $row["adminFirstName"], $row["adminLastName"]);
 			}
@@ -432,10 +336,6 @@ class AdminProfile {
 			// if the row couldn't be converted, rethrow it
 			throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
 		}
-
-		// free up memory and return the result
-		$result->free();
-		$statement->close();
 		return($adminProfile);
 	}
 
