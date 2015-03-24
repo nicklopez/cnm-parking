@@ -48,11 +48,11 @@ try {
 		throw(new PDOException("form values not complete. verify the form and try again."));
 		}
 
-
 	// email the visitor a URL with token
-	$objects = Invite::getInviteByActivation($pdo, $_POST["activation"]);
-	$visitor = $objects["visitor"];
-	$to = $visitor->getVisitorEmail();
+//	$objects = Invite::getInviteByActivation($pdo, $_POST["activation"]);
+//	$visitor = $objects["visitor"];
+//	$to = $visitor->getVisitorEmail();
+	$to = $_POST["visitorEmail"];
 	$from = "noreply@cnm.edu";
 
 	// build headers
@@ -60,7 +60,7 @@ try {
 	$headers["To"] = $to;
 	$headers["From"] = $from;
 	$headers["Reply-To"] = $from;
-	$headers["Subject"] = $visitor->getVisitorFirstName() . " " . $visitor->getVisitorLastName() . ", CNM Temporary Parking Pass";
+	$headers["Subject"] = $_POST["visitorFirstName"] . " " . $_POST["visitorLastName"] . ", CNM Parking Pass";
 
 	$message = <<< EOF
 <html>

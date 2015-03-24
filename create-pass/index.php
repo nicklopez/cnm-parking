@@ -10,6 +10,7 @@ require_once("../php/lib/csrf.php");
 // start session
 session_start();
 ?>
+
 <nav class="navbar navbar-default">
 	<div class="container-fluid">
 		<a id="logout" href="../php/controllers/admin-logout.php" class="btn btn-primary navbar-btn pull-right">Log Out</a>
@@ -36,14 +37,11 @@ require_once("../verify-availability/index.php");
 			<!--			<div class="col-xs-12 col-md-1">-->
 			<div class="form-group">
 				<?php echo generateInputTags(); ?>
-
 				<!--hidden foreign key forms-->
-				<input type="hidden" id="adminProfileId" name="adminProfileId" value=<?php $_SESSION["adminProfileId"] ?>>
+				<input type="hidden" id="adminProfileId" name="adminProfileId" value=<?php echo $_SESSION["adminProfileId"]; ?>>
 				<input type="hidden" id="visitorId" name="visitorId">
 				<input type="hidden" id="activation" name="activation">
 				<input type="hidden" id="parkingSpotId" name="parkingSpotId">
-
-				<!--				</div>-->
 			</div>
 			<div class="col-xs-12 col-md-6">
 				<div class="form-group">
@@ -63,7 +61,6 @@ require_once("../verify-availability/index.php");
 					<input type="text" class="form-control phone" id="visitorPhone" name="visitorPhone">
 				</div>
 			</div>
-			<!--			</div>-->
 			<div class="col-xs-12 col-md-6">
 				<div class="form-group">
 					<label for="vehicleYear">Vehicle Year:</label>
@@ -86,7 +83,6 @@ require_once("../verify-availability/index.php");
 					<input type="text" class="form-control name" id="vehiclePlateNumber" name="vehiclePlateNumber" size="128" maxlength="128">
 					<input hidden="hidden" type="text" id="arrivalDate" name="arrivalDate">
 					<input hidden="hidden" type="text" id="departureDate" name="departureDate">
-
 				</div>
 				<div class="form-group">
 					<label for="vehiclePlateState">Plate State:</label>
@@ -152,7 +148,6 @@ require_once("../verify-availability/index.php");
 			</div>
 	</form>
 </div>
-
 
 <!--Require the footer-->
 <?php
