@@ -229,40 +229,37 @@ class Visitor {
 	/**
 	 * inserts visitor into mySQL
 	 *
-	 * @param resource $mysqli pointer to mySQL connection, by reference
-	 * @throws mysqli_sql_exception when mySQL related errors occur
+	 * @param PDO $pdo pointer to mySQL connection, by reference
+	 * @throws PDOException when mySQL related errors occur
 	 **/
-	public function insert(&$mysqli) {
+	public function insert(PDO &$pdo) {
 		// handle degenerate cases
-		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
-			throw(new mysqli_sql_exception("input is not a mysqli object"));
+		if(gettype($pdo) !== "object" || get_class($pdo) !== "PDO") {
+			throw(new PDOException("input is not a PDO object"));
 		}
 
 		// enforce the visitorId is null (i.e., don't insert a visitor that already exists)
 		if($this->visitorId !== null) {
-			throw(new mysqli_sql_exception("not a new visitor"));
+			throw(new PDOException("not a new visitor"));
 		}
 
 		// create query template
-		$query = "INSERT INTO visitor(visitorEmail, visitorFirstName, visitorLastName, visitorPhone) VALUES(?, ?, ?, ?)";
-		$statement = $mysqli->prepare($query);
+		$query = "INSERT INTO visitor(visitorEmail, visitorFirstName, visitorLastName, visitorPhone) VALUES(:visitorEmail, :visitorFirstName, :visitorLastName, :visitorPhone)";
+		$statement = $pdo->prepare($query);
 		if($statement === false) {
-			throw(new mysqli_sql_exception("unable to prepare statement"));
+			throw(new PDOException("unable to prepare statement"));
 		}
 
 		// bind the visitor variables to the place holders in the template
-		$wasClean = $statement->bind_param("ssss", $this->visitorEmail, $this->visitorFirstName, $this->visitorLastName, $this->visitorPhone);
-		if($wasClean === false) {
-			throw(new mysqli_sql_exception("unable to bind parameters"));
-		}
+		$parameters = array("visitorEmail" => $this->visitorEmail, "visitorFirstName" => $this->visitorFirstName, "visitorLastName" => $this->visitorLastName, "visitorPhone" => $this->visitorPhone);
 
 		// execute the statement
-		if($statement->execute() === false) {
-			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
+		if($statement->execute($parameters) === false) {
+			throw(new PDOException("unable to execute mySQL statement: " . $statement->error));
 		}
 
 		// update the null visitorId with what mySQL just gave us
-		$this->visitorId = $mysqli->insert_id;
+		$this->visitorId = $pdo->lastInsertId();
 
 		// clean up the statement
 		$statement->close();
@@ -271,37 +268,32 @@ class Visitor {
 	/**
 	 * deletes visitor from mySQL
 	 *
-	 * @param resource $mysqli pointer to mySQL connection, by reference
-	 * @throws mysqli_sql_exception when mySQL related errors occur
+	 * @param PDO $pdo pointer to mySQL connection, by reference
+	 * @throws PDOException when mySQL related errors occur
 	 **/
-	public function delete(&$mysqli) {
+	public function delete(PDO &$pdo) {
 		// handle degenerate cases
-		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
-			throw(new mysqli_sql_exception("input is not a mysqli object"));
+		if(gettype($pdo) !== "object" || get_class($pdo) !== "PDO") {
+			throw(new PDOException("input is not a PDO object"));
 		}
 
 		// enforce the visitorId is not null (i.e., don't delete a visitor that hasn't been inserted)
 		if($this->visitorId === null) {
-			throw(new mysqli_sql_exception("unable to delete a visitor that does not exist"));
+			throw(new PDOException("unable to delete a visitor that does not exist"));
 		}
 
 		// create query template
-		$query = "DELETE FROM visitor WHERE visitorId = ?";
-		$statement = $mysqli->prepare($query);
+		$query = "DELETE FROM visitor WHERE visitorId = :visitorId";
+		$statement = $pdo->prepare($query);
 		if($statement === false) {
-			throw(new mysqli_sql_exception("unable to prepare statement"));
+			throw(new PDOException("unable to prepare statement"));
 		}
 
 		// bind the visitor variables to the place holder in the template
-		$wasClean = $statement->bind_param("i", $this->visitorId);
-		if($wasClean === false) {
-			throw(new mysqli_sql_exception("unable to bind parameters"));
-		}
+		$parameters = array("visitorId" => $this->visitorId);
 
 		// execute the statement
-		if($statement->execute() === false) {
-			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
-		}
+		$statement->execute($parameters);
 
 		// clean up the statement
 		$statement->close();
@@ -310,37 +302,32 @@ class Visitor {
 	/**
 	 * updates visitor in mySQL
 	 *
-	 * @param resource $mysqli pointer to mySQL connection, by reference
-	 * @throws mysqli_sql_exception when mySQL related errors occur
+	 * @param PDO $pdo pointer to mySQL connection, by reference
+	 * @throws PDOException when mySQL related errors occur
 	 **/
-	public function update(&$mysqli) {
+	public function update(PDO &$pdo) {
 		// handle degenerate cases
-		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
-			throw(new mysqli_sql_exception("input is not a mysqli object"));
+		if(gettype($pdo) !== "object" || get_class($pdo) !== "PDO") {
+			throw(new PDOException("input is not a PDO object"));
 		}
 
 		// enforce the visitorId is not null (i.e., don't update a visitor that hasn't been inserted)
 		if($this->visitorId === null) {
-			throw(new mysqli_sql_exception("unable to update a visitor that does not exist"));
+			throw(new PDOException("unable to update a visitor that does not exist"));
 		}
 
 		// create query template
-		$query = "UPDATE visitor SET visitorEmail = ?, visitorFirstName = ?, visitorLastName = ?, visitorPhone = ? WHERE visitorId = ?";
-		$statement = $mysqli->prepare($query);
+		$query = "UPDATE visitor SET visitorEmail = :visitorEmail, visitorFirstName = :visitorFirstName, visitorLastName = :visitorLastName, visitorPhone = :visitorPhone WHERE visitorId = :visitorId";
+		$statement = $pdo->prepare($query);
 		if($statement === false) {
-			throw(new mysqli_sql_exception("unable to prepare statement"));
+			throw(new PDOException("unable to prepare statement"));
 		}
 
 		// bind the visitor variables to the place holders in the template
-		$wasClean = $statement->bind_param("ssssi", $this->visitorEmail, $this->visitorFirstName, $this->visitorLastName, $this->visitorPhone, $this->visitorId);
-		if($wasClean === false) {
-			throw(new mysqli_sql_exception("unable to bind parameters"));
-		}
+		$parameters = array("visitorEmail" => $this->visitorEmail, "visitorFirstName" => $this->visitorFirstName, "visitorLastName" => $this->visitorLastName, "visitorPhone" => $this->visitorPhone, "visitorId" => $this->visitorId);
 
 		// execute the statement
-		if($statement->execute() === false) {
-			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
-		}
+		$statement->execute($parameters);
 
 		// clean up the statement
 		$statement->close();
@@ -349,80 +336,71 @@ class Visitor {
 	/**
 	 * gets the visitor by visitor Id
 	 *
-	 * @param resource $mysqli pointer to mySQL connection, by reference
+	 * @param PDO $pdo pointer to mySQL connection, by reference
 	 * @param int $visitorId visitor to search for
 	 * @return mixed visitor found or null if not found
-	 * @throws mysqli_sql_exception when mySQL related errors occur
+	 * @throws PDOException when mySQL related errors occur
 	 **/
-	public static function getVisitorByVisitorId(&$mysqli, $visitorId) {
+	public static function getVisitorByVisitorId(PDO &$pdo, $visitorId) {
 		// handle degenerate cases
-		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
-			throw(new mysqli_sql_exception("input is not a mysqli object"));
+		if(gettype($pdo) !== "object" || get_class($pdo) !== "PDO") {
+			throw(new PDOException("input is not a PDO object"));
 		}
 
 		// sanitize the visitorId before searching
 		$visitorId = filter_var($visitorId, FILTER_VALIDATE_INT);
 		if($visitorId === false) {
-			throw(new mysqli_sql_exception("visitor id is not an integer"));
+			throw(new PDOException("visitor id is not an integer"));
 		}
 		if($visitorId <= 0) {
-			throw(new mysqli_sql_exception("visitor id is not positive"));
+			throw(new PDOException("visitor id is not positive"));
 		}
 
 		// create query template
-		$query = "SELECT visitorId, visitorEmail, visitorFirstName, visitorLastName, visitorPhone FROM visitor WHERE visitorId= ?";
-		$statement = $mysqli->prepare($query);
+		$query = "SELECT visitorId, visitorEmail, visitorFirstName, visitorLastName, visitorPhone FROM visitor WHERE visitorId= :visitorId";
+		$statement = $pdo->prepare($query);
 		if($statement === false) {
-			throw(new mysqli_sql_exception("unable to prepare statement"));
+			throw(new PDOException("unable to prepare statement"));
 		}
 
 		// bind the visitor id to the place holder in the template
-		$wasClean = $statement->bind_param("i", $visitorId);
-		if($wasClean === false) {
-			throw(new mysqli_sql_exception("unable to bind parameters"));
-		}
+		$parameters = array("visitorId" => $visitorId);
 
 		// execute the statement
-		if($statement->execute() === false) {
-			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
-		}
-
+		$statement->execute($parameters);
+		$statement->setFetchMode(PDO::FETCH_ASSOC);
 		// get result from the SELECT query
-		$result = $statement->get_result();
-		if($result === false) {
-			throw(new mysqli_sql_exception("unable to get result set"));
-		}
 
 		// grab the visitor from mySQL
 		try {
 			$visitor = null;
-			$row = $result->fetch_assoc();
+			$row = $statement->fetch();
 			if($row !== null) {
 				$visitor = new Visitor($row["visitorId"], $row["visitorEmail"], $row["visitorFirstName"], $row["visitorLastName"], $row["visitorPhone"]);
 			}
 		} catch(Exception $exception) {
 			// if the row couldn't be converted, rethrow it
-			throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
+			throw(new PDOException($exception->getMessage(), 0, $exception));
 		}
 
 		// free up memory and return the result
-		$result->free();
-		$statement->close();
+//		$result->free();
+//		$statement->close();
 		return ($visitor);
 	}
 
 	/**
 	 * gets the visitor by visitor first name
 	 *
-	 * @param resource $mysqli pointer to mySQL connection, by reference
+	 * @param PDO $pdo pointer to mySQL connection, by reference
 	 * @param string $visitorFirstName visitor to search for by first name
 	 * @return mixed visitor found or null if not found
-	 * @throws mysqli_sql_exception when mySQL related errors occur
+	 * @throws PDOException when mySQL related errors occur
 	 **/
-	public static function getVisitorByVisitorFirstName(&$mysqli, $visitorFirstName) {
+	public static function getVisitorByVisitorFirstName(PDO &$pdo, $visitorFirstName) {
 		// handle degenerate cases
-		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
-			throw(new mysqli_sql_exception("input is not a mysqli object"));
+		if(gettype($pdo) !== "object" || get_class($pdo) !== "PDO") {
+			throw(new PDOException("input is not a PDO object"));
 		}
 
 		// sanitize the visitorFirstName before searching
@@ -433,39 +411,30 @@ class Visitor {
 		}
 
 		// create query template
-		$query = "SELECT visitorId, visitorEmail, visitorFirstName, visitorLastName, visitorPhone FROM visitor WHERE visitorFirstName LIKE ?";
-		$statement = $mysqli->prepare($query);
+		$query = "SELECT visitorId, visitorEmail, visitorFirstName, visitorLastName, visitorPhone FROM visitor WHERE visitorFirstName LIKE :visitorFirstName";
+		$statement = $pdo->prepare($query);
 		if($statement === false) {
-			throw(new mysqli_sql_exception("unable to prepare statement"));
+			throw(new PDOException("unable to prepare statement"));
 		}
 
 		// bind the visitorFirstName to the place holder in the template
 		$visitorFirstName = "%$visitorFirstName%";
-		$wasClean = $statement->bind_param("s", $visitorFirstName);
-		if($wasClean === false) {
-			throw(new mysqli_sql_exception("unable to bind parameters"));
-		}
+		$parameters = array("visitorFirstName" => $visitorFirstName);
 
 		// execute the statement
-		if($statement->execute() === false) {
-			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
-		}
-
+		$statement->execute($parameters);
+		$statement->setFetchMode(PDO::FETCH_ASSOC);
 		// get result from the SELECT query
-		$result = $statement->get_result();
-		if($result === false) {
-			throw(new mysqli_sql_exception("unable to get result set"));
-		}
 
 		// grab the visitor from mySQL
 		$visitors = array();
-		while(($row = $result->fetch_assoc()) !== null) {
+		while(($row = $statement->fetch()) !== null) {
 			try {
 				$visitor = new Visitor($row["visitorId"], $row["visitorEmail"], $row["visitorFirstName"], $row["visitorLastName"], $row["visitorPhone"]);
 				$visitors[] = $visitor;
 			} catch(Exception $exception) {
 				// if the row couldn't be converted, rethrow it
-				throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
+				throw(new PDOException($exception->getMessage(), 0, $exception));
 			}
 		}
 		// count the results in the array and return:
@@ -482,15 +451,15 @@ class Visitor {
 	/**
 	 * gets the visitor by visitor last name
 	 *
-	 * @param resource $mysqli pointer to mySQL connection, by reference
+	 * @param PDO $pdo pointer to mySQL connection, by reference
 	 * @param string $visitorLastName visitor to search for by first name
 	 * @return mixed visitor found or null if not found
-	 * @throws mysqli_sql_exception when mySQL related errors occur
+	 * @throws PDOException when mySQL related errors occur
 	 **/
-	public static function getVisitorByVisitorLastName(&$mysqli, $visitorLastName) {
+	public static function getVisitorByVisitorLastName(PDO &$pdo, $visitorLastName) {
 		// handle degenerate cases
-		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
-			throw(new mysqli_sql_exception("input is not a mysqli object"));
+		if(gettype($pdo) !== "object" || get_class($pdo) !== "PDO") {
+			throw(new PDOException("input is not a PDO object"));
 		}
 
 		// sanitize the visitorLastName before searching
@@ -501,39 +470,31 @@ class Visitor {
 		}
 
 		// create query template
-		$query = "SELECT visitorId, visitorEmail, visitorFirstName, visitorLastName, visitorPhone FROM visitor WHERE visitorLastName LIKE ?";
-		$statement = $mysqli->prepare($query);
+		$query = "SELECT visitorId, visitorEmail, visitorFirstName, visitorLastName, visitorPhone FROM visitor WHERE visitorLastName LIKE :visitorLastName";
+		$statement = $pdo->prepare($query);
 		if($statement === false) {
-			throw(new mysqli_sql_exception("unable to prepare statement"));
+			throw(new PDOException("unable to prepare statement"));
 		}
 
 		// bind the visitorLastName to the place holder in the template
 		$visitorLastName = "%$visitorLastName%";
-		$wasClean = $statement->bind_param("s", $visitorLastName);
-		if($wasClean === false) {
-			throw(new mysqli_sql_exception("unable to bind parameters"));
-		}
+		$parameters = array("visitorLastName" => $visitorLastName);
 
 		// execute the statement
-		if($statement->execute() === false) {
-			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
-		}
+		$statement->execute($parameters);
+		$statement->setFetchMode(PDO::FETCH_ASSOC);
 
 		// get result from the SELECT query
-		$result = $statement->get_result();
-		if($result === false) {
-			throw(new mysqli_sql_exception("unable to get result set"));
-		}
 
 		// grab the visitor from mySQL
 		$visitors = array();
-		while(($row = $result->fetch_assoc()) !== null) {
+		while(($row = $statement->fetch()) !== null) {
 			try {
 				$visitor = new Visitor($row["visitorId"], $row["visitorEmail"], $row["visitorFirstName"], $row["visitorLastName"], $row["visitorPhone"]);
 				$visitors[] = $visitor;
 			} catch(Exception $exception) {
 				// if the row couldn't be converted, rethrow it
-				throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
+				throw(new PDOException($exception->getMessage(), 0, $exception));
 			}
 		}
 		// count the results in the array and return:
@@ -550,15 +511,15 @@ class Visitor {
 	/**
 	 * gets the visitor by email address
 	 *
-	 * @param resource $mysqli pointer to mySQL connection, by reference
+	 * @param PDO $pdo pointer to mySQL connection, by reference
 	 * @param string $visitorEmail visitor to search for by email address
 	 * @return mixed visitor found or null if not found
-	 * @throws mysqli_sql_exception when mySQL related errors occur
+	 * @throws PDOException when mySQL related errors occur
 	 **/
-	public static function getVisitorByVisitorEmail(&$mysqli, $visitorEmail) {
+	public static function getVisitorByVisitorEmail(PDO &$pdo, $visitorEmail) {
 		// handle degenerate cases
-		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
-			throw(new mysqli_sql_exception("input is not a mysqli object"));
+		if(gettype($pdo) !== "object" || get_class($pdo) !== "PDO") {
+			throw(new PDOException("input is not a PDO object"));
 		}
 
 		// sanitize the visitorEmail before searching
@@ -569,44 +530,33 @@ class Visitor {
 		}
 
 		// create query template
-		$query = "SELECT visitorId, visitorEmail, visitorFirstName, visitorLastName, visitorPhone FROM visitor WHERE visitorEmail = ?";
-		$statement = $mysqli->prepare($query);
-		if($statement === false) {
-			throw(new mysqli_sql_exception("unable to prepare statement"));
-		}
+		$query = "SELECT visitorId, visitorEmail, visitorFirstName, visitorLastName, visitorPhone FROM visitor WHERE visitorEmail = :visitorEmail";
+		$statement = $pdo->prepare($query);
 
 		// bind the visitorEmail to the place holder in the template
-		$wasClean = $statement->bind_param("s", $visitorEmail);
-		if($wasClean === false) {
-			throw(new mysqli_sql_exception("unable to bind parameters"));
-		}
+		$parameters = array("visitorEmail" => $visitorEmail);
 
 		// execute the statement
-		if($statement->execute() === false) {
-			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
-		}
+		$statement->execute($parameters);
+		$statement->setFetchMode(PDO::FETCH_ASSOC);
 
 		// get result from the SELECT query
-		$result = $statement->get_result();
-		if($result === false) {
-			throw(new mysqli_sql_exception("unable to get result set"));
-		}
 
 		// grab the visitor from mySQL
 		try {
 			$visitorEmail = null;
-			$row = $result->fetch_assoc();
+			$row = $statement->fetch();
 			if($row !== null) {
 				$visitorEmail = new Visitor($row["visitorId"], $row["visitorEmail"], $row["visitorFirstName"], $row["visitorLastName"], $row["visitorPhone"]);
 			}
 		} catch (Exception $exception) {
 			// if the row couldn't be converted, rethrow it
-			throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
+			throw(new PDOException($exception->getMessage(), 0, $exception));
 		}
 
 		// free up memory and return the result
-		$result->free();
-		$statement->close();
+//		$result->free();
+//		$statement->close();
 		return ($visitorEmail);
 	}
 }

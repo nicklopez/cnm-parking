@@ -357,25 +357,25 @@ class Invite {
 	/**
 	 * inserts invite into mySQL
 	 *
-	 * @param resource $mysqli pointer to mySQL connection, by reference
-	 * @throws mysqli_sql_exception when mySQL related errors occur
+	 * @param PDO $pdo pointer to mySQL connection, by reference
+	 * @throws PDOException when mySQL related errors occur
 	 **/
-	public function insert(&$mysqli) {
+	public function insert(PDO &$pdo) {
 		// handle degenerate cases
-		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
-			throw(new mysqli_sql_exception("input is not a mysqli object"));
+		if(gettype($pdo) !== "object" || get_class($pdo) !== "PDO") {
+			throw(new PDOException("input is not a PDO object"));
 		}
 
 		// enforce the inviteId is null (i.e., don't insert an invite that already exists)
 		if($this->inviteId !== null) {
-			throw(new mysqli_sql_exception("not a new invite"));
+			throw(new PDOException("not a new invite"));
 		}
 
 		// create query template
-		$query = "INSERT INTO invite(inviteId, actionDateTime, activation, adminProfileId, approved, createDateTime, visitorId) VALUES(?, ?, ?, ?, ?, ?, ?)";
-		$statement = $mysqli->prepare($query);
+		$query = "INSERT INTO invite(inviteId, actionDateTime, activation, adminProfileId, approved, createDateTime, visitorId) VALUES(:inviteId, :actionDateTime, :activation, :adminProfileId, :approved, :createDateTime, :visitorId)";
+		$statement = $pdo->prepare($query);
 		if($statement === false) {
-			throw(new mysqli_sql_exception("unable to prepare statement"));
+			throw(new PDOException("unable to prepare statement"));
 		}
 
 		// bind the invite variables to the place holders in the template
@@ -386,33 +386,30 @@ class Invite {
 		}
 
 		$formattedCreateDate = $this->createDateTime->format("Y-m-d H:i:s");
-		$wasClean = $statement->bind_param("issiisi", $this->inviteId, $formattedActionDate, $this->activation, $this->adminProfileId, $this->approved, $formattedCreateDate, $this->visitorId);
-		if($wasClean === false) {
-			throw(new mysqli_sql_exception("unable to bind parameters"));
-		}
+		$parameters = array("inviteId" => $this->inviteId, "actionDateTime" => $formattedActionDate, "activation" => $this->activation, "adminProfileId" => $this->adminProfileId, "approved" => $this->approved, "createDateTime" => $formattedCreateDate, "visitorId" => $this->visitorId);
 
 		// execute the statement
-		if($statement->execute() === false) {
-			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
+		if($statement->execute($parameters) === false) {
+			throw(new PDOException("unable to execute mySQL statement: " . $statement->error));
 		}
 
 		// update the null inviteId with what mySQL just gave us
-		$this->inviteId = $mysqli->insert_id;
+		$this->inviteId = $pdo->lastInsertId();
 
 		// clean up the statement
-		$statement->close();
+//		$statement->close();
 	}
 
 	/**
 	 * deletes an invite from mySQL
 	 *
-	 * @param resource $mysqli pointer to mySQL connection, by reference
+	 * @param PDO $pdo pointer to mySQL connection, by reference
 	 * @throws mysqli_sql_exception when mySQL related errors occur
 	 **/
-	public function delete(&$mysqli) {
+	public function delete(PDO &$pdo) {
 		// handle degenerate cases
-		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
-			throw(new mysqli_sql_exception("input is not a mysqli object"));
+		if(gettype($pdo) !== "object" || get_class($pdo) !== "PDO") {
+			throw(new mysqli_sql_exception("input is not a PDO object"));
 		}
 
 		// enforce the inviteId is not null (i.e., don't delete an invite that hasn't been inserted)
@@ -421,22 +418,17 @@ class Invite {
 		}
 
 		// create query template
-		$query = "DELETE FROM invite WHERE inviteId = ?";
-		$statement = $mysqli->prepare($query);
+		$query = "DELETE FROM invite WHERE inviteId = :inviteId";
+		$statement = $pdo->prepare($query);
 		if($statement === false) {
 			throw(new mysqli_sql_exception("unable to prepare statement"));
 		}
 
 		// bind the invite variables to the place holder in the template
-		$wasClean = $statement->bind_param("i", $this->inviteId);
-		if($wasClean === false) {
-			throw(new mysqli_sql_exception("unable to bind parameters"));
-		}
+		$parameters = array("inviteId" => $this->inviteId);
 
 		// execute the statement
-		if($statement->execute() === false) {
-			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
-		}
+		$statement->execute($parameters);
 
 		// clean up the statement
 		$statement->close();
@@ -445,13 +437,13 @@ class Invite {
 	/**
 	 * updates invite in mySQL
 	 *
-	 * @param resource $mysqli pointer to mySQL connection, by reference
+	 * @param PDO $pdo pointer to mySQL connection, by reference
 	 * @throws mysqli_sql_exception when mySQL related errors occur
 	 **/
-	public function update(&$mysqli) {
+	public function update(PDO &$pdo) {
 		// handle degenerate cases
-		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
-			throw(new mysqli_sql_exception("input is not a mysqli object"));
+		if(gettype($pdo) !== "object" || get_class($pdo) !== "PDO") {
+			throw(new mysqli_sql_exception("input is not a PDO object"));
 		}
 
 		// enforce the inviteId is not null (i.e., don't update an invite that hasn't been inserted)
@@ -460,8 +452,8 @@ class Invite {
 		}
 
 		// create query template
-		$query = "UPDATE invite SET actionDateTime = ?, activation = ?, adminProfileId = ?, approved = ?, createDateTime = ?, visitorId = ? WHERE inviteId = ?";
-		$statement = $mysqli->prepare($query);
+		$query = "UPDATE invite SET actionDateTime = :actionDateTime, activation = :activation, adminProfileId = :adminProfileId, approved = :approved, createDateTime = :createDateTime, visitorId = :visitorId WHERE inviteId = :inviteId";
+		$statement = $pdo->prepare($query);
 		if($statement === false) {
 			throw(new mysqli_sql_exception("unable to prepare statement"));
 		}
@@ -469,32 +461,27 @@ class Invite {
 		// bind the invite variables to the place holders in the template
 		$formattedActionDate = $this->actionDateTime->format("Y-m-d H:i:s");
 		$formattedCreateDate = $this->createDateTime->format("Y-m-d H:i:s");
-		$wasClean = $statement->bind_param("ssiisii", $formattedActionDate, $this->activation, $this->adminProfileId, $this->approved, $formattedCreateDate, $this->visitorId, $this->inviteId);
-		if($wasClean === false) {
-			throw(new mysqli_sql_exception("unable to bind parameters"));
-		}
+		$parameters = array("actionDateTime" => $formattedActionDate, "activation" => $this->activation, "adminProfileId" => $this->adminProfileId, "approved" => $this->approved, "createDateTime" => $formattedCreateDate, "visitorId" => $this->visitorId, "inviteId" => $this->inviteId);
 
 		// execute the statement
-		if($statement->execute() === false) {
-			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
-		}
+		$statement->execute($parameters);
 
 		// clean up the statement
-		$statement->close();
+//		$statement->close();
 	}
 
 	/**
 	 * gets the invite by invite Id
 	 *
-	 * @param resource $mysqli pointer to mySQL connection, by reference
+	 * @param PDO $pdo pointer to mySQL connection, by reference
 	 * @param int $inviteId invite to search for by invite id
 	 * @return mixed invite found or null if not found
 	 * @throws mysqli_sql_exception when mySQL related errors occur
 	 **/
-	public static function getInviteByInviteId(&$mysqli, $inviteId) {
+	public static function getInviteByInviteId(PDO &$pdo, $inviteId) {
 		// handle degenerate cases
-		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
-			throw(new mysqli_sql_exception("input is not a mysqli object"));
+		if(gettype($pdo) !== "object" || get_class($pdo) !== "PDO") {
+			throw(new mysqli_sql_exception("input is not a PDO object"));
 		}
 
 		// sanitize the inviteId before searching
@@ -507,33 +494,24 @@ class Invite {
 		}
 
 		// create query template
-		$query = "SELECT inviteId, actionDateTime, activation, adminProfileId, approved, createDateTime, visitorId FROM invite WHERE inviteId= ?";
-		$statement = $mysqli->prepare($query);
+		$query = "SELECT inviteId, actionDateTime, activation, adminProfileId, approved, createDateTime, visitorId FROM invite WHERE inviteId= :inviteId";
+		$statement = $pdo->prepare($query);
 		if($statement === false) {
 			throw(new mysqli_sql_exception("unable to prepare statement"));
 		}
 
 		// bind the invite id to the place holder in the template
-		$wasClean = $statement->bind_param("i", $inviteId);
-		if($wasClean === false) {
-			throw(new mysqli_sql_exception("unable to bind parameters"));
-		}
+		$parameters = array("inviteId" => $inviteId);
 
 		// execute the statement
-		if($statement->execute() === false) {
-			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
-		}
-
+		$statement->execute($parameters);
+		$statement->setFetchMode(PDO::FETCH_ASSOC);
 		// get result from the SELECT query
-		$result = $statement->get_result();
-		if($result === false) {
-			throw(new mysqli_sql_exception("unable to get result set"));
-		}
 
 		// grab the invite from mySQL
 		try {
 			$invite = null;
-			$row = $result->fetch_assoc();
+			$row = $statement->fetch();
 			if($row !== null) {
 				$invite = new Invite($row["inviteId"], $row["actionDateTime"], $row["activation"], $row["adminProfileId"], $row["approved"], $row["createDateTime"], $row["visitorId"]);
 			}
@@ -543,23 +521,23 @@ class Invite {
 		}
 
 		// free up memory and return the result
-		$result->free();
-		$statement->close();
+//		$result->free();
+//		$statement->close();
 		return ($invite);
 	}
 
 	/**
 	 * gets the invite by activation (token)
 	 *
-	 * @param resource $mysqli pointer to mySQL connection, by reference
+	 * @param PDO $pdo pointer to mySQL connection, by reference
 	 * @param int $activation invite to search for by activation (token)
 	 * @return mixed invite found or null if not found
 	 * @throws mysqli_sql_exception when mySQL related errors occur
 	 **/
-	public static function getInviteByActivation(&$mysqli, $activation) {
+	public static function getInviteByActivation(&$pdo, $activation) {
 		// handle degenerate cases
-		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
-			throw(new mysqli_sql_exception("input is not a mysqli object"));
+		if(gettype($pdo) !== "object" || get_class($pdo) !== "PDO") {
+			throw(new mysqli_sql_exception("input is not a PDO object"));
 		}
 
 		// sanitize activation (token) before searching
@@ -572,31 +550,22 @@ class Invite {
 		// create query template
 		$query = "SELECT inviteId, visitor.visitorFirstName, visitor.visitorLastName, visitor.visitorEmail, visitor.visitorPhone, actionDateTime, activation, adminProfileId, approved, createDateTime, visitor.visitorId FROM invite
 		INNER JOIN visitor ON visitor.visitorId = invite.visitorId
-		WHERE activation = ?";
-		$statement = $mysqli->prepare($query);
+		WHERE activation = :activation";
+		$statement = $pdo->prepare($query);
 		if($statement === false) {
 			throw(new mysqli_sql_exception("unable to prepare statement"));
 		}
 
 		// bind the activation (token) to the place holder in the template
-		$wasClean = $statement->bind_param("s", $activation);
-		if($wasClean === false) {
-			throw(new mysqli_sql_exception("unable to bind parameters"));
-		}
+		$parameters = array("activation" => $activation);
 
 		// execute the statement
-		if($statement->execute() === false) {
-			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
-		}
-
+		$statement->execute($parameters);
+		$statement->setFetchMode(PDO::FETCH_ASSOC);
 		// get result from the SELECT query
-		$result = $statement->get_result();
-		if($result === false) {
-			throw(new mysqli_sql_exception("unable to get result set"));
-		}
 
 		// handle degenerate case: more than 1 row!?
-		$numRows = $result->num_rows;
+		$numRows = $statement->rowCount();
 		if($numRows > 1) {
 			throw(new mysqli_sql_exception("activation (token) is not unique"));
 		} else if($numRows === 0) {
@@ -605,7 +574,7 @@ class Invite {
 
 		// build up the array of 2 objects
 		try {
-			$row = $result->fetch_assoc();
+			$row = $statement->fetch();
 			$objects = array();
 			$visitor = new Visitor($row["visitorId"], $row["visitorEmail"], $row["visitorFirstName"], $row["visitorLastName"], $row["visitorPhone"]);
 			$invite = new Invite($row["inviteId"], $row["actionDateTime"], $row["activation"], $row["adminProfileId"], $row["approved"], $row["createDateTime"], $row["visitorId"]);
@@ -617,22 +586,22 @@ class Invite {
 		}
 
 			// free up memory and return the results
-			$result->free();
-			$statement->close();
+//			$result->free();
+//			$statement->close();
 			return($objects);
 		}
 
 	/**
 	 * retrieves all invite requests for review
 	 *
-	 * @param resource $mysqli pointer to mySQL connection, by reference
+	 * @param PDO $pdo pointer to mySQL connection, by reference
 	 * @return mixed invite found or null if not found
 	 * @throws mysqli_sql_exception when mySQL related errors occur
 	 **/
-	public static function getPendingInvite(&$mysqli) {
+	public static function getPendingInvite(PDO &$pdo) {
 		// handle degenerate cases
-		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
-			throw(new mysqli_sql_exception("input is not a mysqli object"));
+		if(gettype($pdo) !== "object" || get_class($pdo) !== "PDO") {
+			throw(new PDOException("input is not a PDO object"));
 		}
 
 		// create query template
@@ -640,36 +609,28 @@ class Invite {
 		INNER JOIN visitor ON visitor.visitorId = invite.visitorId
 		WHERE approved IS NULL";
 
-		$statement = $mysqli->prepare($query);
-		if($statement === false) {
-			throw(new mysqli_sql_exception("unable to prepare statement"));
-		}
+		$statement = $pdo->prepare($query);
 
 		// execute the statement
-		if($statement->execute() === false) {
-			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
-		}
+		$statement->execute();
 
 		// get result from the SELECT query
-		$result = $statement->get_result();
-		if($result === false) {
-			throw(new mysqli_sql_exception("unable to get result set"));
-		}
+		$statement->setFetchMode(PDO::FETCH_ASSOC);
 
 		// grab all pending invites from mySQL
 		$invites = array();
-		while(($row = $result->fetch_assoc()) !== null)
+		while(($row = $statement->fetch()) !== false)
 			try {
 				$invites[] = $row;
 
 			} catch(Exception $exception) {
 				// if the row couldn't be converted, rethrow it
-				throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
+				throw(new PDOException($exception->getMessage(), 0, $exception));
 			}
 
 		// free up memory and return the results
-		$result->free();
-		$statement->close();
+//		$result->free();
+//		$statement->close();
 
 		$numberOfInvites = count($invites);
 		if($numberOfInvites === 0) {
