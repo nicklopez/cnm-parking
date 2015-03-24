@@ -525,10 +525,7 @@ class Location {
 		}
 
 		// execute the statement
-		if($statement->execute() === false) {
-			throw(new PDOException("unable to execute mySQL statement: " . $statement->error));
-		}
-
+		$statement->execute();
 		$statement->setFetchMode(PDO::FETCH_ASSOC);
 
 		// handle degenerate cases

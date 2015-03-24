@@ -16,7 +16,7 @@ require_once ("../classes/parkingspot.php");
 /**
  * connect to mySQL
  */
-$config = readConfig("/home/cnmparki/etc/mysql/cnmparking.ini");
+$configArray = readConfig("/home/cnmparki/etc/mysql/cnmparking.ini");
 $host = $configArray["hostname"];
 $db = $configArray["database"];
 $dsn = "mysql:host=$host;dbname=$db";
