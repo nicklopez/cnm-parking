@@ -36,8 +36,6 @@ try {
 		throw (new PDOException(" incorrect email or password. Try again."));
 	}
 	$hash = hash_pbkdf2("sha512", $_POST["password"], $admin->getSalt(), 2048, 128);
-	var_dump($hash);
-	var_dump($admin->getPassHash());
 	if($hash === $admin->getPassHash()) {
 		// assign session to logged in admin id
 		$adminProfile = AdminProfile::getAdminProfileByAdminId($pdo, $admin->getAdminId());

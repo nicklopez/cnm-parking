@@ -48,10 +48,10 @@ try {
 }
 
 try {
-	$objects = Admin::getAdminByAdminEmail($pdo, $_POST["adminEmail"]);
+	$admin = Admin::getAdminByAdminEmail($pdo, $_POST["adminEmail"]);
+
 	// email the visitor a URL with token
-	$admin = $objects->getAdminEmail();
-	$to = $objects->getAdminEmail();
+	$to = $admin->getAdminEmail();
 	$from = "noreply@cnm.edu";
 
 	// build headers
@@ -64,9 +64,10 @@ try {
 	$headers["Content-Type"] = "text/html; charset=UTF-8";
 
 	// build message
-	$pageName = end(explode("/", $_SERVER["PHP_SELF"], 4));
-	$url = "http://" . $_SERVER["SERVER_NAME"] . $_SERVER["PHP_SELF"];
-	$url = str_replace($pageName, "admin-login", $url);
+//	$path = explode("/", $_SERVER["PHP_SELF"], 4);
+//	$pageName = end($path);
+	$url = "http://cnmparking.com/admin-login";
+//	$url = str_replace($pageName, "admin-login", $url);
 	$message = <<< EOF
 <html>
 	<body>
