@@ -45,7 +45,7 @@ function setDpi($jpg, $dpi) {
 	rename("$jpg.temp", $jpg);
 }
 
-function generatePassImage($mysqli, $parkingPass, $vehicle, $font) {
+function generatePassImage($pdo, $parkingPass, $vehicle, $font) {
 
 	try {
 
@@ -62,8 +62,8 @@ function generatePassImage($mysqli, $parkingPass, $vehicle, $font) {
 		unlink($tempfile);
 
 		//set up connection
-		$parkingSpot = ParkingSpot::getParkingSpotByParkingSpotId($mysqli, $parkingPass->getParkingSpotId());
-		$location = Location::getLocationByLocationId($mysqli, $parkingSpot->getLocationId());
+		$parkingSpot = ParkingSpot::getParkingSpotByParkingSpotId($pdo, $parkingPass->getParkingSpotId());
+		$location = Location::getLocationByLocationId($pdo, $parkingSpot->getLocationId());
 	} catch
 	(Exception $exception) {
 		throw(new RuntimeException($exception->getMessage(), 0, $exception));

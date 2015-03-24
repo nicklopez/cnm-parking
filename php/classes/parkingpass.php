@@ -493,60 +493,50 @@ class ParkingPass {
 	/**
 	 * gets parkingPass by parkingPassId
 	 *
-	 * @param resource $mysqli pointer to mySQL connection, by reference
+	 * @param PDO $pdo pointer to mySQL connection, by reference
 	 * @param int $parkingPassId parkingPassId to search for
 	 * @throws mixed array of parkingPassId 's found or null if not found
-	 * @throws mysqli_sql_exception when mySQL related errors occur
+	 * @throws PDOException when mySQL related errors occur
 	 */
-	public static function getParkingPassByParkingPassId(&$mysqli, $parkingPassId) {
+	public static function getParkingPassByParkingPassId(PDO &$pdo, $parkingPassId) {
 		// handle degenerate cases
-		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
-			throw(new mysqli_sql_exception("input is not a mysqli object"));
+		if(gettype($pdo) !== "object" || get_class($pdo) !== "PDO") {
+			throw(new PDOException("input is not a PDO object"));
 		}
 
 		// sanitize before searching
 		$parkingPassId = trim($parkingPassId);
 		$parkingPassId = filter_var($parkingPassId, FILTER_VALIDATE_INT);
 		if($parkingPassId === false) {
-			throw(new mysqli_sql_exception("parkingPassId is not an integer"));
+			throw(new PDOException("parkingPassId is not an integer"));
 		}
 		if($parkingPassId <= 0) {
-			throw(new mysqli_sql_exception("parkingPassId is not positive"));
+			throw(new PDOException("parkingPassId is not positive"));
 		}
 
 		// create query template
-		$query = "SELECT parkingPassId, adminProfileId, parkingSpotId, vehicleId, endDateTime, issuedDateTime, startDateTime, uuId FROM parkingPass WHERE parkingPassId = ?";
-		$statement = $mysqli->prepare($query);
+		$query = "SELECT parkingPassId, adminProfileId, parkingSpotId, vehicleId, endDateTime, issuedDateTime, startDateTime, uuId FROM parkingPass WHERE parkingPassId = :parkingPassId";
+		$statement = $pdo->prepare($query);
 		if($statement === false) {
-			throw(new mysqli_sql_exception(" unable to prepare statement"));
+			throw(new PDOException(" unable to prepare statement"));
 		}
 
 		// bind the member variables to the place holders in the template
-		$wasClean = $statement->bind_param("i", $parkingPassId);
-		if($wasClean === false) {
-			throw(new mysqli_sql_exception("unable to bind paramaters"));
-		}
+		$parameters = array("parkingPassId" => $parkingPassId);
 
 		// execute the statement
-		if($statement->execute() === false) {
-			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
-		}
-
-		// get result from SELECT query
-		$result = $statement->get_result();
-		if($result === false) {
-			throw(new mysqli_sql_exception("unable to get result set"));
-		}
+		$statement->execute($parameters);
+		$statement->setFetchMode(PDO::FETCH_ASSOC);
 
 		// build parkingPass
 		try {
-			$row = $result->fetch_assoc();
+			$row = $statement->fetch();
 			if($row !== null) {
 				$parkingPass = new ParkingPass($row["parkingPassId"], $row["adminProfileId"], $row["parkingSpotId"], $row["vehicleId"], $row["endDateTime"], $row["issuedDateTime"], $row["startDateTime"], $row["uuId"]);
 			}
 		} catch(Exception $exception) {
 			// if the row couldn't be converted, rethrow it
-			throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
+			throw(new PDOException($exception->getMessage(), 0, $exception));
 		}
 
 		// count the results in array and return:
@@ -992,15 +982,15 @@ class ParkingPass {
 	 * Verify Availability: Searches for and returns 1 placard number that is free(no conflicts) during given datetime range.
 	 * datetime is limited to 8 hours(if >8 hours then return null)
 	 *
-	 * @param $mysqli
+	 * @param PDO $pdo
 	 * @param $location
 	 * @param $arrival
 	 * @param $departure
 	 */
-	public static function getParkingPassAvailability($mysqli, $location, $arrival, $departure) {
+	public static function getParkingPassAvailability(PDO $pdo, $location, $arrival, $departure) {
 		// handle degenerate cases
-		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
-			throw(new mysqli_sql_exception("input is not a mysqli object"));
+		if(gettype($pdo) !== "object" || get_class($pdo) !== "PDO") {
+			throw(new mysqli_sql_exception("input is not a PDO object"));
 		}
 
 		// sanitize dates before searching - Using static function
@@ -1016,12 +1006,12 @@ class ParkingPass {
 		// create query template
 		$query = "SELECT parkingSpotId FROM parkingSpot WHERE parkingSpotId NOT IN
 					(SELECT parkingSpot.parkingSpotId FROM parkingSpot INNER JOIN parkingPass ON parkingSpot.parkingSpotId = parkingPass.parkingSpotId WHERE
-		  			(locationId = ? AND ? <= endDateTime AND
-					((? > startDateTime AND ? <= startDateTime) OR
-			 		(? >= startDateTime)))) AND
-					locationId = ?
+		  			(locationId = :locationId AND :sunrise <= endDateTime AND
+					((:sunrise > startDateTime AND :sunset <= startDateTime) OR
+			 		(:sunrise >= startDateTime)))) AND
+					locationId = :locationId
 					LIMIT 1";
-		$statement = $mysqli->prepare($query);
+		$statement = $pdo->prepare($query);
 		if($statement === false) {
 			throw(new mysqli_sql_exception(" unable to prepare statement"));
 		}
@@ -1029,24 +1019,14 @@ class ParkingPass {
 		// bind the member variables to the place holders in the template
 		$sunrise = $sunrise->format("Y-m-d H:i:s");
 		$sunset = $sunset->format("Y-m-d H:i:s");
-		$wasClean = $statement->bind_param("issssi", $location, $sunrise, $sunrise, $sunset, $sunrise, $location);
-		if($wasClean === false) {
-			throw(new mysqli_sql_exception("unable to bind parameters"));
-		}
+		$parameters = array("locationId" => $location, "sunrise" => $sunrise, "sunrise" => $sunrise, "sunset" => $sunset, "sunrise" => $sunrise, "locationId" => $location);
 
 		// execute the statement
-		if($statement->execute() === false) {
-			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
-		}
-
-		// get result from SELECT query
-		$result = $statement->get_result();
-		if($result === false) {
-			throw(new mysqli_sql_exception("unable to get result set"));
-		}
+		$statement->execute($parameters);
+		$statement->setFetchMode(PDO::FETCH_ASSOC);
 
 		// build array of result
-		$result = $result->fetch_assoc();
+		$result = $statement->fetch();
 
 		// return result
 		return($result);

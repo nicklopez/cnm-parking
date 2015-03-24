@@ -369,22 +369,13 @@ class Location {
 		$parameters = array("locationId" => $locationId);
 
 		// execute the statement
-		if($statement->execute($parameters) === false) {
-			throw(new PDOException("unable to execute mySQL statement: " . $statement->error));
-		}
-
+		$statement->execute($parameters);
 		$statement->setFetchMode(PDO::FETCH_ASSOC);
-
-		// get result from the SELECT query
-		$row = $statement->fetch();
-		if($row === false) {
-			throw(new PDOException("unable to get result set"));
-		}
 
 		// grab the location from mySQL
 		try {
 			$location = null;
-			if($row !== null) {
+			if(($row = $statement->fetch()) !== null) {
 				$location = new Location($row["locationId"], $row["latitude"], $row["locationDescription"], $row["locationNote"], $row["longitude"]);
 			}
 		} catch(Exception $exception) {
@@ -392,9 +383,7 @@ class Location {
 			throw(new PDOException($exception->getMessage(), 0, $exception));
 		}
 
-		// free up memory and return the result
-		$row->free();
-		$statement->close();
+		// Return the result
 		return ($location);
 	}
 

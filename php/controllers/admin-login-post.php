@@ -40,9 +40,7 @@ try {
 		// assign session to logged in admin id
 		$adminProfile = AdminProfile::getAdminProfileByAdminId($pdo, $admin->getAdminId());
 		$_SESSION["adminFirstName"] = $adminProfile->getAdminFirstName();
-		$_SESSION["adminProfile"] = array(
-			'id' => $adminProfile->getAdminProfileId()
-		);
+		$_SESSION["adminProfileId"] = $adminProfile->getAdminProfileId();
 
 		// session assignment to correct profile id
 		$adminProfileId = $adminProfile->getAdminProfileId();

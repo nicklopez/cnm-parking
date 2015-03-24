@@ -278,64 +278,52 @@ class ParkingSpot {
 	/**
 	 * gets parkingSpot by parkingSpotId
 	 *
-	 * @param resource $mysqli pointer to mySQL connection, by reference
+	 * @param PDO $pdo pointer to mySQL connection, by reference
 	 * @param int $parkingSpotId parkingSpotId to search for
 	 * @return mixed parking spot or null if not found
-	 * @throws mysqli_sql_exception when mySQL related errors occur
+	 * @throws PDOException when mySQL related errors occur
 	 */
-	public static function getParkingSpotByParkingSpotId(&$mysqli, $parkingSpotId) {
+	public static function getParkingSpotByParkingSpotId(PDO &$pdo, $parkingSpotId) {
 		// handle degenerate cases
-		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
-			throw(new mysqli_sql_exception("input is not a mysqli object"));
+		if(gettype($pdo) !== "object" || get_class($pdo) !== "PDO") {
+			throw(new PDOException("input is not a PDO object"));
 		}
 
 		// sanitize before searching
 		$parkingSpotId = filter_var($parkingSpotId, FILTER_VALIDATE_INT);
 		if($parkingSpotId === false) {
-			throw(new mysqli_sql_exception("parkingSpotId is not an integer"));
+			throw(new PDOException("parkingSpotId is not an integer"));
 		}
 		if($parkingSpotId <= 0) {
-			throw(new mysqli_sql_exception("parkingSpotId is not positive"));
+			throw(new PDOException("parkingSpotId is not positive"));
 		}
 
 		// create query template
-		$query = "SELECT parkingSpotId, locationId, placardNumber FROM parkingSpot WHERE parkingSpotId = ?";
-		$statement = $mysqli->prepare($query);
+		$query = "SELECT parkingSpotId, locationId, placardNumber FROM parkingSpot WHERE parkingSpotId = :parkingSpotId";
+		$statement = $pdo->prepare($query);
 		if($statement === false) {
-			throw(new mysqli_sql_exception(" unable to prepare statement"));
+			throw(new PDOException(" unable to prepare statement"));
 		}
 
 		// bind the parking spot variables to the place holders in the template
-		$wasClean = $statement->bind_param("i", $parkingSpotId);
-		if($wasClean === false) {
-			throw(new mysqli_sql_exception("unable to bind parameters"));
-		}
+		$parameters = array("parkingSpotId" => $parkingSpotId);
 
 		// execute the statement
-		if($statement->execute() === false) {
-			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
-		}
-
-		// get result from SELECT query
-		$result = $statement->get_result();
-		if($result === false) {
-			throw(new mysqli_sql_exception("unable to get result set"));
-		}
+		$statement->execute($parameters);
+		$statement->setFetchMode(PDO::FETCH_ASSOC);
 
 		// grab the parking spot from mySQL
 		$parkingSpots = null;
 		try {
-			$row = $result->fetch_assoc();
+			$row = $statement->fetch();
 			if($row !== null) {
 				$parkingSpots = new ParkingSpot($row["parkingSpotId"], $row["locationId"], $row["placardNumber"]);
 			}
 		} catch(Exception $exception) {
 			// if the row couldn't be converted, rethrow it
-			throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
+			throw(new PDOException($exception->getMessage(), 0, $exception));
 		}
-		// free up memory and return the result
-		$result->free();
-		$statement->close();
+		// return the result
 		return ($parkingSpots);
 	}
 

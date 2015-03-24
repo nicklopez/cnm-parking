@@ -534,7 +534,7 @@ class Invite {
 	 * @return mixed invite found or null if not found
 	 * @throws mysqli_sql_exception when mySQL related errors occur
 	 **/
-	public static function getInviteByActivation(&$pdo, $activation) {
+	public static function getInviteByActivation(PDO &$pdo, $activation) {
 		// handle degenerate cases
 		if(gettype($pdo) !== "object" || get_class($pdo) !== "PDO") {
 			throw(new mysqli_sql_exception("input is not a PDO object"));
@@ -585,9 +585,6 @@ class Invite {
 			throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
 		}
 
-			// free up memory and return the results
-//			$result->free();
-//			$statement->close();
 			return($objects);
 		}
 
