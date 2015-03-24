@@ -227,40 +227,37 @@ class Location {
 	/**
 	 * inserts location into mySQL
 	 *
-	 * @param resource $mysqli pointer to mySQL connection, by reference
-	 * @throws mysqli_sql_exception when mySQL related errors occur
+	 * @param PDO $pdo pointer to mySQL connection, by reference
+	 * @throws PDOException when mySQL related errors occur
 	 **/
-	public function insert(&$mysqli) {
+	public function insert(PDO &$pdo) {
 		// handle degenerate cases
-		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
-			throw(new mysqli_sql_exception("input is not a mysqli object"));
+		if(gettype($pdo) !== "object" || get_class($pdo) !== "PDO") {
+			throw(new PDOException("input is not a PDO object"));
 		}
 
 		// enforce the locationId is null (i.e., don't insert a location that already exists)
 		if($this->locationId !== null) {
-			throw(new mysqli_sql_exception("not a new location"));
+			throw(new PDOException("not a new location"));
 		}
 
 		// create query template
-		$query = "INSERT INTO location(latitude, locationDescription, locationNote, longitude) VALUES(?, ?, ?, ?)";
-		$statement = $mysqli->prepare($query);
+		$query = "INSERT INTO location(latitude, locationDescription, locationNote, longitude) VALUES(:latitude, :locationDescription, :locationNote, :longitude)";
+		$statement = $pdo->prepare($query);
 		if($statement === false) {
-			throw(new mysqli_sql_exception("unable to prepare statement"));
+			throw(new PDOException("unable to prepare statement"));
 		}
 
 		// bind the location variables to the place holders in the template
-		$wasClean = $statement->bind_param("dssd", $this->latitude, $this->locationDescription, $this->locationNote, $this->longitude);
-		if($wasClean === false) {
-			throw(new mysqli_sql_exception("unable to bind parameters"));
-		}
+		$parameters = array("latitude" => $this->latitude, "locationDescription" => $this->locationDescription, "locationNote" => $this->locationNote, "longitude" => $this->longitude);
 
 		// execute the statement
-		if($statement->execute() === false) {
-			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
+		if($statement->execute($parameters) === false) {
+			throw(new PDOException("unable to execute mySQL statement: " . $statement->error));
 		}
 
 		// update the null locationId with what mySQL just gave us
-		$this->locationId = $mysqli->insert_id;
+		$this->locationId = $pdo->insert_id;
 
 		// clean up the statement
 		$statement->close();
@@ -269,36 +266,33 @@ class Location {
 	/**
 	 * deletes location from mySQL
 	 *
-	 * @param resource $mysqli pointer to mySQL connection, by reference
-	 * @throws mysqli_sql_exception when mySQL related errors occur
+	 * @param PDO $pdo pointer to mySQL connection, by reference
+	 * @throws PDOException when mySQL related errors occur
 	 **/
-	public function delete(&$mysqli) {
+	public function delete(PDO &$pdo) {
 		// handle degenerate cases
-		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
-			throw(new mysqli_sql_exception("input is not a mysqli object"));
+		if(gettype($pdo) !== "object" || get_class($pdo) !== "PDO") {
+			throw(new PDOException("input is not a PDO object"));
 		}
 
 		// enforce the locationId is not null (i.e., don't delete a location that hasn't been inserted)
 		if($this->locationId === null) {
-			throw(new mysqli_sql_exception("unable to delete a location that does not exist"));
+			throw(new PDOException("unable to delete a location that does not exist"));
 		}
 
 		// create query template
-		$query = "DELETE FROM location WHERE locationId = ?";
-		$statement = $mysqli->prepare($query);
+		$query = "DELETE FROM location WHERE locationId = :locationId";
+		$statement = $pdo->prepare($query);
 		if($statement === false) {
-			throw(new mysqli_sql_exception("unable to prepare statement"));
+			throw(new PDOException("unable to prepare statement"));
 		}
 
 		// bind the location variables to the place holder in the template
-		$wasClean = $statement->bind_param("i", $this->locationId);
-		if($wasClean === false) {
-			throw(new mysqli_sql_exception("unable to bind parameters"));
-		}
+		$parameters = array("locationId" => $this->locationId);
 
 		// execute the statement
-		if($statement->execute() === false) {
-			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
+		if($statement->execute($parameters) === false) {
+			throw(new PDOException("unable to execute mySQL statement: " . $statement->error));
 		}
 
 		// clean up the statement
@@ -308,36 +302,33 @@ class Location {
 	/**
 	 * updates location in mySQL
 	 *
-	 * @param resource $mysqli pointer to mySQL connection, by reference
-	 * @throws mysqli_sql_exception when mySQL related errors occur
+	 * @param PDO $pdo pointer to mySQL connection, by reference
+	 * @throws PDOException when mySQL related errors occur
 	 **/
-	public function update(&$mysqli) {
+	public function update(PDO &$pdo) {
 		// handle degenerate cases
-		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
-			throw(new mysqli_sql_exception("input is not a mysqli object"));
+		if(gettype($pdo) !== "object" || get_class($pdo) !== "PDO") {
+			throw(new PDOException("input is not a PDO object"));
 		}
 
 		// enforce the locationId is not null (i.e., don't update a location that hasn't been inserted)
 		if($this->locationId === null) {
-			throw(new mysqli_sql_exception("unable to update a location that does not exist"));
+			throw(new PDOException("unable to update a location that does not exist"));
 		}
 
 		// create query template
-		$query = "UPDATE location SET latitude = ?, locationDescription = ?, locationNote = ?, longitude = ? WHERE locationId = ?";
-		$statement = $mysqli->prepare($query);
+		$query = "UPDATE location SET latitude = :latitude, locationDescription = :locationDescription, locationNote = :locationNote, longitude = :longitude WHERE locationId = :locationId";
+		$statement = $pdo->prepare($query);
 		if($statement === false) {
-			throw(new mysqli_sql_exception("unable to prepare statement"));
+			throw(new PDOException("unable to prepare statement"));
 		}
 
 		// bind the location variables to the place holders in the template
-		$wasClean = $statement->bind_param("dssdi", $this->latitude, $this->locationDescription, $this->locationNote, $this->longitude, $this->locationId);
-		if($wasClean === false) {
-			throw(new mysqli_sql_exception("unable to bind parameters"));
-		}
+		$parameters = array("latitude" => $this->latitude, "locationDescription" => $this->locationDescription, "locationNote" => $this->locationNote, "longitude" => $this->longitude, "locationId" => $this->locationId);
 
 		// execute the statement
-		if($statement->execute() === false) {
-			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
+		if($statement->execute($parameters) === false) {
+			throw(new PDOException("unable to execute mySQL statement: " . $statement->error));
 		}
 
 		// clean up the statement
@@ -347,64 +338,62 @@ class Location {
 	/**
 	 * gets the location by location Id
 	 *
-	 * @param resource $mysqli pointer to mySQL connection, by reference
+	 * @param PDO $pdo pointer to mySQL connection, by reference
 	 * @param int $locationId location to search for
 	 * @return mixed location found or null if not found
-	 * @throws mysqli_sql_exception when mySQL related errors occur
+	 * @throws PDOException when mySQL related errors occur
 	 **/
-	public static function getLocationByLocationId(&$mysqli, $locationId) {
+	public static function getLocationByLocationId(PDO &$pdo, $locationId) {
 		// handle degenerate cases
-		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
-			throw(new mysqli_sql_exception("input is not a mysqli object"));
+		if(gettype($pdo) !== "object" || get_class($pdo) !== "PDO") {
+			throw(new PDOException("input is not a PDO object"));
 		}
 
 		// sanitize the locationId before searching
 		$locationId = filter_var($locationId, FILTER_VALIDATE_INT);
 		if($locationId === false) {
-			throw(new mysqli_sql_exception("location id is not an integer"));
+			throw(new PDOException("location id is not an integer"));
 		}
 		if($locationId <= 0) {
-			throw(new mysqli_sql_exception("location id is not positive"));
+			throw(new PDOException("location id is not positive"));
 		}
 
 		// create query template
-		$query = "SELECT locationId, latitude, locationDescription, locationNote, longitude FROM location WHERE locationId = ?";
-		$statement = $mysqli->prepare($query);
+		$query = "SELECT locationId, latitude, locationDescription, locationNote, longitude FROM location WHERE locationId = :locationId";
+		$statement = $pdo->prepare($query);
 		if($statement === false) {
-			throw(new mysqli_sql_exception("unable to prepare statement"));
+			throw(new PDOException("unable to prepare statement"));
 		}
 
 		// bind the location id to the place holder in the template
-		$wasClean = $statement->bind_param("i", $locationId);
-		if($wasClean === false) {
-			throw(new mysqli_sql_exception("unable to bind parameters"));
-		}
+		$parameters = array("locationId" => $locationId);
 
 		// execute the statement
-		if($statement->execute() === false) {
-			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
+		if($statement->execute($parameters) === false) {
+			throw(new PDOException("unable to execute mySQL statement: " . $statement->error));
 		}
 
+		$statement->setFetchMode(PDO::FETCH_ASSOC);
+
 		// get result from the SELECT query
-		$result = $statement->get_result();
-		if($result === false) {
-			throw(new mysqli_sql_exception("unable to get result set"));
+		$row = $statement->fetch();
+		if($row === false) {
+			throw(new PDOException("unable to get result set"));
 		}
 
 		// grab the location from mySQL
 		try {
 			$location = null;
-			$row = $result->fetch_assoc();
 			if($row !== null) {
 				$location = new Location($row["locationId"], $row["latitude"], $row["locationDescription"], $row["locationNote"], $row["longitude"]);
 			}
 		} catch(Exception $exception) {
 		// if the row couldn't be converted, rethrow it
-			throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
+			throw(new PDOException($exception->getMessage(), 0, $exception));
 		}
 
 		// free up memory and return the result
-		$result->free();
+		$row->free();
 		$statement->close();
 		return ($location);
 	}
@@ -412,15 +401,15 @@ class Location {
 	/**
 	 * gets the location by location description
 	 *
-	 * @param resource $mysqli pointer to mySQL connection, by reference
+	 * @param PDO $pdo pointer to mySQL connection, by reference
 	 * @param string $locationDescription location to search for by description
 	 * @return mixed location found or null if not found
-	 * @throws mysqli_sql_exception when mySQL related errors occur
+	 * @throws PDOException when mySQL related errors occur
 	 **/
-	public static function getLocationByLocationDescription(&$mysqli, $locationDescription) {
+	public static function getLocationByLocationDescription(PDO &$pdo, $locationDescription) {
 		// handle degenerate cases
-		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
-			throw(new mysqli_sql_exception("input is not a mysqli object"));
+		if(gettype($pdo) !== "object" || get_class($pdo) !== "PDO") {
+			throw(new PDOException("input is not a PDO object"));
 		}
 
 		// sanitize the location description before searching
@@ -431,39 +420,38 @@ class Location {
 		}
 
 		// create query template
-		$query = "SELECT locationId, latitude, locationDescription, locationNote, longitude FROM location WHERE locationDescription LIKE ?";
-		$statement = $mysqli->prepare($query);
+		$query = "SELECT locationId, latitude, locationDescription, locationNote, longitude FROM location WHERE locationDescription LIKE :locationDescription";
+		$statement = $pdo->prepare($query);
 		if($statement === false) {
-			throw(new mysqli_sql_exception("unable to prepare statement"));
+			throw(new PDOException("unable to prepare statement"));
 		}
 
 		// bind the location description to the place holder in the template
 		$locationDescription = "%$locationDescription%";
-		$wasClean = $statement->bind_param("s", $locationDescription);
-		if($wasClean === false) {
-			throw(new mysqli_sql_exception("unable to bind parameters"));
-		}
+		$parameters = array("locationDescription" => $locationDescription);
 
 		// execute the statement
-		if($statement->execute() === false) {
-			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
+		if($statement->execute($parameters) === false) {
+			throw(new PDOException("unable to execute mySQL statement: " . $statement->error));
 		}
 
+		$statement->setFetchMode(PDO::FETCH_ASSOC);
+
 		// get result from the SELECT query
-		$result = $statement->get_result();
-		if($result === false) {
-			throw(new mysqli_sql_exception("unable to get result set"));
+		$row = $statement->fetch();
+		if($row === false) {
+			throw(new PDOException("unable to get result set"));
 		}
 
 		// grab the location from mySQL
 		$locations = array();
-		while(($row = $result->fetch_assoc()) !== null) {
+		while($row !== null) {
 			try {
 				$location = new Location($row["locationId"], $row["latitude"], $row["locationDescription"], $row["locationNote"], $row["longitude"]);
 				$locations[] = $location;
 			} catch(Exception $exception) {
 		// if the row couldn't be converted, rethrow it
-				throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
+				throw(new PDOException($exception->getMessage(), 0, $exception));
 			}
 		}
 		// count the results in the array and return:
@@ -480,111 +468,95 @@ class Location {
 	/**
 	 * gets the locations & associated parking spots
 	 *
-	 * @param resource $mysqli pointer to mySQL connection, by reference
+	 * @param PDO $pdo pointer to mySQL connection, by reference
 	 * @return mixed location and spots found or null if not found
-	 * @throws mysqli_sql_exception when mySQL related errors occur
+	 * @throws PDOException when mySQL related errors occur
 	 **/
-	public static function getAllLocationsAndParkingSpots(&$mysqli) {
+	public static function getAllLocationsAndParkingSpots(PDO &$pdo) {
 		// handle degenerate cases
-		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
-			throw(new mysqli_sql_exception("input is not a mysqli object"));
+		if(gettype($pdo) !== "object" || get_class($pdo) !== "PDO") {
+			throw(new PDOException("input is not a PDO object"));
 		}
 
 		// create query template
-		$query = "SELECT location.locationId, latitude, locationDescription, locationNote, longitude, parkingSpotId, placardNumber FROM location
+		$query = "SELECT locationDescription, locationNote, placardNumber FROM location
 					 INNER JOIN parkingSpot ON location.locationId = parkingSpot.locationId";
-		$statement = $mysqli->prepare($query);
-		if($statement === false) {
-			throw(new mysqli_sql_exception("unable to prepare statement"));
-		}
+		$statement = $pdo->prepare($query);
+		$statement->execute();
+		$locations = array();
+		$statement->setFetchMode(PDO::FETCH_ASSOC);
 
-		// execute the statement
-		if($statement->execute() === false) {
-			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
-		}
-
-		// get result from the SELECT query
-		$result = $statement->get_result();
-		if($result === false) {
-			throw(new mysqli_sql_exception("unable to get result set"));
-		}
-
-		// handle degenerate cases
-		$numRows = $result->num_rows;
-		if($numRows === 0) {
-			return (null);
-		}
-
-		// Build the array, 2 objects
-		$objects = array();
-		while(($row = $result->fetch_assoc()) !== null) {
+		// Build the array
+		while(($row = $statement->fetch()) !== false) {
 			try {
-				$objects[] = $row;
+			$locations[] = $row;
 
 			} catch(Exception $exception) {
 				// if the row couldn't be converted, rethrow it
-				throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
+				throw(new PDOException($exception->getMessage(), 0, $exception));
 			}
 		}
 
 		// free up memory and return the results
-		$result->free();
-		$statement->close();
-		return($objects);
-	}
+//		$row->free();
+//		$statement->close();
 
+		return($locations);
+	}
 
 	/**
 	 * gets all locations as array with $locationId and $locationDescription
 	 *
-	 * @param resource $mysqli pointer to mySQL connection, by reference
+	 * @param PDO $pdo pointer to mySQL connection, by reference
 	 * @return mixed array of locationId and locationDescription
-	 * @throws mysqli_sql_exception when mySQL related errors occur
+	 * @throws PDOException when mySQL related errors occur
 	 **/
-	public static function getListOfLocations(&$mysqli) {
+	public static function getListOfLocations(PDO &$pdo) {
 		// handle degenerate cases
-		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
-			throw(new mysqli_sql_exception("input is not a mysqli object"));
+		if(gettype($pdo) !== "object" || get_class($pdo) !== "PDO") {
+			throw(new PDOException("input is not a PDO object"));
 		}
 
 		// create query template
 		$query = "SELECT locationId, locationDescription FROM location";
-		$statement = $mysqli->prepare($query);
+		$statement = $pdo->prepare($query);
 		if($statement === false) {
-			throw(new mysqli_sql_exception("unable to prepare statement"));
+			throw(new PDOException("unable to prepare statement"));
 		}
 
 		// execute the statement
 		if($statement->execute() === false) {
-			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
+			throw(new PDOException("unable to execute mySQL statement: " . $statement->error));
 		}
 
+		$statement->setFetchMode(PDO::FETCH_ASSOC);
+
 		// get result from the SELECT query
-		$result = $statement->get_result();
-		if($result === false) {
-			throw(new mysqli_sql_exception("unable to get result set"));
+		$row = $statement->fetch();
+		if($row === false) {
+			throw(new PDOException("unable to get result set"));
 		}
 
 		// handle degenerate cases
-		$numRows = $result->num_rows;
+		$numRows = $row->num_rows;
 		if($numRows === 0) {
 			return (null);
 		}
 
 	// grab the location from mySQL
 			$locations = array();
-			while(($row = $result->fetch_assoc()) !== null) {
+			while($row !== null) {
 				try {
 					$location = [$row["locationId"], $row["locationDescription"]];
 					$locations[] = $location;
 				} catch(Exception $exception) {
 					// if the row couldn't be converted, rethrow it
-					throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
+					throw(new PDOException($exception->getMessage(), 0, $exception));
 				}
 			}
 
 		// free up memory and return the results
-		$result->free();
+		$row->free();
 		$statement->close();
 		return($locations);
 		}

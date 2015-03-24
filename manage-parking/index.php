@@ -33,10 +33,18 @@ $configFile = "/home/cnmparki/etc/mysql/cnmparking.ini";
 $configArray = readConfig($configFile);
 
 // first, connect to mysqli
-mysqli_report(MYSQLI_REPORT_STRICT);
-$mysqli = new mysqli($configArray["hostname"], $configArray["username"], $configArray["password"], $configArray["database"]);
+$host = $configArray["hostname"];
+$db = $configArray["database"];
 
-$objects = Location::getAllLocationsAndParkingSpots($mysqli);
+$dsn = "mysql:host=localhost;dbname=--DBNAME--";
+$options = array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8");
+$pdo = new PDO($dsn, $username, $password, $options);
+
+//$pdo = new PDO($dsn, $configArray["username"], $configArray["password"], $options);
+
+$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
+
+$objects = Location::getAllLocationsAndParkingSpots($pdo);
 
 ?>
 
@@ -51,7 +59,6 @@ $objects = Location::getAllLocationsAndParkingSpots($mysqli);
 			<?php
 
 			foreach($objects as $object) {
-				$locationId = $object["locationId"];
 				$locationNote = $object["locationNote"];
 				$locationDesc = $object["locationDescription"];
 				$placard = $object["placardNumber"];
@@ -63,7 +70,7 @@ EOF;
 			echo "</tbody>";
 			echo "</table>";
 			echo "</div>";
-			$mysqli->close();
+//			$pdo->close();
 
 			} catch(Exception $exception) {
 				echo "<td><tr class=\"alert alert-danger\" colspan=\"3\">Exception: " . $exception->getMessage() . "</td></tr>";
