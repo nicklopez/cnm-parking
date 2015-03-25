@@ -61,7 +61,7 @@ try {
 	<body>
 		<h1>CNM Parking Pass</h1>
 		<hr />
-		<p>Welcome to CNM! Print out this E-Permit. It must be fully displayed on the dashboard of your vehicle. This permit is valid for any non-restricted parking space.
+		<p>Welcome to CNM! Print out this temporary parking permit. It must be fully displayed on the dashboard of your vehicle. This permit is valid for any non-restricted parking space.
 		Permit is not valid for meters, loading zones, fire lanes, or any other restricted spaces including spaces marked "Parking by Special Permit" sign.</p>
 	</body>
 </html>
