@@ -12,12 +12,9 @@ require_once("../classes/location.php");
 require_once("../classes/parkingpass.php");
 require_once("../classes/parkingspot.php");
 
-
-
 // require PEAR::Mail <http://pear.php.net/package/Mail> to send mail
 require_once("Mail.php");
 require_once("Mail/mime.php");
-
 
 session_start();
 
@@ -39,7 +36,7 @@ try {
 	$vehicle->insert($pdo);
 
 	// create and insert parking pass
-	$parkingPass = new ParkingPass(null, $_POST["adminProfileId"], $_POST["parkingSpotId"], $vehicle->getVehicleId(), $_POST["departureDate"], "2015-02-10 08:00:00", $_POST["arrivalDate"], null);
+	$parkingPass = new ParkingPass(null, $_POST["adminProfileId"], $_POST["parkingSpotId"], $vehicle->getVehicleId(), $_POST["departureDate"], null, $_POST["arrivalDate"], null);
 	$parkingPass->insert($pdo);
 
 	if(@isset($_POST["vehicleMake"]) === false || @isset($_POST["vehicleModel"]) === false || @isset($_POST["vehicleYear"]) === false || @isset($_POST["vehicleColor"]) === false ||
@@ -48,10 +45,7 @@ try {
 		throw(new PDOException("form values not complete. verify the form and try again."));
 		}
 
-	// email the visitor a URL with token
-//	$objects = Invite::getInviteByActivation($pdo, $_POST["activation"]);
-//	$visitor = $objects["visitor"];
-//	$to = $visitor->getVisitorEmail();
+	// generate the email
 	$to = $_POST["visitorEmail"];
 	$from = "noreply@cnm.edu";
 
@@ -65,7 +59,7 @@ try {
 	$message = <<< EOF
 <html>
 	<body>
-		<h1>Temporary CNM Parking Pass</h1>
+		<h1>CNM Parking Pass</h1>
 		<hr />
 		<p>Welcome to CNM! Print out this E-Permit. It must be fully displayed on the dashboard of your vehicle. This permit is valid for any non-restricted parking space.
 		Permit is not valid for meters, loading zones, fire lanes, or any other restricted spaces including spaces marked "Parking by Special Permit" sign.</p>

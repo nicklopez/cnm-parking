@@ -5,7 +5,8 @@
 						<h3>Choose Location</h3>
 						<label for="selectListLocation" class="control-label"></label>
 						<select id="selectListLocation" name="selectListLocation" class="form-control">
-							<?php require_once("../php/controllers/list-of-locations.php") ?>
+							<option value="1">STEMulus Center</option>
+<!--							--><?php //require_once("../php/controllers/list-of-locations.php"); ?>
 						</select>
 					</div>
 				</div>

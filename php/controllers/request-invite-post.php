@@ -69,9 +69,7 @@ try {
 	$headers["Content-Type"] = "text/html; charset=UTF-8";
 
 	// build message
-	$pageName = end(explode("/", $_SERVER["PHP_SELF"],4));
-	$url = "http://" . $_SERVER["SERVER_NAME"] . $_SERVER["PHP_SELF"];
-	$url = str_replace($pageName, "send-invite", $url);
+	$url = "http://cnmparking.com/send-invite";
 	$message = <<< EOF
 	<html>
 		<body>

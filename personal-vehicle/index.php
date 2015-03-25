@@ -64,19 +64,19 @@ require_once("../verify-availability/index.php");
 			<div class="col-xs-12 col-md-6">
 				<div class="form-group">
 					<label for="visitorFirstName">First Name:</label>
-					<input type="text" class="form-control name" id="visitorFirstName" disabled="disabled" name="visitorFirstName" value="<?php echo $visitor->getVisitorFirstName(); ?>">
+					<input type="text" class="form-control name" id="visitorFirstName" name="visitorFirstName" value="<?php echo $visitor->getVisitorFirstName(); ?>" readonly>
 				</div>
 				<div class="form-group">
 					<label for="visitorLastName">Last Name:</label>
-					<input type="text" class="form-control name" id="visitorLastName" disabled="disabled" name="visitorLastName" value="<?php echo $visitor->getVisitorLastName(); ?>">
+					<input type="text" class="form-control name" id="visitorLastName" name="visitorLastName" value="<?php echo $visitor->getVisitorLastName(); ?>" readonly>
 				</div>
 				<div class="form-group">
 					<label for="visitorEmail">Email:</label>
-					<input type="text" class="form-control email" id="visitorEmail" disabled="disabled" name="visitorEmail" value="<?php echo $visitor->getVisitorEmail(); ?>">
+					<input type="text" class="form-control name" id="visitorEmail" name="visitorEmail" value="<?php echo $visitor->getVisitorEmail(); ?>" readonly>
 				</div>
 				<div class="form-group">
 					<label for="visitorPhone">Phone Number:</label>
-					<input type="text" class="form-control phone" id="visitorPhone" disabled="disabled" name="visitorPhone" value="<?php echo $visitor->getVisitorPhone(); ?>">
+					<input type="text" class="form-control phone" id="visitorPhone" name="visitorPhone" value="<?php echo $visitor->getVisitorPhone(); ?>" readonly>
 				</div>
 			</div>
 			<div class="col-xs-12 col-md-6">

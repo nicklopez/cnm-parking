@@ -532,12 +532,12 @@ class Invite {
 	 * @param PDO $pdo pointer to mySQL connection, by reference
 	 * @param int $activation invite to search for by activation (token)
 	 * @return mixed invite found or null if not found
-	 * @throws mysqli_sql_exception when mySQL related errors occur
+	 * @throws PDOException when mySQL related errors occur
 	 **/
 	public static function getInviteByActivation(PDO &$pdo, $activation) {
 		// handle degenerate cases
 		if(gettype($pdo) !== "object" || get_class($pdo) !== "PDO") {
-			throw(new mysqli_sql_exception("input is not a PDO object"));
+			throw(new PDOException("input is not a PDO object"));
 		}
 
 		// sanitize activation (token) before searching
@@ -553,7 +553,7 @@ class Invite {
 		WHERE activation = :activation";
 		$statement = $pdo->prepare($query);
 		if($statement === false) {
-			throw(new mysqli_sql_exception("unable to prepare statement"));
+			throw(new PDOException("unable to prepare statement"));
 		}
 
 		// bind the activation (token) to the place holder in the template
@@ -567,7 +567,7 @@ class Invite {
 		// handle degenerate case: more than 1 row!?
 		$numRows = $statement->rowCount();
 		if($numRows > 1) {
-			throw(new mysqli_sql_exception("activation (token) is not unique"));
+			throw(new PDOException("activation (token) is not unique"));
 		} else if($numRows === 0) {
 			return (null);
 		}
@@ -582,9 +582,8 @@ class Invite {
 			$objects["invite"] = $invite;
 		} catch(Exception $exception) {
 			// if the row couldn't be converted, rethrow it
-			throw(new mysqli_sql_exception($exception->getMessage(), 0, $exception));
+			throw(new PDOException($exception->getMessage(), 0, $exception));
 		}
-
 			return($objects);
 		}
 
@@ -624,10 +623,6 @@ class Invite {
 				// if the row couldn't be converted, rethrow it
 				throw(new PDOException($exception->getMessage(), 0, $exception));
 			}
-
-		// free up memory and return the results
-//		$result->free();
-//		$statement->close();
 
 		$numberOfInvites = count($invites);
 		if($numberOfInvites === 0) {
