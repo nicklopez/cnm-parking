@@ -87,27 +87,22 @@ function generatePassImage($pdo, $parkingPass, $vehicle, $font) {
 	$timeFormat = "M j, y g:i a";
 
 // create image text
-	imagettftext($image, 75, 0.0, 350, 90, $black, $font, "City of Albuquerque Temporary Parking Pass");
+	imagettftext($image, 75, 0.0, 350, 90, $black, $font, "CNM STEMulus Temporary Parking Pass");
 
-	imagettftext($image, 50, 0.0, 450, 365, $black, $font, "Start Date/Time: ");
-//		. $parkingPass->getStartDateTime()->format($timeFormat));
+	imagettftext($image, 50, 0.0, 450, 365, $black, $font, "Start Date/Time: " . $parkingPass->getStartDateTime()->format($timeFormat));
 
-	imagettftext($image, 50.0, 0.0, 450, 525, $black, $font, "End Date/Time: ");
-//		. $parkingPass->getEndDateTime()->format($timeFormat));
+	imagettftext($image, 50.0, 0.0, 450, 525, $black, $font, "End Date/Time: " . $parkingPass->getEndDateTime()->format($timeFormat));
 
-	imagettftext($image, 50.0, 0.0, 450, 700, $black, $font, "License Plate #: " );
-//	. $vehicle->getVehiclePlateState() . " - " . $vehicle->getVehiclePlateNumber());
+	imagettftext($image, 50.0, 0.0, 450, 700, $black, $font, "License Plate #: " . $vehicle->getVehiclePlateState() . " - " . $vehicle->getVehiclePlateNumber());
 
-	imagettftext($image, 50.0, 0.0, 450, 875, $black, $font, "Location: " );
-//	. $location->getLocationDescription());
+	imagettftext($image, 50.0, 0.0, 450, 875, $black, $font, "Location: " . $location->getLocationDescription());
 
-	imagettftext($image, 50.0, 0.0, 450, 1050, $black, $font, "Placard #: ");
-//		. $parkingSpot->getPlacardNumber());
+	imagettftext($image, 50.0, 0.0, 450, 1050, $black, $font, "Placard #: " . $parkingSpot->getPlacardNumber());
 
 	imagettftext($image, 25, 0.0, 150, 1300, $red, $font, "LEGAL NOTICE: Duplication or manufacturing of a parking permit is a crime. Handwritten changes will VOID an temporary parking pass.
 Vehicles displaying such permits will be cited. Attempts to fraudulently obtain parking privileges at CNM may result in disciplinary action.");
 
-// drawing framing bars
+// test drawing a black line
 	imageline($image, 0, 200, 2500, 200, $yellow);
 	imageline($image, 0, 1200, 2500, 1200, $blue);
 
@@ -117,10 +112,9 @@ Vehicles displaying such permits will be cited. Attempts to fraudulently obtain 
 	$jpegData = ob_get_contents();
 	ob_end_clean();
 
-
 // free up memory
 	imagedestroy($image);
-	return ($jpegData);
 
+	return ($jpegData);
 }
 ?>
