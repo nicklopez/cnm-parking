@@ -13,12 +13,6 @@ require_once("../classes/invite.php");
 require_once("Mail.php");
 
 try {
-	// verify the form was submitted OK
-	if (@isset($_POST["emailAddress"]) === false || @isset($_POST["firstName"]) === false ||
-		@isset($_POST["lastName"]) === false || @isset($_POST["phone"]) === false) {
-		throw(new RuntimeException("form variables incomplete or missing"));
-	}
-
 	// create a new salt or token
 	$activation = bin2hex(openssl_random_pseudo_bytes(16));
 
@@ -33,9 +27,9 @@ try {
 	$pdo = new PDO($dsn, $configArray["username"], $configArray["password"], $options);
 	$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
 
-	// query mySQL to see if visitor exists
+	// query mySQL to see if visitor exists.  If not, insert the visitor and invite records.
 	$visitor = Visitor::getVisitorByVisitorEmail($pdo, $_POST["emailAddress"]);
-	if(count($visitor) === 0) {
+	if($visitor === null) {
 		$newVisitor = new Visitor(null, $_POST["emailAddress"], $_POST["firstName"], $_POST["lastName"], $_POST["phone"]);
 		$newVisitor->insert($pdo);
 		$invite = new Invite(null, null, $activation, null, null, null, $newVisitor->getVisitorId());
@@ -46,29 +40,26 @@ try {
 	}
 
 	// email the CNM admin and inform them of the request
-	if(count($visitor) === 0) {
-		$to = $newVisitor->getVisitorEmail();
-	} else {
-		$to = $visitor->getVisitorEmail();
-	}
+	$headers = array();
 	$from = "noreply@cnm.edu";
 
-	// build headers
-	$headers = array();
+	// use an if statement to fetch the available visitor values
+	if($visitor === null) {
+		$to = $newVisitor->getVisitorEmail();
+		$headers["Subject"] = "Parking Pass Invite Request - " . $newVisitor->getVisitorFirstName() . " " . $newVisitor->getVisitorLastName();
+	} else {
+		$to = $visitor->getVisitorEmail();
+		$headers["Subject"] = "Parking Pass Invite Request - " . $visitor->getVisitorFirstName() . " " . $visitor->getVisitorLastName();
+	}
+
+	// finish building the headers
 	$headers["To"] = $to;
 	$headers["From"] = $from;
 	$headers["Reply-To"] = $from;
-
-	// use and if statement to fetch the available visitor values
-	if(count($visitor) === 0) {
-		$headers["Subject"] = "Parking Pass Invite Request - " . $newVisitor->getVisitorFirstName() . " " . $newVisitor->getVisitorLastName();
-	} else {
-		$headers["Subject"] = "Parking Pass Invite Request - " . $visitor->getVisitorFirstName() . " " . $visitor->getVisitorLastName();
-	}
 	$headers["MIME-Version"] = "1.0";
 	$headers["Content-Type"] = "text/html; charset=UTF-8";
 
-	// build message
+	// build the email message
 	$url = "http://cnmparking.com/send-invite";
 	$message = <<< EOF
 	<html>
@@ -92,7 +83,6 @@ EOF;
 	{
 		echo "<div class=\"alert alert-success\" role=\"alert\"><strong>Request sent successfully!</strong> You will receive an email with additional details shortly.</div>";
 	}
-
 } catch(Exception $exception) {
 	echo "<div class=\"alert alert-danger\" role=\"alert\"><strong>Oh snap!</strong> Unable to request a parking pass: " . $exception->getMessage() . "</div>";
 }

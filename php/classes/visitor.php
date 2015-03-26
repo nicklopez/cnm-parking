@@ -114,6 +114,7 @@ class Visitor {
 		// verify the visitor email is secure
 		$newVisitorEmail = trim($newVisitorEmail);
 		$newVisitorEmail = filter_var($newVisitorEmail, FILTER_SANITIZE_EMAIL);
+
 		if(empty($newVisitorEmail) === true) {
 			throw(new InvalidArgumentException("visitor email is empty or insecure"));
 		}
@@ -262,7 +263,7 @@ class Visitor {
 		$this->visitorId = $pdo->lastInsertId();
 
 		// clean up the statement
-		$statement->close();
+//		$statement->close();
 	}
 
 	/**
@@ -296,7 +297,7 @@ class Visitor {
 		$statement->execute($parameters);
 
 		// clean up the statement
-		$statement->close();
+//		$statement->close();
 	}
 
 	/**
@@ -330,7 +331,7 @@ class Visitor {
 		$statement->execute($parameters);
 
 		// clean up the statement
-		$statement->close();
+//		$statement->close();
 	}
 
 	/**
@@ -540,24 +541,20 @@ class Visitor {
 		$statement->execute($parameters);
 		$statement->setFetchMode(PDO::FETCH_ASSOC);
 
-		// get result from the SELECT query
-
 		// grab the visitor from mySQL
 		try {
-			$visitorEmail = null;
+			$visitor = null;
 			$row = $statement->fetch();
-			if($row !== null) {
-				$visitorEmail = new Visitor($row["visitorId"], $row["visitorEmail"], $row["visitorFirstName"], $row["visitorLastName"], $row["visitorPhone"]);
+			if($row !== false) {
+				$visitor = new Visitor($row["visitorId"], $row["visitorEmail"], $row["visitorFirstName"], $row["visitorLastName"], $row["visitorPhone"]);
 			}
 		} catch (Exception $exception) {
 			// if the row couldn't be converted, rethrow it
 			throw(new PDOException($exception->getMessage(), 0, $exception));
 		}
 
-		// free up memory and return the result
-//		$result->free();
-//		$statement->close();
-		return ($visitorEmail);
+		// return the result
+		return ($visitor);
 	}
 }
 ?>

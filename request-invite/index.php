@@ -17,7 +17,7 @@ session_start();
 			<?php echo generateInputTags(); ?>
 			<div class="form-group">
 				<label for="emailAddress">Email:</label>
-				<input type="text" class="form-control email" id="emailAddress" name="emailAddress" size="128" maxlength="128" placeholder="name@example.com">
+				<input type="email" class="form-control email" id="emailAddress" name="emailAddress" size="128" maxlength="128" placeholder="name@example.com">
 			</div>
 			<div class="form-group">
 				<label for="firstName">First Name:</label>
