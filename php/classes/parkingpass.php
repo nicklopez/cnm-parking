@@ -1004,13 +1004,24 @@ class ParkingPass {
 		}
 
 		// create query template
+		// testing a new query, original commented out below -- Nick
 		$query = "SELECT parkingSpotId FROM parkingSpot WHERE parkingSpotId NOT IN
-					(SELECT parkingSpot.parkingSpotId FROM parkingSpot INNER JOIN parkingPass ON parkingSpot.parkingSpotId = parkingPass.parkingSpotId WHERE
-		  			(locationId = :locationId AND :sunrise <= endDateTime AND
-					((:sunrise > startDateTime AND :sunset <= startDateTime) OR
-			 		(:sunrise >= startDateTime)))) AND
-					locationId = :locationId
-					LIMIT 1";
+		(SELECT parkingSpot.parkingSpotId FROM parkingSpot INNER JOIN parkingPass ON parkingSpot.parkingSpotId = parkingPass.parkingSpotId
+		WHERE (:sunrise >= startDateTime AND :sunset <= endDateTime AND locationId = :locationId)
+		OR (:sunrise < startDateTime AND :sunset > endDateTime AND locationId = :locationId)
+		OR (:sunrise < startDateTime AND :sunset > startDateTime AND locationId = :locationId)
+		OR (:sunrise <= startDateTime AND :sunset > enddatetime AND locationId = :locationId))
+		AND locationId = :locationId
+		LIMIT 1";
+
+//		$query = "SELECT parkingSpotId FROM parkingSpot WHERE parkingSpotId NOT IN
+//					(SELECT parkingSpot.parkingSpotId FROM parkingSpot INNER JOIN parkingPass ON parkingSpot.parkingSpotId = parkingPass.parkingSpotId WHERE
+//		  			(locationId = :locationId AND :sunrise <= endDateTime AND
+//					((:sunrise > startDateTime AND :sunset <= startDateTime) OR
+//			 		(:sunrise >= startDateTime)))) AND
+//					locationId = :locationId
+//					LIMIT 1";
+
 		$statement = $pdo->prepare($query);
 		if($statement === false) {
 			throw(new mysqli_sql_exception(" unable to prepare statement"));
