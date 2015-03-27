@@ -55,7 +55,7 @@ if(empty($departure) === true) {
 }
 
 $availableSpot = ParkingPass::getParkingPassAvailability($pdo, $location, $arrival, $departure);
-if($availableSpot !== null) {
+if($availableSpot !== false) {
 
 	$isAvailable = "Yes! There are currently available parking spots for that time window" . "," . $availableSpot["parkingSpotId"];
 } else {
