@@ -987,10 +987,10 @@ class ParkingPass {
 	 * @param $arrival
 	 * @param $departure
 	 */
-	public static function getParkingPassAvailability(PDO $pdo, $location, $arrival, $departure) {
+	public static function getParkingPassAvailability(PDO &$pdo, $location, $arrival, $departure) {
 		// handle degenerate cases
 		if(gettype($pdo) !== "object" || get_class($pdo) !== "PDO") {
-			throw(new mysqli_sql_exception("input is not a PDO object"));
+			throw(new PDOException("input is not a PDO object"));
 		}
 
 		// sanitize dates before searching - Using static function
@@ -1024,7 +1024,7 @@ class ParkingPass {
 
 		$statement = $pdo->prepare($query);
 		if($statement === false) {
-			throw(new mysqli_sql_exception(" unable to prepare statement"));
+			throw(new PDOException(" unable to prepare statement"));
 		}
 
 		// bind the member variables to the place holders in the template
