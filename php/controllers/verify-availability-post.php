@@ -54,6 +54,15 @@ if(empty($departure) === true) {
 
 }
 
+// error handling for incorrect date time range
+if($arrival === $departure) {
+	echo "Arrival and departure cannot be identical";
+	exit;
+} elseif($departure < $arrival) {
+	echo "Invalid date or time range.&nbsp; Please try again.";
+	exit;
+}
+
 $availableSpot = ParkingPass::getParkingPassAvailability($pdo, $location, $arrival, $departure);
 if($availableSpot !== false) {
 
