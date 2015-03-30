@@ -18,7 +18,6 @@
 		<script type="text/javascript" src="//cnmparking.com/js/location-row-grouping.js"></script>
 		<script type="text/javascript" src="//cnmparking.com/js/reports.js"></script>
 		<script type="text/javascript" src="//cnmparking.com/js/admin-login.js"></script>
-		<script type="text/javascript" src="//cnmparking.com/js/datetimepicker.js"></script>
 		<script type="text/javascript" src="//cnmparking.com/js/verify-availability.js"></script>
 		<script type="text/javascript" src="//cnmparking.com/js/visitorLookup.js"></script>
 
@@ -27,7 +26,6 @@
 		<link type="text/css" href="//cnmparking.com/fonts/lato.woff" rel="stylesheet">
 		<link type="text/css" href="//cnmparking.com/fonts/lato.woff2" rel="stylesheet">
 		<link type="text/css" href="//cnmparking.com/css/custom.css" rel="stylesheet">
-		<link type="text/css" href="//cnmparking.com/css/datetimepicker.css" rel="stylesheet"/>
 
 		<title><?php echo $title ?></title>
 	</head>
