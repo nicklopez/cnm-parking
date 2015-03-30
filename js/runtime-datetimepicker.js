@@ -2,6 +2,8 @@
  * Created by nicklopez on 3/30/15.
  */
 $('#dateTimePickerArrival').datetimepicker({
+	todayButton: false,
+	scrollMonth: false,
 	format: 'Y/m/d H:i',
 	formatTime: 'g:i A',
 	allowTimes: ['8:00 AM', '9:00 AM', '10:00 AM', '11:00 AM', '12:00 PM', '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM'
@@ -12,6 +14,8 @@ $('#dateTimePickerArrival').datetimepicker({
 });
 
 $('#dateTimePickerDeparture').datetimepicker({
+	todayButton: false,
+	scrollMonth: false,
 	format: 'Y/m/d H:i',
 	formatTime: 'g:i A',
 	allowTimes: ['9:00 AM', '10:00 AM', '11:00 AM', '12:00 PM', '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM'
