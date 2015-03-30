@@ -25,7 +25,10 @@ $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
 
 // get array of locations from class method, then echo out each row in an <object> tag
 $locations = Location::getListOfLocations($pdo);
+
+echo "<select id=selectListLocation name=selectListLocation class=form-control>";
 foreach($locations as $location) {
-	echo "<option value='$location[0]'>$location[1]</option>";
+	echo "<option value=$location[locationId]>$location[locationDesc]</option>";
 }
+echo "</select>";
 ?>

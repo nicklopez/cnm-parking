@@ -76,6 +76,7 @@ $(document).ready(
 						$("#outputArea").css("display", "");
 						// write the server's reply to the output area
 						$("#outputArea").html(result[0]);
+						$("#outputArea").addClass("alert alert-info");
 						$("#arrivalDate").val($("#dateTimePickerArrival").val());
 						$("#departureDate").val($("#dateTimePickerDeparture").val());
 						$("#parkingSpotId").val(result[1]);

@@ -379,7 +379,7 @@ class Location {
 				$location = new Location($row["locationId"], $row["latitude"], $row["locationDescription"], $row["locationNote"], $row["longitude"]);
 			}
 		} catch(Exception $exception) {
-		// if the row couldn't be converted, rethrow it
+			// if the row couldn't be converted, rethrow it
 			throw(new PDOException($exception->getMessage(), 0, $exception));
 		}
 
@@ -439,7 +439,7 @@ class Location {
 				$location = new Location($row["locationId"], $row["latitude"], $row["locationDescription"], $row["locationNote"], $row["longitude"]);
 				$locations[] = $location;
 			} catch(Exception $exception) {
-		// if the row couldn't be converted, rethrow it
+				// if the row couldn't be converted, rethrow it
 				throw(new PDOException($exception->getMessage(), 0, $exception));
 			}
 		}
@@ -478,7 +478,7 @@ class Location {
 		// Build the array
 		while(($row = $statement->fetch()) !== false) {
 			try {
-			$locations[] = $row;
+				$locations[] = $row;
 
 			} catch(Exception $exception) {
 				// if the row couldn't be converted, rethrow it
@@ -507,7 +507,7 @@ class Location {
 		}
 
 		// create query template
-		$query = "SELECT locationId, locationDescription FROM location";
+		$query = "SELECT locationId, CONCAT(locationDescription, ' - ' ,locationNote) AS locationDesc FROM location";
 		$statement = $pdo->prepare($query);
 		if($statement === false) {
 			throw(new PDOException("unable to prepare statement"));
@@ -523,17 +523,17 @@ class Location {
 			return (null);
 		}
 
-	// grab the location from mySQL
-			$locations = array();
-			while(($row = $statement->fetch()) !== false) {
-				try {
-					$locations[] = $row;
-				} catch(Exception $exception) {
-					// if the row couldn't be converted, rethrow it
-					throw(new PDOException($exception->getMessage(), 0, $exception));
-				}
+		// grab the location from mySQL
+		$locations = array();
+		while(($row = $statement->fetch()) !== false) {
+			try {
+				$locations[] = $row;
+			} catch(Exception $exception) {
+				// if the row couldn't be converted, rethrow it
+				throw(new PDOException($exception->getMessage(), 0, $exception));
 			}
-		return($locations);
 		}
+		return($locations);
 	}
+}
 ?>
