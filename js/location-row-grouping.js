@@ -3,7 +3,8 @@ $(document).ready(function() {
 		"columnDefs": [
 			{ "visible": false, "targets": 2 }
 		],
-		"order": [[ 2, 'asc' ]],
+		"ordering": false,
+		"stateSave": true,
 		"displayLength": 25,
 		"drawCallback": function ( settings ) {
 			var api = this.api();
