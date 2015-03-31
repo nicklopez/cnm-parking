@@ -48,18 +48,18 @@ $objects = Location::getAllLocationsAndParkingSpots($pdo);
 	<table id="example" class="hover row-border">
 		<thead>
 			<th>Location</th>
+			<th>Placard#</th>
 			<th></th>
 
 		</thead>
 		<tbody>
 			<?php
-
 			foreach($objects as $object) {
 				$locationNote = $object["locationNote"];
 				$locationDesc = $object["locationDescription"];
 				$placard = $object["placardNumber"];
 				$row = <<< EOF
-		<tr><td class="info" hidden="hidden">$locationDesc</td><td>$placard</td><td>$locationDesc - $locationNote</td></tr>
+		<tr><td width="25%"></td><td>$placard</td><td>$locationDesc - $locationNote&nbsp;&nbsp;&nbsp;<a href="#">+Add Spots</a></td></tr>
 EOF;
 				echo $row;
 			}
