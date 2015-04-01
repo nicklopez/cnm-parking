@@ -32,7 +32,7 @@ $visitor = Visitor::getVisitorByVisitorId($pdo, $visitor);
 
 echo "<select id=selectListVehicle name=selectListVehicle class=form-control>";
 foreach($vehicle as $vehicles) {
-	echo "<option value=$vehicle[locationId]>$vehicle[locationDesc]</option>";
+	echo "<option value=$vehicle[vehicleId]>$vehicle[Desc]</option>";
 }
 echo "</select>";
 ?>
