@@ -4,6 +4,7 @@ $headerTitle = "Create a parking pass";
 require_once("../php/lib/header.php");
 require_once("/home/cnmparki/etc/mysql/encrypted-config.php");
 require_once("../php/classes/visitor.php");
+require_once("../php/classes/vehicle.php");
 require_once("../php/classes/invite.php");
 require_once("../php/lib/csrf.php");
 require_once("../php/classes/parkingspot.php");
@@ -81,21 +82,21 @@ require_once("../verify-availability/index.php");
 				</div>
 			</div>
 
+			<select>
+<!--				--><?php
+				$visitorId = $visitor->getVisitorId();
+				// get array of locations from class method, then echo out each row in an object tag
+				$vehicles = Vehicle::getVehicleByVisitorId($pdo, $visitorId);
+				var_dump($vehicles);
+					foreach($vehicles as $vehicle) {
+						$id = $vehicles->getVehicleId();
+						$car = $vehicles->getVehicleMake();
 
-<!--			--><?php
-//			$visitor = $_POST["visitorId"];
-//			// get array of locations from class method, then echo out each row in an object tag
-//
-//			$vehicle = Vehicle::getVehicleByVisitorId($pdo, $visitor);
-//
-//
-//				echo "<select id=selectListVehicle name=selectListVehicle class=form-control>";
-//					foreach($vehicle as $vehicles) {
-//					echo "<option value=$vehicle[vehicleId]>$vehicle[Desc]</option>";
-//					}
-//					echo "</select>";
+					echo "<option value=$id>$car</option>";
+
+					}
 //				?>
-
+			</select>
 			<div class="col-xs-12 col-md-6">
 				<div class="form-group">
 					<label for="vehicleYear">Vehicle Year:</label>
@@ -188,4 +189,3 @@ require_once("../verify-availability/index.php");
 <?php
 require_once("../php/lib/footer.php");
 ?>
-
