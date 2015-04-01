@@ -59,6 +59,7 @@ require_once("../verify-availability/index.php");
 				<input type="hidden" id="visitorId" name="visitorId" value="<?php echo $visitor->getVisitorId(); ?>" >
 				<input type="hidden" id="activation" name="activation" value="<?php echo $_GET["activation"]; ?>">
 				<input type="hidden" id="parkingSpotId" name="parkingSpotId">
+				<input type="hidden" id="vehicleId" name="vehicleId" value="<?php echo $_GET["vehicleId"]?>">
 
 			</div>
 			<div class="col-xs-12 col-md-6">
@@ -79,6 +80,22 @@ require_once("../verify-availability/index.php");
 					<input type="text" class="form-control phone" id="visitorPhone" name="visitorPhone" value="<?php echo $visitor->getVisitorPhone(); ?>" readonly>
 				</div>
 			</div>
+
+
+<!--			--><?php
+//			$visitor = $_POST["visitorId"];
+//			// get array of locations from class method, then echo out each row in an object tag
+//
+//			$vehicle = Vehicle::getVehicleByVisitorId($pdo, $visitor);
+//
+//
+//				echo "<select id=selectListVehicle name=selectListVehicle class=form-control>";
+//					foreach($vehicle as $vehicles) {
+//					echo "<option value=$vehicle[vehicleId]>$vehicle[Desc]</option>";
+//					}
+//					echo "</select>";
+//				?>
+
 			<div class="col-xs-12 col-md-6">
 				<div class="form-group">
 					<label for="vehicleYear">Vehicle Year:</label>

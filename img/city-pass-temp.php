@@ -47,8 +47,9 @@ setDpi($tempfile, 300);
 $image = imagecreatefromjpeg($tempfile);
 unlink($tempfile);
 
-
+// fonts
 $font = 'fonts/Helvetica.ttf';
+$font2 = 'fonts/Helvetica-Bold.ttf';
 
 //create colors
 $black = imagecolorallocate($image, 0, 0, 0);
@@ -69,7 +70,7 @@ imagesetthickness($image, 105);
 $timeFormat = "M j, y g:i a";
 
 // create image text
-imagettftext($image, 75, 0.0, 145, 95, $black, $font, "City of Albuquerque Temporary Parking Pass");
+imagettftext($image, 75, 0.0, 125, 95, $black, $font, "City of Albuquerque Temporary Parking Placard");
 
 imagettftext($image, 50, 0.0, 450, 365, $black, $font, "Start Date/Time: Mar 25, '15 9:00 am");
 imagettftext($image, 50.0, 0.0, 450, 525, $black, $font, "End Date/Time: Mar 25, '15 10:00 am");
@@ -77,7 +78,7 @@ imagettftext($image, 50.0, 0.0, 450, 525, $black, $font, "End Date/Time: Mar 25,
 imagettftext($image, 50.0, 0.0, 450, 700, $black, $font, "License Plate #: NM - 000999" );
 imagettftext($image, 50.0, 0.0, 450, 875, $black, $font, "Location: Downtown ABQ - Lot #5");
 
-imagettftext($image, 50.0, 0.0, 450, 1050, $black, $font, "Placard #: 0284");
+imagettftext($image, 50.0, 0.0, 950, 1050, $black, $font2, "Placard #: 0284");
 
 imagettftext($image, 25, 0.0, 150, 1300, $red, $font, "LEGAL NOTICE: Duplication or manufacturing of a parking permit is a crime. Handwritten changes will VOID an temporary parking pass.
 																													Vehicles displaying such permits will be cited.");
@@ -109,7 +110,7 @@ imagecopy(
 	$logo,
 
 	// place logo within source boundary
-	$imageWidth / 1.31 , $imageHeight / 2.1,
+	$imageWidth / 1.31 , $imageHeight / 3.2,
 
 	// source x and y
 	0, 0,
