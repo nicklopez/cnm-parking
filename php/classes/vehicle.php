@@ -555,10 +555,9 @@ class Vehicle {
 
 		// grab the vehicle from mySQL
 		try {
-			$vehicle = null;
-			$row = $statement->fetch();
-			if($row !== false) {
-				$vehicle = new Vehicle($row["vehicleId"], $row["visitorId"], $row["vehicleColor"], $row["vehicleMake"], $row["vehicleModel"], $row["vehiclePlateNumber"], $row["vehiclePlateState"], $row["vehicleYear"]);
+			$vehicle = array();
+			while(($row = $statement->fetch()) !== false) {
+				$vehicle[] = $row;
 			}
 		} catch(Exception $exception) {
 			// if the row couldn't be converted, rethrow it

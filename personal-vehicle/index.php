@@ -81,23 +81,21 @@ require_once("../verify-availability/index.php");
 					<input type="text" class="form-control phone" id="visitorPhone" name="visitorPhone" value="<?php echo $visitor->getVisitorPhone(); ?>" readonly>
 				</div>
 			</div>
-
-			<select>
-<!--				--><?php
-				$visitorId = $visitor->getVisitorId();
-				// get array of locations from class method, then echo out each row in an object tag
-				$vehicles = Vehicle::getVehicleByVisitorId($pdo, $visitorId);
-				var_dump($vehicles);
-					foreach($vehicles as $vehicle) {
-						$id = $vehicles->getVehicleId();
-						$car = $vehicles->getVehicleMake();
-
-					echo "<option value=$id>$car</option>";
-
-					}
-//				?>
-			</select>
 			<div class="col-xs-12 col-md-6">
+
+				<?php
+				$visitorId = $visitor->getVisitorId();
+				// get array of vehicles from class method, then echo out each row in an object tag
+				$vehicles = Vehicle::getVehicleByVisitorId($pdo, $visitorId);
+				echo "<select>";
+				foreach($vehicles as $vehicle) {
+					$id = $vehicle["vehicleId"];
+					$cars = $vehicle["vehicleYear"] . " " . $vehicle["vehicleMake"] . " " . $vehicle["vehicleModel"];
+					echo "<option value=$id>$cars</option>";
+				}
+				?>
+
+				</select>
 				<div class="form-group">
 					<label for="vehicleYear">Vehicle Year:</label>
 					<input type="text" class="form-control name" id="vehicleYear" name="vehicleYear" size="128" maxlength="128">
