@@ -60,7 +60,7 @@ require_once("../verify-availability/index.php");
 				<input type="hidden" id="visitorId" name="visitorId" value="<?php echo $visitor->getVisitorId(); ?>" >
 				<input type="hidden" id="activation" name="activation" value="<?php echo $_GET["activation"]; ?>">
 				<input type="hidden" id="parkingSpotId" name="parkingSpotId">
-				<input type="hidden" id="vehicleId" name="vehicleId" value="<?php echo $_GET["vehicleId"]?>">
+				<input type="hidden" id="vehicleId" name="vehicleId">
 
 			</div>
 			<div class="col-xs-12 col-md-6">
@@ -82,46 +82,52 @@ require_once("../verify-availability/index.php");
 				</div>
 			</div>
 			<div class="col-xs-12 col-md-6">
-
 				<?php
-				$visitorId = $visitor->getVisitorId();
-				// get array of vehicles from class method, then echo out each row in an object tag
-				$vehicles = Vehicle::getVehicleByVisitorId($pdo, $visitorId);
-				echo "<select>";
-				foreach($vehicles as $vehicle) {
-					$id = $vehicle["vehicleId"];
-					$cars = $vehicle["vehicleYear"] . " " . $vehicle["vehicleMake"] . " " . $vehicle["vehicleModel"];
-					echo "<option value=$id>$cars</option>";
-				}
-				?>
+					$visitorId = $visitor->getVisitorId();
 
-				</select>
+					// get array of vehicles from class method, then echo out each row in an object tag
+					$vehicles = Vehicle::getVehicleByVisitorId($pdo, $visitorId);
+						if ($vehicles != null) { ?>
+							<div class="form-group">
+								<label for="vehicleSelect">Please Select A Vehicle</label>
+								<?php
+								echo "<select id=selectVehicle name=selectVehicle class=form-control>";
+								foreach($vehicles as $vehicle) {
+									$id = $vehicle["vehicleId"];
+									$cars = $vehicle["vehicleYear"] . " " . $vehicle["vehicleMake"] . " " . $vehicle["vehicleModel"];
+									echo "<option value='0'>--Select Your Vechicle--</opion>
+											<option value=$id>$cars</option>;
+											<option value='addVehicle'>Add New Vehicle</option>";
+							}
+							echo "</select>";
+				?>
+							</div>
 				<div class="form-group">
-					<label for="vehicleYear">Vehicle Year:</label>
-					<input type="text" class="form-control name" id="vehicleYear" name="vehicleYear" size="128" maxlength="128">
+					<label hidden="" for="vehicleYear">Vehicle Year:</label>
+					<input type="hidden" class="form-control name" id="vehicleYear" name="vehicleYear" size="128" maxlength="128">
 				</div>
 				<div class="form-group">
-					<label for="vehicleMake">Vehicle Make:</label>
-					<input type="text" class="form-control name" id="vehicleMake" name="vehicleMake" size="128" maxlength="128">
+					<label hidden="" for="vehicleMake">Vehicle Make:</label>
+					<input type="hidden" class="form-control name" id="vehicleMake" name="vehicleMake" size="128" maxlength="128">
 				</div>
 				<div class="form-group">
-					<label for="vehicleModel">Vehicle Model:</label>
-					<input type="text" class="form-control name" id="vehicleModel" name="vehicleModel" size="128" maxlength="128">
+					<label hidden="" for="vehicleModel">Vehicle Model:</label>
+					<input type="hidden" class="form-control name" id="vehicleModel" name="vehicleModel" size="128" maxlength="128">
 				</div>
 				<div class="form-group">
-					<label for="vehicleColor">Vehicle Color:</label>
-					<input type="text" class="form-control name" id="vehicleColor" name="vehicleColor" size="128" maxlength="128">
+					<label  hidden="" for="vehicleColor">Vehicle Color:</label>
+					<input type="hidden" class="form-control name" id="vehicleColor" name="vehicleColor" size="128" maxlength="128">
 				</div>
 				<div class="form-group">
-					<label for="vehiclePlate">Vehicle Plate #:</label>
-					<input type="text" class="form-control name" id="vehiclePlateNumber" name="vehiclePlateNumber" size="128" maxlength="128">
+					<label hidden="" for="vehiclePlate">Vehicle Plate #:</label>
+					<input type="hidden" class="form-control name" id="vehiclePlateNumber" name="vehiclePlateNumber" size="128" maxlength="128">
 					<input hidden="hidden" type="text" id="arrivalDate" name="arrivalDate">
 					<input hidden="hidden" type="text" id="departureDate" name="departureDate">
 
 				</div>
 				<div class="form-group">
-					<label for="vehiclePlateState">Plate State:</label>
-					<select name="vehiclePlateState" class="btn btn-default" id="vehiclePlateState">
+					<label hidden="" for="vehiclePlateState">Plate State:</label>
+					<select style="visibility: hidden" name="vehiclePlateState" class="btn btn-default" id="vehiclePlateState">
 						<option value="AL">AL</option>
 						<option value="AK">AK</option>
 						<option value="AZ">AZ</option>
@@ -182,8 +188,105 @@ require_once("../verify-availability/index.php");
 			</div>
 	</form>
 </div>
+
+<?php
+} else {
+?>
+
+<div class="container">
+	<form id="personal-vehicle" method="post" action="../php/controllers/personal-vehicle-post.php">
+		<div class="row">
+			<div class="form-group">
+				<label for="vehicleYear">Vehicle Year:</label>
+				<input type="text" class="form-control name" id="vehicleYear" name="vehicleYear" size="128" maxlength="128">
+			</div>
+			<div class="form-group">
+				<label for="vehicleMake">Vehicle Make:</label>
+				<input type="text" class="form-control name" id="vehicleMake" name="vehicleMake" size="128" maxlength="128">
+			</div>
+			<div class="form-group">
+				<label for="vehicleModel">Vehicle Model:</label>
+				<input type="text" class="form-control name" id="vehicleModel" name="vehicleModel" size="128" maxlength="128">
+			</div>
+			<div class="form-group">
+				<label for="vehicleColor">Vehicle Color:</label>
+				<input type="text" class="form-control name" id="vehicleColor" name="vehicleColor" size="128" maxlength="128">
+			</div>
+			<div class="form-group">
+				<label for="vehiclePlate">Vehicle Plate #:</label>
+				<input type="text" class="form-control name" id="vehiclePlateNumber" name="vehiclePlateNumber" size="128" maxlength="128">
+				<input hidden="hidden" type="text" id="arrivalDate" name="arrivalDate">
+				<input hidden="hidden" type="text" id="departureDate" name="departureDate">
+			</div>
+			<div class="form-group">
+				<label for="vehiclePlateState">Plate State:</label>
+				<select name="vehiclePlateState" class="btn btn-default" id="vehiclePlateState">
+						<option value="AL">AL</option>
+						<option value="AK">AK</option>
+						<option value="AZ">AZ</option>
+						<option value="AR">AR</option>
+						<option value="CA">CA</option>
+						<option value="CO">CO</option>
+						<option value="CT">CT</option>
+						<option value="DE">DE</option>
+						<option value="FL">FL</option>
+						<option value="GA">GA</option>
+						<option value="HI">HI</option>
+						<option value="ID">ID</option>
+						<option value="IL">IL</option>
+						<option value="IN">IN</option>
+						<option value="IA">IA</option>
+						<option value="KS">KS</option>
+						<option value="KY">KY</option>
+						<option value="LA">LA</option>
+						<option value="ME">ME</option>
+						<option value="MD">MD</option>
+						<option value="MA">MA</option>
+						<option value="MI">MI</option>
+						<option value="MN">MN</option>
+						<option value="MS">MS</option>
+						<option value="MO">MO</option>
+						<option value="MT">MT</option>
+						<option value="NE">NE</option>
+						<option value="NV">NV</option>
+						<option value="NH">NH</option>
+						<option value="NJ">NJ</option>
+						<option selected="selected" value="NM">NM</option>
+						<option value="NY">NY</option>
+						<option value="NC">NC</option>
+						<option value="ND">ND</option>
+						<option value="OH">OH</option>
+						<option value="OK">OK</option>
+						<option value="OR">OR</option>
+						<option value="PA">PA</option>
+						<option value="RI">RI</option>
+						<option value="SC">SC</option>
+						<option value="SD">SD</option>
+						<option value="TN">TN</option>
+						<option value="TX">TX</option>
+						<option value="UT">UT</option>
+						<option value="VT">VT</option>
+						<option value="VA">VA</option>
+						<option value="WA">WA</option>
+						<option value="WV">WV</option>
+						<option value="WI">WI</option>
+						<option value="WY">WY</option>
+					</select><br>
+			</div>
+
+		</div>
+	</form>
+</div>
+	<div>
+		<button id="sendRequest" class="btn btn-primary btn-lg " type="submit">Send Request</button>
+	</div>
+
+
 <p id="outputArea"></p>
 
 <?php
+//close if/else statement
+}
+
 require_once("../php/lib/footer.php");
 ?>
