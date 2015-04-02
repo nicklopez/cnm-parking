@@ -31,6 +31,29 @@ try {
 	$pdo = new PDO($dsn, $configArray["username"], $configArray["password"], $options);
 	$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
 
+var_dump($_POST["selectVehicle"]);
+	if(isset($_POST["selectVehicle"])) {
+		$vehicleId = $_POST["selectVehicle"];
+
+		// create and insert parking pass
+		$parkingPass = new ParkingPass(null, $_POST["adminProfileId"], $_POST["parkingSpotId"], $vehicleId, $_POST["departureDate"], null, $_POST["arrivalDate"], null);
+		$parkingPass->insert($pdo);
+	}
+var_dump($parkingPass);
+
+	// query mySQL to see if visitor exists
+	$vehicle = Vehicle::getVehicleByVisitorId($pdo, $_POST["visitorId"]);
+	if($vehicle == null) {
+		$newVehicle = new Vehicle(null, $_POST["visitorId"], $_POST["vehicleColor"], $_POST["vehicleMake"], $_POST["vehicleModel"], $_POST["vehiclePlateNumber"], $_POST["vehiclePlateState"], $_POST["vehicleYear"]);
+		$newVehicle->insert($pdo);
+		$parkingPass = new ParkingPass(null, $_POST["adminProfileId"], $_POST["parkingSpotId"], $vehicle->getVehicleId(), $_POST["departureDate"], null, $_POST["arrivalDate"], null);
+		$parkingPass->insert($pdo);
+	} else {
+		$invite = new Invite(null, null, $activation, null, null, null, $visitor->getVisitorId());
+		$invite->insert($pdo);
+	}
+
+
 	// create and insert vehicle
 	$vehicle = new Vehicle(null, $_POST["visitorId"], $_POST["vehicleColor"], $_POST["vehicleMake"], $_POST["vehicleModel"], $_POST["vehiclePlateNumber"], $_POST["vehiclePlateState"], $_POST["vehicleYear"]);
 	$vehicle->insert($pdo);
