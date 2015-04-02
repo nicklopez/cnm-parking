@@ -31,11 +31,12 @@ try {
 	$pdo = new PDO($dsn, $configArray["username"], $configArray["password"], $options);
 	$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
 
-	if(isset($_POST["selectVehicle"])) { // add if drop down menu !== 0
+	if(isset($_POST["selectVehicle"]) && $_POST['selectVehicle'] != 0) {
 		$vehicleId = $_POST["selectVehicle"];
 		// create and insert parking pass
 		$parkingPass = new ParkingPass(null, $_POST["adminProfileId"], $_POST["parkingSpotId"], $vehicleId, $_POST["departureDate"], null, $_POST["arrivalDate"], null);
 		$parkingPass->insert($pdo);
+		$vehicle = Vehicle::getVehicleByVehicleId($pdo, $vehicleId);
 	} else {
 		// create and insert vehicle
 		$vehicle = new Vehicle(null, $_POST["visitorId"], $_POST["vehicleColor"], $_POST["vehicleMake"], $_POST["vehicleModel"], $_POST["vehiclePlateNumber"], $_POST["vehiclePlateState"], $_POST["vehicleYear"]);
