@@ -67,6 +67,7 @@ try {
 </html>
 EOF;
 
+	// create the parking pass
 	$imageData = generatePassImage($pdo, $parkingPass, $vehicle, "../../img/fonts/Helvetica.ttf");
 	$plaintext = strip_tags($message);
 	$mimeOptions = array("head_charset" => "UTF-8", "html_charset" => "UTF-8", "text_charset" => "UTF-8", "eol" => "\n");
