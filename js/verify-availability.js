@@ -1,23 +1,7 @@
 /**
  * @author kyle@kedlogic.com
  */
-// document ready event
-$(document).ready(
-	// inner function for the ready() event
 	function getAvailability() {
-
-		$('#dateTimePickerArrival').datetimepicker({
-			format: 'Y-m-d H:i:s',
-			inline: true,
-			lang: 'en',
-			minDate: '0'
-
-		});
-		$('#dateTimePickerDeparture').datetimepicker({
-			format: 'Y-m-d H:i:s',
-			inline: true,
-			lang: 'en'
-		});
 
 		// tell the validator to validate this form
 		$("#verifyAvailabilityForm").validate({
@@ -89,4 +73,4 @@ $(document).ready(
 				});
 			}
 		});
-	});
+	};
