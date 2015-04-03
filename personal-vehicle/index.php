@@ -20,7 +20,7 @@ try {
 	}
 
 
-	//set up connection
+	//set up connection to database
 	$configArray = readConfig("/home/cnmparki/etc/mysql/cnmparking.ini");
 	$host = $configArray["hostname"];
 	$db = $configArray["database"];
@@ -81,7 +81,7 @@ require_once("../verify-availability/index.php");
 					<input type="text" class="form-control phone" id="visitorPhone" name="visitorPhone" value="<?php echo $visitor->getVisitorPhone(); ?>" readonly>
 				</div>
 			</div>
-			<div class="col-xs-12 col-md-6">
+			<div id="extra" class="col-xs-12 col-md-6" >
 				<?php
 					$visitorId = $visitor->getVisitorId();
 
@@ -89,22 +89,23 @@ require_once("../verify-availability/index.php");
 					$vehicles = Vehicle::getVehicleByVisitorId($pdo, $visitorId);
 						if ($vehicles != null) { ?>
 							<div class="form-group">
-								<label for="vehicleSelect">Please Select A Vehicle</label>
+								<label for="selectVehicle">Please Select A Vehicle</label>
 								<?php
-								echo "<select id=selectVehicle name=selectVehicle class=form-control>";
+								echo "<select id=selectVehicle name=selectVehicle class=form-control onclick='test()'>";
+								echo "<option value='0'> -- Select Your Vehicle -- </option>";
 								foreach($vehicles as $vehicle) {
 									$id = $vehicle["vehicleId"];
 									$cars = $vehicle["vehicleYear"] . " " . $vehicle["vehicleMake"] . " " . $vehicle["vehicleModel"];
-									echo "<option value='0'>--Select Your Vechicle--</opion>
-											<option value=$id>$cars</option>;
-											<option value='addVehicle'>Add New Vehicle</option>";
+									echo "<option value=$id>$cars</option>";
+
 							}
+							echo "<option value='addVehicle'>Add New Vehicle</option>";
 							echo "</select>";
 				?>
 							</div>
-				<div class="form-group">
-					<label hidden="" for="vehicleYear">Vehicle Year:</label>
-					<input type="hidden" class="form-control name" id="vehicleYear" name="vehicleYear" size="128" maxlength="128">
+				<div id="extra" class="form-group" style="display: none">
+					<label for="vehicleYear">Vehicle Year:</label>
+					<input class="form-control name" id="vehicleYear" name="vehicleYear" size="128" maxlength="128">
 				</div>
 				<div class="form-group">
 					<label hidden="" for="vehicleMake">Vehicle Make:</label>
