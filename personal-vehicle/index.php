@@ -103,7 +103,7 @@ require_once("../verify-availability/index.php");
 							echo "</select>";
 				?>
 							</div>
-				<div id="extra" class="form-group" style="display: none">
+				<div id="extra" class="form-group" >
 					<label for="vehicleYear">Vehicle Year:</label>
 					<input class="form-control name" id="vehicleYear" name="vehicleYear" size="128" maxlength="128">
 				</div>
