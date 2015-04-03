@@ -76,6 +76,7 @@ function generatePassImage($pdo, $parkingPass, $vehicle, $font) {
 	$blue = imagecolorallocate($image, 0, 0, 205);
 	$red = imagecolorallocate($image, 225, 0, 0);
 	$pink = imagecolorallocate($image, 225, 192, 203);
+	$green = imagecolorallocate($image, 46, 139, 87);
 
 // fill background color
 	imagefill($image, 0, 0, $white);
