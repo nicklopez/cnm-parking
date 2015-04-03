@@ -81,7 +81,7 @@ require_once("../verify-availability/index.php");
 					<input type="text" class="form-control phone" id="visitorPhone" name="visitorPhone" value="<?php echo $visitor->getVisitorPhone(); ?>" readonly>
 				</div>
 			</div>
-			<div id="extra" class="col-xs-12 col-md-6" >
+			<div class="col-xs-12 col-md-6" >
 				<?php
 					$visitorId = $visitor->getVisitorId();
 
@@ -91,7 +91,7 @@ require_once("../verify-availability/index.php");
 							<div class="form-group">
 								<label for="selectVehicle">Please Select A Vehicle</label>
 								<?php
-								echo "<select id=selectVehicle name=selectVehicle class=form-control onclick='test()'>";
+								echo "<select id=selectVehicle name=selectVehicle class=form-control onchange='test()';>";
 								echo "<option value='0'> -- Select Your Vehicle -- </option>";
 								foreach($vehicles as $vehicle) {
 									$id = $vehicle["vehicleId"];
