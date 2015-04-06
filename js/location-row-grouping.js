@@ -17,8 +17,14 @@ $(document).ready(function() {
 						'<tr class="group"><td colspan="2">'+group+'</td></tr>'
 					);
 					last = group;
+
+					$('#example tbody').on('click', 'tr.group', function () {
+						var fullLocation = this.textContent;
+						var location = fullLocation.split('+');
+						document.getElementById('title').textContent = location[0].trim();
+					});
 				}
-			} );
+			});
 		}
-	} );
-} );
+	});
+});

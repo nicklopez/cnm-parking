@@ -158,43 +158,35 @@ class ParkingSpot {
 	/**
 	 * insert valid parkingSpot into mySQL
 	 *
-	 * @param resource $mysqli pointer to mySQL connection, by reference
+	 * @param PDO $pdo pointer to mySQL connection, by reference
 	 * @throws mysqli_sql_exception when mySQL related errors occur
 	 */
-	public function insert(&$mysqli) {
+	public function insert(&$pdo) {
 		// handle degenerate cases
-		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
-			throw(new mysqli_sql_exception("input is not a mysqli object"));
+		if(gettype($pdo) !== "object" || get_class($pdo) !== "PDO") {
+			throw(new PDOException("input is not a PDO object"));
 		}
 
 		// enforce parkingSpotId is null
 		if($this->parkingSpotId !== null) {
-			throw(new mysqli_sql_exception("parkingSpotId already exists"));
+			throw(new PDOException("parkingSpotId already exists"));
 		}
 
 		// create query template
-		$query = "INSERT INTO parkingSpot(locationId, placardNumber) VALUES(?, ?)";
-		$statement = $mysqli->prepare($query);
+		$query = "INSERT INTO parkingSpot(locationId, placardNumber) VALUES(:locationId, :placardNumber)";
+		$statement = $pdo->prepare($query);
 		if($statement === false) {
-			throw(new mysqli_sql_exception(" unable to prepare statement"));
+			throw(new PDOException(" unable to prepare statement"));
 		}
 
 		// bind the parking spot variables to the place holders in the template
-		$wasClean = $statement->bind_param("is", $this->locationId, $this->placardNumber);
-		if($wasClean === false) {
-			throw(new mysqli_sql_exception("unable to bind parameters"));
-		}
+		$parameters = array("locationId" => $this->locationId, "placardNumber" => $this->placardNumber);
 
 		// execute the statement
-		if($statement->execute() === false) {
-			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
-		}
+		$statement->execute($parameters);
 
 		// update the null parkingSpot with what mySQL just gave us
-		$this->parkingSpotId = $mysqli->insert_id;
-
-		// clean up the statement
-		$statement->close();
+		$this->parkingSpotId = $pdo->lastInsertId();
 	}
 
 	/**

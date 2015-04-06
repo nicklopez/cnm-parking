@@ -252,15 +252,10 @@ class Location {
 		$parameters = array("latitude" => $this->latitude, "locationDescription" => $this->locationDescription, "locationNote" => $this->locationNote, "longitude" => $this->longitude);
 
 		// execute the statement
-		if($statement->execute($parameters) === false) {
-			throw(new PDOException("unable to execute mySQL statement: " . $statement->error));
-		}
+		$statement->execute($parameters);
 
 		// update the null locationId with what mySQL just gave us
-		$this->locationId = $pdo->insert_id;
-
-		// clean up the statement
-		$statement->close();
+		$this->locationId = $pdo->lastInsertId();
 	}
 
 	/**
@@ -468,7 +463,7 @@ class Location {
 		}
 
 		// create query template
-		$query = "SELECT locationDescription, locationNote, placardNumber FROM location
+		$query = "SELECT location.locationId, locationDescription, locationNote, placardNumber FROM location
 					 INNER JOIN parkingSpot ON location.locationId = parkingSpot.locationId";
 		$statement = $pdo->prepare($query);
 		$statement->execute();

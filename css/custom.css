@@ -74,5 +74,8 @@ span {
 	/*vertical-align: middle;*/
 }
 
+.modal-dialog {
+	width: 500px;
+}
 
 
