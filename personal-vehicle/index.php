@@ -184,13 +184,14 @@ require_once("../verify-availability/index.php");
 					</select><br>
 				</div>
 			</div>
-				<div class="row">
-					<div class="col-xs-12">
-						<button id="sendRequest" class="btn btn-primary btn-lg " type="submit">Send Request</button>
-					</div>
-				</div>
+			//end div for hidden form
 			</div>
 		</form>
+	<div class="row">
+		<div class="col-xs-12">
+			<button id="sendRequest" class="btn btn-primary btn-lg " type="submit">Send Request</button>
+		</div>
+	</div>
 </div>
 
 <?php
