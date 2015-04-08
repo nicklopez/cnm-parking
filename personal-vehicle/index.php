@@ -103,32 +103,34 @@ require_once("../verify-availability/index.php");
 							echo "</select>";
 				?>
 							</div>
-				<div id="extra" class="form-group" >
+				<div id="extra" style="visibility: hidden">
+
+				<div class="form-group" >
 					<label for="vehicleYear">Vehicle Year:</label>
 					<input class="form-control name" id="vehicleYear" name="vehicleYear" size="128" maxlength="128">
 				</div>
 				<div class="form-group">
-					<label hidden="" for="vehicleMake">Vehicle Make:</label>
-					<input type="hidden" class="form-control name" id="vehicleMake" name="vehicleMake" size="128" maxlength="128">
+					<label  for="vehicleMake">Vehicle Make:</label>
+					<input  class="form-control name" id="vehicleMake" name="vehicleMake" size="128" maxlength="128">
 				</div>
 				<div class="form-group">
-					<label hidden="" for="vehicleModel">Vehicle Model:</label>
-					<input type="hidden" class="form-control name" id="vehicleModel" name="vehicleModel" size="128" maxlength="128">
+					<label  for="vehicleModel">Vehicle Model:</label>
+					<input  class="form-control name" id="vehicleModel" name="vehicleModel" size="128" maxlength="128">
 				</div>
 				<div class="form-group">
-					<label  hidden="" for="vehicleColor">Vehicle Color:</label>
-					<input type="hidden" class="form-control name" id="vehicleColor" name="vehicleColor" size="128" maxlength="128">
+					<label  for="vehicleColor">Vehicle Color:</label>
+					<input  class="form-control name" id="vehicleColor" name="vehicleColor" size="128" maxlength="128">
 				</div>
 				<div class="form-group">
-					<label hidden="" for="vehiclePlate">Vehicle Plate #:</label>
-					<input type="hidden" class="form-control name" id="vehiclePlateNumber" name="vehiclePlateNumber" size="128" maxlength="128">
+					<label for="vehiclePlate">Vehicle Plate #:</label>
+					<input class="form-control name" id="vehiclePlateNumber" name="vehiclePlateNumber" size="128" maxlength="128">
 					<input hidden="hidden" type="text" id="arrivalDate" name="arrivalDate">
 					<input hidden="hidden" type="text" id="departureDate" name="departureDate">
 
 				</div>
 				<div class="form-group">
 					<label hidden="" for="vehiclePlateState">Plate State:</label>
-					<select style="visibility: hidden" name="vehiclePlateState" class="btn btn-default" id="vehiclePlateState">
+					<select name="vehiclePlateState" class="btn btn-default" id="vehiclePlateState">
 						<option value="AL">AL</option>
 						<option value="AK">AK</option>
 						<option value="AZ">AZ</option>
@@ -182,12 +184,13 @@ require_once("../verify-availability/index.php");
 					</select><br>
 				</div>
 			</div>
-			<div class="row">
-				<div class="col-xs-12">
-					<button id="sendRequest" class="btn btn-primary btn-lg " type="submit">Send Request</button>
+				<div class="row">
+					<div class="col-xs-12">
+						<button id="sendRequest" class="btn btn-primary btn-lg " type="submit">Send Request</button>
+					</div>
 				</div>
 			</div>
-	</form>
+		</form>
 </div>
 
 <?php

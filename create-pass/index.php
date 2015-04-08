@@ -34,7 +34,6 @@ require_once("../verify-availability/index.php");
 	<hr>
 	<form id="personal-vehicle" method="post" action="../php/controllers/personal-vehicle-post.php">
 		<div class="row">
-			<!--			<div class="col-xs-12 col-md-1">-->
 			<div class="form-group">
 				<?php echo generateInputTags(); ?>
 				<!--hidden foreign key forms-->
