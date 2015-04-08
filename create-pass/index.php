@@ -10,6 +10,10 @@ require_once("../php/lib/csrf.php");
 // start session
 session_start();
 
+// assign url to session variable
+$_SESSION['url'] = $_SERVER['REQUEST_URI'];
+
+// checks for active session
 if(!isset($_SESSION["adminProfileId"])) {
 	header("location: ../admin-login/index.php");
 }

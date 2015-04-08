@@ -6,6 +6,14 @@ require_once("../php/lib/header.php");
 
 // start a PHP session
 session_start();
+
+// set url to session variable
+$_SESSION['url'] = $_SERVER['REQUEST_URI'];
+
+// check for active session
+if(!isset($_SESSION["adminProfileId"])) {
+	header("location: ../admin-login/index.php");
+}
 ?>
 
 <nav class="navbar navbar-default">
@@ -28,12 +36,6 @@ require_once("/home/cnmparki/etc/mysql/encrypted-config.php");
 
 // require the mySQL enabled Invite class
 require_once("../php/classes/invite.php");
-
-$_SESSION['url'] = $_SERVER['REQUEST_URI'];
-
-if(!isset($_SESSION["adminProfileId"])) {
-	header("location: ../admin-login/index.php");
-}
 ?>
 
 

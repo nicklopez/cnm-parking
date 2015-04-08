@@ -5,8 +5,13 @@ require_once("../php/lib/header.php");
 require_once("../php/classes/location.php");
 require_once("../php/classes/parkingspot.php");
 
-//start a PHP session
+// start a PHP session
 session_start();
+
+// assign url to session variable
+$_SESSION['url'] = $_SERVER['REQUEST_URI'];
+
+// check for active session
 if(!isset($_SESSION["adminProfileId"])) {
 	header("location: ../admin-login/index.php");
 }
