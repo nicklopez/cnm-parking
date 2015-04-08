@@ -29,6 +29,8 @@ require_once("/home/cnmparki/etc/mysql/encrypted-config.php");
 // require the mySQL enabled Invite class
 require_once("../php/classes/invite.php");
 
+$_SESSION['url'] = $_SERVER['REQUEST_URI'];
+
 if(!isset($_SESSION["adminProfileId"])) {
 	header("location: ../admin-login/index.php");
 }
