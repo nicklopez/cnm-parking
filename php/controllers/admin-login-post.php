@@ -44,8 +44,17 @@ try {
 
 		// session assignment to correct profile id
 		$adminProfileId = $adminProfile->getAdminProfileId();
-		echo '<button id="' . $adminProfileId . '" class="btn btn-primary portalButton">Go To Portal</button>';
-		echo "<p>Click to Continue</p>";
+
+		$link = "http://" . $_SERVER["HTTP_HOST"] . $_SESSION["url"];
+
+		if($_SESSION["url"] != null) {
+			header("location: " . $link);
+		} else {
+			header("location:../test-portal/test-portal.php");
+
+		}
+//		echo '<button id="' . $adminProfileId . '" class="btn btn-primary portalButton">Go To Portal</button>';
+//		echo "<p>Click to Continue</p>";
 
 	} else {
 		throw (new PDOException(" incorrect email or password. Try again."));
