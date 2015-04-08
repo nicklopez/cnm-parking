@@ -7,6 +7,9 @@ require_once("../php/classes/parkingspot.php");
 
 //start a PHP session
 session_start();
+if(!isset($_SESSION["adminProfileId"])) {
+	header("location: ../admin-login/index.php");
+}
 ?>
 
 <nav class="navbar navbar-default">

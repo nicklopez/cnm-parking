@@ -9,6 +9,10 @@ require_once("../php/lib/csrf.php");
 
 // start session
 session_start();
+
+if(!isset($_SESSION["adminProfileId"])) {
+	header("location: ../admin-login/index.php");
+}
 ?>
 
 <nav class="navbar navbar-default">

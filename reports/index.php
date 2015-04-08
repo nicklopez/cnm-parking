@@ -5,6 +5,9 @@ require_once("../php/lib/header.php");
 require_once("../php/lib/csrf.php");
 // start a PHP session
 session_start();
+if(!isset($_SESSION["adminProfileId"])) {
+	header("location: ../admin-login/index.php");
+}
 ?>
 
 <nav class="navbar navbar-default">
