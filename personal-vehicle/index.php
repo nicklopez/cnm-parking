@@ -184,7 +184,7 @@ require_once("../verify-availability/index.php");
 					</select><br>
 				</div>
 			</div>
-			//end div for hidden form
+			<!--end div for hidden form-->
 			</div>
 		</form>
 	<div class="row">
