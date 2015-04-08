@@ -9,7 +9,7 @@ if(!isset($_SESSION["adminProfileId"])) {
 ?>
 	<div class="container-fluid">
 	<a class="btn btn-primary" href="../admin-login/index.php">Return to Log In</a>
-		</div>
+	</div>
 
 <?php
 require_once("../php/lib/footer.php");
