@@ -12,6 +12,7 @@ require_once("../php/lib/csrf.php");
 //start a session
 session_start();
 
+
 ?>
 	<div class="container-fluid">
 	<div class="row">
