@@ -33,8 +33,8 @@ try {
 var_dump($_SERVER['REQUEST_TIME']);
 
 
-	$invite = Invite::getInviteByActivation($pdo, strtotime($invite->getActionDateTime()));
-	$date = strtotime($invite->getActionDateTime());
+	$date = Invite::getInviteByActivation($pdo, strtotime($invite->getActionDateTime()));
+
 	var_dump($date);
 
 
