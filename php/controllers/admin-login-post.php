@@ -45,6 +45,7 @@ try {
 		// session assignment to correct profile id
 		$adminProfileId = $adminProfile->getAdminProfileId();
 
+		// redirect to initial destination
 		$link = "http://" . $_SERVER["HTTP_HOST"] . $_SESSION["url"];
 
 		if($_SESSION["url"] != null) {
