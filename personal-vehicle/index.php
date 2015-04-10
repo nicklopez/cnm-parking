@@ -15,9 +15,27 @@ session_start();
 
 try {
 	// verify $_GET["activation"] has an activation token; if not, throw an exception
-	if(!isset($_GET["activation"]))   {
-		throw (new InvalidArgumentException("No activation token detected.  Resubmit request."));
+	if(!isset($_GET["activation"])) {
+//		header("location: ../request-invite/index.php");
+		echo '<div class="alert alert-success" role="alert" id="message">Please submit a new request.</div>';
 	}
+
+
+	// TTL for activation (2 min test)
+	// //	$time = 60;
+
+
+//	if ($_SERVER["REQUEST_TIME"] - $invite->getActionDateTime() > $time) {
+//		header("location: ../request-invite/index.php");
+//	}
+
+
+var_dump($_SERVER['REQUEST_TIME']);
+
+
+	$invite = Invite::getInviteByActivation($pdo, strtotime($invite->getActionDateTime()));
+	$date = strtotime($invite->getActionDateTime());
+	var_dump($date);
 
 
 	//set up connection to database
