@@ -14,17 +14,6 @@ require_once("../php/classes/parkingspot.php");
 session_start();
 
 try {
-	// check for previous parking pass from activation
-	$set = Invite::getParkingPassByActivation($pdo, $_GET["activation"]);
-	if($set === !null) {
-		echo '<div class="alert alert-success" role="alert" id="message">Token has been used. Please submit a new request.</div>';
-	}
-
-	// verify $_GET["activation"] has an activation token; if not, throw an exception
-	if(!isset($_GET["activation"])) {
-	//		header("location: ../request-invite/index.php");
-		echo '<div class="alert alert-success" role="alert" id="message">Please submit a new request.</div>';
-	}
 
 	//set up connection to database
 	$configArray = readConfig("/home/cnmparki/etc/mysql/cnmparking.ini");
@@ -34,6 +23,19 @@ try {
 	$options = array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8");
 	$pdo = new PDO($dsn, $configArray["username"], $configArray["password"], $options);
 	$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
+
+	// check for previous parking pass from activation
+	$set = Invite::getParkingPassByActivation($pdo, $_GET["activation"]);
+	if($set !== false) {
+		echo '<div class="alert alert-success" role="alert" id="message">Invite has expired. Please submit a new invite.</div>';
+		exit;
+	}
+
+	// verify $_GET["activation"] has an activation token; if not, throw an exception
+	if(!isset($_GET["activation"])) {
+	//		header("location: ../request-invite/index.php");
+		echo '<div class="alert alert-success" role="alert" id="message">Please submit a new request.</div>';
+	}
 
 	$activation = $_GET["activation"];
 	$resultObjects = Invite::getInviteByActivation($pdo, $activation);
@@ -66,7 +68,7 @@ require_once("../verify-availability/index.php");
 				<input type="hidden" id="visitorId" name="visitorId" value="<?php echo $visitor->getVisitorId(); ?>" >
 				<input type="hidden" id="activation" name="activation" value="<?php echo $_GET["activation"]; ?>">
 				<input type="hidden" id="inviteId" name="inviteId" value="<?php echo $invite->getInviteId(); ?>"
-				<input type="hidden" id="parkingSpotId" name="parkingSpotId">
+				<input type="text" id="parkingSpotId" name="parkingSpotId">
 				<input type="hidden" id="vehicleId" name="vehicleId">
 
 			</div>
