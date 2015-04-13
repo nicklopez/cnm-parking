@@ -33,8 +33,9 @@ try {
 
 	if(isset($_POST["selectVehicle"]) && $_POST['selectVehicle'] != 0) {
 		$vehicleId = $_POST["selectVehicle"];
+
 		// create and insert parking pass
-		$parkingPass = new ParkingPass(null, $_POST["adminProfileId"], $_POST["parkingSpotId"], $vehicleId, $_POST["departureDate"], null, $_POST["arrivalDate"], null);
+		$parkingPass = new ParkingPass(null, $_POST["adminProfileId"], $_POST["inviteId"], $_POST["parkingSpotId"], $vehicleId, $_POST["departureDate"], null, $_POST["arrivalDate"], null);
 		$parkingPass->insert($pdo);
 		$vehicle = Vehicle::getVehicleByVehicleId($pdo, $vehicleId);
 	} else {
@@ -43,7 +44,7 @@ try {
 		$vehicle->insert($pdo);
 
 		// create and insert parking pass
-		$parkingPass = new ParkingPass(null, $_POST["adminProfileId"], $_POST["parkingSpotId"], $vehicle->getVehicleId(), $_POST["departureDate"], null, $_POST["arrivalDate"], null);
+		$parkingPass = new ParkingPass(null, $_POST["adminProfileId"], $_POST["inviteId"], $_POST["parkingSpotId"], $vehicle->getVehicleId(), $_POST["departureDate"], null, $_POST["arrivalDate"], null);
 		$parkingPass->insert($pdo);
 	}
 
