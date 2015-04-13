@@ -14,29 +14,17 @@ require_once("../php/classes/parkingspot.php");
 session_start();
 
 try {
-	// verify $_GET["activation"] has an activation token; if not, throw an exception
-	if(!isset($_GET["activation"])) {
-//		header("location: ../request-invite/index.php");
-		echo '<div class="alert alert-success" role="alert" id="message">Please submit a new request.</div>';
+	// check for previous parking pass from activation
+	$set = Invite::getParkingPassByActivation($pdo, $_GET["activation"]);
+	if($set === !null) {
+		echo '<div class="alert alert-success" role="alert" id="message">Token has been used. Please submit a new request.</div>';
 	}
 
-
-	// TTL for activation (2 min test)
-	// //	$time = 60;
-
-
-//	if ($_SERVER["REQUEST_TIME"] - $invite->getActionDateTime() > $time) {
-//		header("location: ../request-invite/index.php");
-//	}
-
-
-var_dump($_SERVER['REQUEST_TIME']);
-
-
-	$date = Invite::getInviteByActivation($pdo, strtotime($invite->getActionDateTime()));
-
-	var_dump($date);
-
+	// verify $_GET["activation"] has an activation token; if not, throw an exception
+	if(!isset($_GET["activation"])) {
+	//		header("location: ../request-invite/index.php");
+		echo '<div class="alert alert-success" role="alert" id="message">Please submit a new request.</div>';
+	}
 
 	//set up connection to database
 	$configArray = readConfig("/home/cnmparki/etc/mysql/cnmparking.ini");
@@ -77,6 +65,7 @@ require_once("../verify-availability/index.php");
 				<input type="hidden" id="adminProfileId" name="adminProfileId" value="<?php echo $invite->getAdminProfileId(); ?>">
 				<input type="hidden" id="visitorId" name="visitorId" value="<?php echo $visitor->getVisitorId(); ?>" >
 				<input type="hidden" id="activation" name="activation" value="<?php echo $_GET["activation"]; ?>">
+				<input type="hidden" id="inviteId" name="inviteId" value="<?php echo $invite->getInviteId(); ?>"
 				<input type="hidden" id="parkingSpotId" name="parkingSpotId">
 				<input type="hidden" id="vehicleId" name="vehicleId">
 
@@ -308,6 +297,7 @@ require_once("../verify-availability/index.php");
 <p id="outputArea"></p>
 
 <?php
+
 //close if/else statement
 }
 
