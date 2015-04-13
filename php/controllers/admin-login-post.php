@@ -33,10 +33,11 @@ try {
 		throw (new InvalidArgumentException("form values not complete. verify the form and try again."));
 	}
 	if(count($admin) === 0) {
-		throw (new PDOException(" incorrect email or password. Try again."));
+		throw (new PDOException("Incorrect email or password. Try again."));
 	}
 	$hash = hash_pbkdf2("sha512", $_POST["password"], $admin->getSalt(), 2048, 128);
 	if($hash === $admin->getPassHash()) {
+
 		// assign session to logged in admin id
 		$adminProfile = AdminProfile::getAdminProfileByAdminId($pdo, $admin->getAdminId());
 		$_SESSION["adminFirstName"] = $adminProfile->getAdminFirstName();
@@ -54,8 +55,6 @@ try {
 			header("location:../test-portal/test-portal.php");
 
 		}
-//		echo '<button id="' . $adminProfileId . '" class="btn btn-primary portalButton">Go To Portal</button>';
-//		echo "<p>Click to Continue</p>";
 
 	} else {
 		throw (new PDOException(" incorrect email or password. Try again."));
