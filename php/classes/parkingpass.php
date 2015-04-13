@@ -23,6 +23,13 @@ class ParkingPass {
 	/**
 	 * Foreign Key / int, not null
 	 *
+	 * id for the invite
+	 */
+	private $inviteId;
+
+	/**
+	 * Foreign Key / int, not null
+	 *
 	 * id to reference ParkingSpot Class
 	 */
 	private $parkingSpotId;
@@ -67,6 +74,7 @@ class ParkingPass {
 	 *
 	 * @param $newParkingPassId
 	 * @param $newAdminProfileId
+	 * @param $newInviteId
 	 * @param $newParkingSpotId
 	 * @param $newVehicleId
 	 * @param $newEndDateTime
@@ -74,10 +82,11 @@ class ParkingPass {
 	 * @param $newStartDateTime
 	 * @param $newUuId
 	 */
-	public function __construct($newParkingPassId, $newAdminProfileId, $newParkingSpotId, $newVehicleId, $newEndDateTime, $newIssuedDateTime, $newStartDateTime, $newUuId = null) {
+	public function __construct($newParkingPassId, $newAdminProfileId, $newInviteId, $newParkingSpotId, $newVehicleId, $newEndDateTime, $newIssuedDateTime, $newStartDateTime, $newUuId = null) {
 		try {
 			$this->setParkingPassId($newParkingPassId);
 			$this->setAdminProfileId($newAdminProfileId);
+			$this->setInviteId($newInviteId);
 			$this->setParkingSpotId($newParkingSpotId);
 			$this->setVehicleId($newVehicleId);
 			$this->setEndDateTime($newEndDateTime);
@@ -159,6 +168,37 @@ class ParkingPass {
 		}
 		// convert and store the adminProfileId
 		$this->adminProfileId = intval($newAdminProfileId);
+	}
+
+	/**
+	 * accessor method for invite id
+	 *
+	 * @return int value of invite id
+	 */
+	public function getInviteId() {
+		return ($this->inviteId);
+	}
+
+	/**
+	 * mutator method for invite id
+	 *
+	 * @param int $newInviteId new value of adminProfileId
+	 * @throws InvalidArgumentException if $newInviteId is not an integer or is null
+	 * @throws RangeException if $newInviteId is not positive
+	 */
+	public function setInviteId($newInviteId) {
+		// verify that invite id is valid
+		$newInviteId = filter_var($newInviteId, FILTER_VALIDATE_INT);
+		if($newInviteId === false) {
+			throw(new InvalidArgumentException("invite id is not a valid integer or is null"));
+		}
+
+		// verify that invite id is positive
+		if($newInviteId <= 0) {
+			throw(new RangeException("invite id is not positive"));
+		}
+		// convert and store the invite id
+		$this->inviteId = intval($newInviteId);
 	}
 
 	/**
@@ -386,7 +426,7 @@ class ParkingPass {
 		}
 
 		// create query template
-		$query = "INSERT INTO parkingPass(adminProfileId, parkingSpotId, vehicleId, endDateTime, issuedDateTime, startDateTime, uuId) VALUES(:adminProfileId, :parkingSpotId, :vehicleId, :endDateTime, :issuedDateTime, :startDateTime, UUID())";
+		$query = "INSERT INTO parkingPass(adminProfileId, inviteId, parkingSpotId, vehicleId, endDateTime, issuedDateTime, startDateTime, uuId) VALUES(:adminProfileId, :parkingSpotId, :vehicleId, :endDateTime, :issuedDateTime, :startDateTime, UUID())";
 		$statement = $pdo->prepare($query);
 		if($statement === false) {
 			throw(new PDOException("unable to prepare statement"));
@@ -396,7 +436,7 @@ class ParkingPass {
 		$formatEnd = $this->endDateTime->format("Y-m-d H:i:s");
 		$formatIssued = $this->issuedDateTime->format("Y-m-d H:i:s");
 		$formatStart = $this->startDateTime->format("Y-m-d H:i:s");
-		$parameters = array("adminProfileId" => $this->adminProfileId, "parkingSpotId" => $this->parkingSpotId, "vehicleId" => $this->vehicleId, "endDateTime" => $formatEnd, "issuedDateTime" => $formatIssued,  "startDateTime" => $formatStart);
+		$parameters = array("adminProfileId" => $this->adminProfileId, "inviteId" => $this->inviteId, "parkingSpotId" => $this->parkingSpotId, "vehicleId" => $this->vehicleId, "endDateTime" => $formatEnd, "issuedDateTime" => $formatIssued,  "startDateTime" => $formatStart);
 
 		// execute the statement
 		$statement->execute($parameters);
@@ -466,7 +506,7 @@ class ParkingPass {
 		}
 
 		// create query template
-		$query	= "UPDATE parkingPass SET adminProfileId = ?, parkingSpotId = ?, vehicleId  = ?, endDateTime = ?, issuedDateTime = ?, startDateTime = ?, uuId = ? WHERE parkingPassId = ?";
+		$query	= "UPDATE parkingPass SET adminProfileId = ?, inviteId = ?, parkingSpotId = ?, vehicleId  = ?, endDateTime = ?, issuedDateTime = ?, startDateTime = ?, uuId = ? WHERE parkingPassId = ?";
 		$statement = $mysqli->prepare($query);
 		if($statement === false) {
 			throw(new mysqli_sql_exception(" unable to prepare statement"));
@@ -476,7 +516,7 @@ class ParkingPass {
 		$formatEnd = $this->endDateTime->format("Y-m-d H:i:s");
 		$formatIssued = $this->issuedDateTime->format("Y-m-d H:i:s");
 		$formatStart = $this->startDateTime->format("Y-m-d H:i:s");
-		$wasClean = $statement->bind_param("iiissssi", $this->adminProfileId, $this->parkingSpotId, $this->vehicleId, $formatEnd, $formatIssued, $formatStart, $this->uuId, $this->parkingPassId);
+		$wasClean = $statement->bind_param("iiissssi", $this->adminProfileId, $this->inviteId, $this->parkingSpotId, $this->vehicleId, $formatEnd, $formatIssued, $formatStart, $this->uuId, $this->parkingPassId);
 		if($wasClean === false) {
 			throw(new mysqli_sql_exception("unable to bind paramaters"));
 		}
@@ -515,7 +555,7 @@ class ParkingPass {
 		}
 
 		// create query template
-		$query = "SELECT parkingPassId, adminProfileId, parkingSpotId, vehicleId, endDateTime, issuedDateTime, startDateTime, uuId FROM parkingPass WHERE parkingPassId = :parkingPassId";
+		$query = "SELECT parkingPassId, adminProfileId, inviteId, parkingSpotId, vehicleId, endDateTime, issuedDateTime, startDateTime, uuId FROM parkingPass WHERE parkingPassId = :parkingPassId";
 		$statement = $pdo->prepare($query);
 		if($statement === false) {
 			throw(new PDOException(" unable to prepare statement"));
@@ -532,7 +572,7 @@ class ParkingPass {
 		try {
 			$row = $statement->fetch();
 			if($row !== null) {
-				$parkingPass = new ParkingPass($row["parkingPassId"], $row["adminProfileId"], $row["parkingSpotId"], $row["vehicleId"], $row["endDateTime"], $row["issuedDateTime"], $row["startDateTime"], $row["uuId"]);
+				$parkingPass = new ParkingPass($row["parkingPassId"], $row["adminProfileId"], $row["inviteId"], $row["parkingSpotId"], $row["vehicleId"], $row["endDateTime"], $row["issuedDateTime"], $row["startDateTime"], $row["uuId"]);
 			}
 		} catch(Exception $exception) {
 			// if the row couldn't be converted, rethrow it
@@ -574,7 +614,7 @@ class ParkingPass {
 		}
 
 		// create query template
-		$query = "SELECT parkingPassId, adminProfileId, parkingSpotId, vehicleId, endDateTime, issuedDateTime, startDateTime, uuId FROM parkingPass WHERE adminProfileId = ?";
+		$query = "SELECT parkingPassId, adminProfileId, inviteId, parkingSpotId, vehicleId, endDateTime, issuedDateTime, startDateTime, uuId FROM parkingPass WHERE adminProfileId = ?";
 		$statement = $mysqli->prepare($query);
 		if($statement === false) {
 			throw(new mysqli_sql_exception(" unable to prepare statement"));
@@ -601,7 +641,7 @@ class ParkingPass {
 		$parkingPasses = array();
 		while(($row = $result->fetch_assoc()) !== null) {
 			try {
-				$parkingPass = new ParkingPass($row["parkingPassId"], $row["adminProfileId"], $row["parkingSpotId"], $row["vehicleId"], $row["endDateTime"], $row["issuedDateTime"], $row["startDateTime"], $row["uuId"]);
+				$parkingPass = new ParkingPass($row["parkingPassId"], $row["adminProfileId"], $row["inviteId"], $row["parkingSpotId"], $row["vehicleId"], $row["endDateTime"], $row["issuedDateTime"], $row["startDateTime"], $row["uuId"]);
 				$parkingPasses[] = $parkingPass;
 			} catch(Exception $exception) {
 				// if the row couldn't be converted, rethrow it
