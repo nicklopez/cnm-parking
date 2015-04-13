@@ -426,7 +426,7 @@ class ParkingPass {
 		}
 
 		// create query template
-		$query = "INSERT INTO parkingPass(adminProfileId, inviteId, parkingSpotId, vehicleId, endDateTime, issuedDateTime, startDateTime, uuId) VALUES(:adminProfileId, :parkingSpotId, :vehicleId, :endDateTime, :issuedDateTime, :startDateTime, UUID())";
+		$query = "INSERT INTO parkingPass(adminProfileId, inviteId, parkingSpotId, vehicleId, endDateTime, issuedDateTime, startDateTime, uuId) VALUES(:adminProfileId, :inviteId, :parkingSpotId, :vehicleId, :endDateTime, :issuedDateTime, :startDateTime, UUID())";
 		$statement = $pdo->prepare($query);
 		if($statement === false) {
 			throw(new PDOException("unable to prepare statement"));
