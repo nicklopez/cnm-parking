@@ -584,8 +584,8 @@ class Invite {
 			// if the row couldn't be converted, rethrow it
 			throw(new PDOException($exception->getMessage(), 0, $exception));
 		}
-			return($objects);
-		}
+		return($objects);
+	}
 
 	/**
 	 * retrieves all invite requests for review
@@ -630,6 +630,53 @@ class Invite {
 		} else {
 			return $invites;
 		}
+	}
+
+	/**
+	 * gets the parking pass by activation (token)
+	 *
+	 * @param PDO $pdo pointer to mySQL connection, by reference
+	 * @param int $activation invite to search for by activation (token)
+	 * @return mixed invite found or null if not found
+	 * @throws PDOException when mySQL related errors occur
+	 **/
+	public static function getParkingPassByActivation(PDO &$pdo, $activation) {
+		// handle degenerate cases
+		if(gettype($pdo) !== "object" || get_class($pdo) !== "PDO") {
+			throw(new PDOException("input is not a PDO object"));
+		}
+
+		// sanitize activation (token) before searching
+		$activation = trim($activation);
+		$activation = filter_var($activation, FILTER_SANITIZE_STRING);
+		if(empty($activation) === true) {
+			throw(new InvalidArgumentException("activation is empty or insecure"));
+		}
+
+		// create query template
+		$query = "SELECT activation FROM invite
+		INNER JOIN parkingPass ON parkingPass.inviteId = invite.inviteId
+		WHERE activation = :activation";
+		$statement = $pdo->prepare($query);
+		if($statement === false) {
+			throw(new PDOException("unable to prepare statement"));
+		}
+
+		// bind the activation (token) to the place holder in the template
+		$parameters = array("activation" => $activation);
+
+		// execute the statement
+		$statement->execute($parameters);
+		$statement->setFetchMode(PDO::FETCH_ASSOC);
+
+		// get result from the SELECT query
+		try {
+			$row = $statement->fetch();
+		} catch(Exception $exception) {
+			// if the row couldn't be converted, rethrow it
+			throw(new PDOException($exception->getMessage(), 0, $exception));
+		}
+		return($row);
 	}
 }
 ?>
