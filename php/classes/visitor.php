@@ -578,7 +578,7 @@ class Visitor {
 //		}
 
 		// create query template
-		$query = "SELECT visitorEmail FROM visitor WHERE visitorEmail LIKE :visitorEmail";
+		$query = "SELECT visitorEmail AS value, CONCAT(visitorEmail, ' - ', visitorFirstName, ' ', visitorLastName) AS label FROM visitor WHERE visitorEmail LIKE :visitorEmail";
 		$statement = $pdo->prepare($query);
 
 		// bind the visitorEmail to the place holder in the template
@@ -594,7 +594,7 @@ class Visitor {
 		try {
 			$email = array();
 			while($row = $statement->fetch()) {
-				$email[] = $row["visitorEmail"];
+				$email[] = $row;
 			}
 		} catch (Exception $exception) {
 			// if the row couldn't be converted, rethrow it
