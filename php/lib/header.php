@@ -20,7 +20,7 @@
 		<script type="text/javascript" src="//cnmparking.com/js/reports.js"></script>
 		<script type="text/javascript" src="//cnmparking.com/js/admin-login.js"></script>
 		<script type="text/javascript" src="//cnmparking.com/js/verify-availability.js"></script>
-		<script type="text/javascript" src="//cnmparking.com/js/visitorLookup.js"></script>
+		<script type="text/javascript" src="//cnmparking.com/js/visitor-lookup.js"></script>
 		<script type="text/javascript" src="//cnmparking.com/js/new-vehicle.js"></script>
 		<script type="text/javascript" src="//cnmparking.com/js/manage-parking.js"></script>
 
