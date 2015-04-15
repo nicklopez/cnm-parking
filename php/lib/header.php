@@ -3,6 +3,7 @@
 	<head>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 		<link type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet">
 		<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery.form/3.51/jquery.form.min.js"></script>
@@ -31,15 +32,20 @@
 
 		<title><?php echo $title ?></title>
 	</head>
-	<div class="headBegin">
-		<h2></h2>
-	</div>
-	<div class="container-fluid header">
-		<h1><span><?php echo $headerTitle; ?></span>
-			<img src="https://images.efollett.com/htmlroot/images/templates/storeLogos/CA/402.gif" align="right"</h1>
-	</div>
-	<div class="headEnd">
-		<h2></h2>
-	</div>
+
 		<body>
+
+
+			<div class="page-header">
+				<h2 class="h2"></h2>
+			</div>
+
+			<div class="container-fluid header">
+				<h1 class="h1"><span><?php echo $headerTitle; ?></span>
+				<img src="https://images.efollett.com/htmlroot/images/templates/storeLogos/CA/402.gif" align="right" class="img-responsive"</h1>
+			</div>
+			<div class="headEnd">
+				<h2 class="h22"></h2>
+
+			</div>
 			<main>
