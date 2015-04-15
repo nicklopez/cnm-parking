@@ -129,7 +129,7 @@ $objects = Location::getAllLocationsAndParkingSpots($pdo);
 </div><!-- /.modal -->
 
 <div class="container-fluid">
-	<table id="example" class="hover row-border">
+	<table id="example" class="hover row-border" width="100%">
 		<thead>
 			<th>Location &nbsp; <a data-toggle="modal" data-target="#locationSpotModal"><span class="glyphicon glyphicon-plus"></span>Add a Location</a></th>
 			<th>Placard#</th>
