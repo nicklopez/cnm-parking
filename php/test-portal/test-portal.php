@@ -21,7 +21,7 @@ require_once("../../php/lib/header.php");
 	</div>
 </nav>
 
-<iframe src="http://stemuluscenter.org/" width="1900" height="700"></iframe>
+<iframe src="http://stemuluscenter.org/" width="100%" height="800px"></iframe>
 <?php
 require_once("../../php/lib/footer.php");
 ?>
