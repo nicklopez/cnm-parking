@@ -131,7 +131,7 @@ $objects = Location::getAllLocationsAndParkingSpots($pdo);
 <div class="container-fluid">
 	<table id="example" class="hover row-border">
 		<thead>
-			<th>Location &nbsp; <a data-toggle="modal" data-target="#locationSpotModal">+Add a Location</a></th>
+			<th>Location &nbsp; <a data-toggle="modal" data-target="#locationSpotModal"><span class="glyphicon glyphicon-plus"></span>Add a Location</a></th>
 			<th>Placard#</th>
 			<th></th>
 		</thead>
@@ -144,7 +144,7 @@ $objects = Location::getAllLocationsAndParkingSpots($pdo);
 				$locationDesc = $object["locationDescription"];
 				$placard = $object["placardNumber"];
 				$row = <<< EOF
-		<tr><td width="25%"></td><td>$placard</td><td>$locationDesc - $locationNote&nbsp;&nbsp;&nbsp;<a id="addLink" cursor data-toggle="modal" data-target="#myModal" onclick="document.getElementById('modalLocationId').value = $locationId">+Add Spots</a>&nbsp;&nbsp;/&nbsp;<a id="deleteLink" data-toggle="modal" data-target="#myModal" onclick="document.getElementById('modalLocationId').value = $locationId">-Delete Spots</a></td></tr>
+		<tr><td width="25%"></td><td>$placard</td><td>$locationDesc - $locationNote&nbsp;&nbsp;&nbsp;<a id="addLink" cursor data-toggle="modal" data-target="#myModal" onclick="document.getElementById('modalLocationId').value = $locationId"><span class="glyphicon">+</span>Add Spots</a>&nbsp;&nbsp;&nbsp;<a id="deleteLink" data-toggle="modal" data-target="#myModal" onclick="document.getElementById('modalLocationId').value = $locationId"><span class="glyphicon glyphicon-minus"></span>Delete Spots</a></td></tr>
 EOF;
 				echo $row;
 			}

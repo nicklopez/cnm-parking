@@ -78,4 +78,7 @@ span {
 	width: 500px;
 }
 
-
+a {
+	cursor: pointer;
+	cursor: hand;
+}
