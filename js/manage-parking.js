@@ -48,12 +48,12 @@ function deleteSpots(start, end, modalLocationId, action) {
 }
 
 $(document).ready(function() {
-	$("[id='deleteLink']").click(function() {
+	$("[id='deleteLink']").on('click', function() {
 		$("#deleteSpotsButton").show();
 		$("#addSpotsButton").hide();
 	});
 
-	$("[id='addLink']").click(function() {
+	$("[id='addLink']").on('click', function() {
 		$("#deleteSpotsButton").hide();
 		$("#addSpotsButton").show();
 	});
@@ -69,7 +69,7 @@ $(document).ready(function() {
 		}
 	});
 
-	$("#locationSpotModal").on("hide.bs.modal", function(){
+	$("#locationSpotModal").on("hide.bs.modal", function() {
 		if($("#LocationSpotOutputArea div").hasClass('alert-success')) {
 			location.reload();
 		} else {
