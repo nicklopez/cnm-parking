@@ -70,8 +70,6 @@ html {
 	position: relative;
 }
 
-
-
 .name {
 	width: 192px;
 }
@@ -103,7 +101,6 @@ img {
 	width: auto;  /* you can use % */
 	height: auto;
 	float: right;
-
 }
 
 span {
@@ -121,6 +118,10 @@ span {
 	padding: 0;
 }
 
+a {
+	cursor: pointer;
+	cursor: hand;
+}
 
 
 
