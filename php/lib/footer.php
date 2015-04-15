@@ -3,7 +3,7 @@
 
 	<div class="footer">
 		<div class="container-fluid">
-			<p>Made by CNM Parking Team &copy; <?php echo date("Y") ?></p>
+			<div>Made by CNM Parking Team &copy; <?php echo date("Y") ?></div>
 		</div>
 	</div>
 
