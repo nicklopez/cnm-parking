@@ -15,18 +15,6 @@ function addLocationSpots(locationName, locationDescription, locationSpotStart, 
 			$("#LocationSpotOutputArea").html(ajaxOutput);
 		}
 	});
-
-	$("#locationSpotModal").on("hide.bs.modal", function(){
-		if($("#LocationSpotOutputArea div").hasClass('alert-success')) {
-			location.reload();
-		} else {
-			$("#locationName").val("");
-			$("#LocationDescription").val("");
-			$("#locationSpotStart").val("");
-			$("#locationSpotEnd").val("");
-			$("#LocationSpotOutputArea").html("");
-		}
-	});
 }
 
 function addSpots(start, end, modalLocationId) {
@@ -42,8 +30,35 @@ function addSpots(start, end, modalLocationId) {
 			$("#outputArea").html(ajaxOutput);
 		}
 	});
+}
 
-	$("#myModal").on("hide.bs.modal", function(){
+function deleteSpots(start, end, modalLocationId, action) {
+	$("#myModal").ajaxSubmit({
+		type: "POST",
+		url: "../php/controllers/manage-parking-post.php",
+		data: {start: start, end: end, modalLocationId: modalLocationId, action: action},
+		// success is an event that happens when the server replies
+		success: function(ajaxOutput) {
+			// clear the output area's formatting
+			$("#outputArea").css("display", "");
+			// write the server's reply to the output area
+			$("#outputArea").html(ajaxOutput);
+		}
+	});
+}
+
+$(document).ready(function() {
+	$("[id='deleteLink']").click(function() {
+		$("#deleteSpotsButton").show();
+		$("#addSpotsButton").hide();
+	});
+
+	$("[id='addLink']").click(function() {
+		$("#deleteSpotsButton").hide();
+		$("#addSpotsButton").show();
+	});
+
+	$("#myModal").on("hide.bs.modal", function() {
 		if($("#outputArea div").hasClass('alert-success')) {
 			location.reload();
 		} else {
@@ -53,4 +68,16 @@ function addSpots(start, end, modalLocationId) {
 			$("#outputArea").html("");
 		}
 	});
-};
+
+	$("#locationSpotModal").on("hide.bs.modal", function(){
+		if($("#LocationSpotOutputArea div").hasClass('alert-success')) {
+			location.reload();
+		} else {
+			$("#locationName").val("");
+			$("#LocationDescription").val("");
+			$("#locationSpotStart").val("");
+			$("#locationSpotEnd").val("");
+			$("#LocationSpotOutputArea").html("");
+		}
+	});
+});

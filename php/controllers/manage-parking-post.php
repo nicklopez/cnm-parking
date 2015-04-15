@@ -18,6 +18,7 @@ try {
 	$placardNumber = $_POST["start"];
 	$end = $_POST["end"];
 	$locationId = $_POST["modalLocationId"];
+	$action = $_POST["action"];
 
 	// create a Visitor (if required) and Invite object and insert them into mySQL
 	$configArray = readConfig("/home/cnmparki/etc/mysql/cnmparking.ini");
@@ -29,6 +30,8 @@ try {
 	$options = array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8");
 	$pdo = new PDO($dsn, $configArray["username"], $configArray["password"], $options);
 	$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
+
+
 
 	if((!empty($locationName) && !empty($locationDescription) && !empty($locationSpotStart) && !empty($locationSpotEnd))) {
 		if($locationSpotStart > $locationSpotEnd) {
@@ -47,8 +50,16 @@ try {
 
 	} elseif($placardNumber > $end) {
 		echo "<div class=\"alert alert-danger\" role=\"alert\"><strong>Invalid placard # range.</strong></div>";
-		exit;
+
+	} elseif($action === "delete") {
+		for($placardNumber; $placardNumber <= $end; $placardNumber++) {
+			$parkingSpots = new ParkingSpot(null, $locationId, $placardNumber);
+			$parkingSpots->delete($pdo);
+		}
+		echo "<div class=\"alert alert-success\" role=\"alert\"><strong>Parking spot(s) have been deleted</strong></div>";
+
 	} else {
+
 		for($placardNumber; $placardNumber <= $end; $placardNumber++) {
 			$parkingSpots = new ParkingSpot(null, $locationId, $placardNumber);
 			$parkingSpots->insert($pdo);

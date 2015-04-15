@@ -192,40 +192,27 @@ class ParkingSpot {
 	/**
 	 * delete parkingSpot from mySQL
 	 *
-	 * @param resource $mysqli pointer to mySQL connection, by reference
-	 * @throws mysqli_sql_exception when mySQL related errors occur
+	 * @param PDO $pdo pointer to mySQL connection, by reference
+	 * @throws PDOException when mySQL related errors occur
 	 */
-	public function delete(&$mysqli) {
+	public function delete(&$pdo) {
 		// handle degenerate cases
-		if(gettype($mysqli) !== "object" || get_class($mysqli) !== "mysqli") {
-			throw(new mysqli_sql_exception("input is not a mysqli object"));
-		}
-
-		// enforce parkingSpotId is not null
-		if($this->parkingSpotId === null) {
-			throw(new mysqli_sql_exception("parkingSpotId does not exist"));
+		if(gettype($pdo) !== "object" || get_class($pdo) !== "PDO") {
+			throw(new PDOException("input is not a PDO object"));
 		}
 
 		// create query template
-		$query = "DELETE FROM parkingSpot WHERE parkingSpotId = ?";
-		$statement = $mysqli->prepare($query);
+		$query = "DELETE FROM parkingSpot WHERE placardNumber = :placardNumber AND locationId = :locationId";
+		$statement = $pdo->prepare($query);
 		if($statement === false) {
-			throw(new mysqli_sql_exception(" unable to prepare statement"));
+			throw(new PDOException(" unable to prepare statement"));
 		}
 
 		// bind the parking spot variables to the place holders in the template
-		$wasClean = $statement->bind_param("i", $this->parkingSpotId);
-		if($wasClean === false) {
-			throw(new mysqli_sql_exception("unable to bind parameters"));
-		}
+		$parameters = array("placardNumber" => $this->placardNumber, "locationId" => $this->locationId);
 
 		// execute the statement
-		if($statement->execute() === false) {
-			throw(new mysqli_sql_exception("unable to execute mySQL statement: " . $statement->error));
-		}
-
-		// clean up the statement
-		$statement->close();
+		$statement->execute($parameters);
 	}
 
 	/**

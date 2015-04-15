@@ -79,7 +79,8 @@ $objects = Location::getAllLocationsAndParkingSpots($pdo);
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-				<button type="button" class="btn btn-primary" onclick="addSpots(document.getElementById('start').value, document.getElementById('end').value, document.getElementById('modalLocationId').value);">Save changes</button>
+				<button id="addSpotsButton" type="button" class="btn btn-primary" onclick="addSpots(document.getElementById('start').value, document.getElementById('end').value, document.getElementById('modalLocationId').value);">Add Spots</button>
+				<button id="deleteSpotsButton" value="delete" type="button" class="btn btn-primary" onclick="deleteSpots(document.getElementById('start').value, document.getElementById('end').value, document.getElementById('modalLocationId').value, this.value);">Delete Spots</button>
 			</div>
 		</div><!-- /.modal-content -->
 	</div><!-- /.modal-dialog -->
@@ -143,7 +144,7 @@ $objects = Location::getAllLocationsAndParkingSpots($pdo);
 				$locationDesc = $object["locationDescription"];
 				$placard = $object["placardNumber"];
 				$row = <<< EOF
-		<tr><td width="25%"></td><td>$placard</td><td>$locationDesc - $locationNote&nbsp;&nbsp;&nbsp;<a data-toggle="modal" data-target="#myModal" onclick="document.getElementById('modalLocationId').value = $locationId">+Add Spots</a></td></tr>
+		<tr><td width="25%"></td><td>$placard</td><td>$locationDesc - $locationNote&nbsp;&nbsp;&nbsp;<a id="addLink" cursor data-toggle="modal" data-target="#myModal" onclick="document.getElementById('modalLocationId').value = $locationId">+Add Spots</a>&nbsp;&nbsp;/&nbsp;<a id="deleteLink" data-toggle="modal" data-target="#myModal" onclick="document.getElementById('modalLocationId').value = $locationId">-Delete Spots</a></td></tr>
 EOF;
 				echo $row;
 			}
