@@ -570,19 +570,18 @@ class Visitor {
 			throw(new PDOException("input is not a PDO object"));
 		}
 
-		// sanitize the visitorEmail before searching
-//		$visitorEmail = trim($visitorEmail);
-//		$visitorEmail = filter_var($visitorEmail, FILTER_SANITIZE_EMAIL);
-//		if(empty($visitorEmail) === true) {
-//			throw(new InvalidArgumentException("visitor email address is empty or insecure"));
-//		}
+		// sanitize the search term before searching
+		$visitorEmail = trim($_GET["term"]);
+		$visitorEmail = filter_var($visitorEmail, FILTER_SANITIZE_EMAIL);
+		if(empty($visitorEmail) === true) {
+			throw(new InvalidArgumentException("visitor email address is empty or insecure"));
+		}
 
 		// create query template
 		$query = "SELECT visitorEmail AS value, CONCAT(visitorEmail, ' - ', visitorFirstName, ' ', visitorLastName) AS label FROM visitor WHERE visitorEmail LIKE :visitorEmail";
 		$statement = $pdo->prepare($query);
 
-		// bind the visitorEmail to the place holder in the template
-		$visitorEmail = $_GET["term"];
+		// bind the search term to the place holder in the template
 		$visitorEmail = "%$visitorEmail%";
 		$parameters = array("visitorEmail" => $visitorEmail);
 
