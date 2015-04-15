@@ -556,5 +556,53 @@ class Visitor {
 		// return the result
 		return ($visitor);
 	}
+
+	/**
+	 * gets the visitor email address
+	 *
+	 * @param PDO $pdo pointer to mySQL connection, by reference
+	 * @return mixed visitor found or null if not found
+	 * @throws PDOException when mySQL related errors occur
+	 **/
+	public static function getVisitorEmailAddress(PDO &$pdo) {
+		// handle degenerate cases
+		if(gettype($pdo) !== "object" || get_class($pdo) !== "PDO") {
+			throw(new PDOException("input is not a PDO object"));
+		}
+
+		// sanitize the visitorEmail before searching
+//		$visitorEmail = trim($visitorEmail);
+//		$visitorEmail = filter_var($visitorEmail, FILTER_SANITIZE_EMAIL);
+//		if(empty($visitorEmail) === true) {
+//			throw(new InvalidArgumentException("visitor email address is empty or insecure"));
+//		}
+
+		// create query template
+		$query = "SELECT visitorEmail FROM visitor WHERE visitorEmail LIKE :visitorEmail";
+		$statement = $pdo->prepare($query);
+
+		// bind the visitorEmail to the place holder in the template
+		$visitorEmail = $_GET["term"];
+		$visitorEmail = "%$visitorEmail%";
+		$parameters = array("visitorEmail" => $visitorEmail);
+
+		// execute the statement
+		$statement->execute($parameters);
+		$statement->setFetchMode(PDO::FETCH_ASSOC);
+
+		// grab the visitor from mySQL
+		try {
+			$email = array();
+			while($row = $statement->fetch()) {
+				$email[] = $row["visitorEmail"];
+			}
+		} catch (Exception $exception) {
+			// if the row couldn't be converted, rethrow it
+			throw(new PDOException($exception->getMessage(), 0, $exception));
+		}
+
+		// return the result
+		echo json_encode($email);
+	}
 }
 ?>

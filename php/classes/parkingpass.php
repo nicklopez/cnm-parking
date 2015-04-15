@@ -28,7 +28,7 @@ class ParkingPass {
 	private $inviteId;
 
 	/**
-	 * Foreign Key / int, not null
+	 * Foreign Key / int
 	 *
 	 * id to reference ParkingSpot Class
 	 */
@@ -182,15 +182,16 @@ class ParkingPass {
 	/**
 	 * mutator method for invite id
 	 *
-	 * @param int $newInviteId new value of adminProfileId
-	 * @throws InvalidArgumentException if $newInviteId is not an integer or is null
+	 * @param int $newInviteId new value of invite id
+	 * @throws InvalidArgumentException if $newInviteId is not an integer
 	 * @throws RangeException if $newInviteId is not positive
 	 */
 	public function setInviteId($newInviteId) {
 		// verify that invite id is valid
 		$newInviteId = filter_var($newInviteId, FILTER_VALIDATE_INT);
 		if($newInviteId === false) {
-			throw(new InvalidArgumentException("invite id is not a valid integer or is null"));
+			$this->inviteId = null;
+			return;
 		}
 
 		// verify that invite id is positive

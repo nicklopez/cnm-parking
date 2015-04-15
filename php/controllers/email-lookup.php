@@ -13,7 +13,7 @@ try {
 	$pdo = new PDO($dsn, $configArray["username"], $configArray["password"], $options);
 	$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
 
-	$visitor = Visitor::getVisitorByVisitorEmail($pdo, $_POST["emailAddress"]);
+	$visitor = Visitor::getVisitorEmailAddress($pdo);
 	if(count($visitor) === 0) {
 		return;
 	}
@@ -21,9 +21,4 @@ try {
 } catch (mysqli_sql_exception $Exception) {
 	echo "<div class=\"alert alert-danger\" role=\"alert\"><strong>Visitor not found.</strong>" . $exception->getMessage() . "</div>";
 }
-
-$result = $visitor->getVisitorFirstName() . "," . $visitor->getVisitorLastName() . "," . $visitor->getVisitorPhone() . "," . $visitor->getVisitorId();
-
-print_r($result);
-
 ?>

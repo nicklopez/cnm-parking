@@ -37,6 +37,8 @@ try {
 		// create and insert parking pass
 		$parkingPass = new ParkingPass(null, $_POST["adminProfileId"], $_POST["inviteId"], $_POST["parkingSpotId"], $vehicleId, $_POST["departureDate"], null, $_POST["arrivalDate"], null);
 		$parkingPass->insert($pdo);
+
+		// query the vehicle details for the parking pass printout
 		$vehicle = Vehicle::getVehicleByVehicleId($pdo, $vehicleId);
 	} else {
 		// create and insert vehicle
