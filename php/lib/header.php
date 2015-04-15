@@ -40,12 +40,12 @@
 			</div>
 
 			<div class="container-fluid header">
-				<div class="col-xs-10 col-md-6">
+				<div class="col-xs-10 col-md-8">
 					<div class="row">
 						<h1 class="h1"><span><?php echo $headerTitle; ?></h1></span>
 					</div>
 				</div>
-					<div class="col-xs-2 col-md-6">
+					<div class="col-xs-2 col-md-4">
 						<div class="row">
 							<img src="../../img/cnm.jpg" align="right" class="img-responsive">
 						</div>
