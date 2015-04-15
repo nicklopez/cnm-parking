@@ -376,7 +376,7 @@ class Visitor {
 		try {
 			$visitor = null;
 			$row = $statement->fetch();
-			if($row !== null) {
+			if($row !== false) {
 				$visitor = new Visitor($row["visitorId"], $row["visitorEmail"], $row["visitorFirstName"], $row["visitorLastName"], $row["visitorPhone"]);
 			}
 		} catch(Exception $exception) {
@@ -518,17 +518,17 @@ class Visitor {
 	 * @throws PDOException when mySQL related errors occur
 	 **/
 	public static function getVisitorByVisitorEmail(PDO &$pdo, $visitorEmail) {
-		// handle degenerate cases
-		if(gettype($pdo) !== "object" || get_class($pdo) !== "PDO") {
-			throw(new PDOException("input is not a PDO object"));
-		}
+//		// handle degenerate cases
+//		if(gettype($pdo) !== "object" || get_class($pdo) !== "PDO") {
+//			throw(new PDOException("input is not a PDO object"));
+//		}
 
 		// sanitize the visitorEmail before searching
 		$visitorEmail = trim($visitorEmail);
 		$visitorEmail = filter_var($visitorEmail, FILTER_SANITIZE_EMAIL);
-		if(empty($visitorEmail) === true) {
-			throw(new InvalidArgumentException("visitor email address is empty or insecure"));
-		}
+//		if(empty($visitorEmail) === true) {
+//			throw(new InvalidArgumentException("visitor email address is empty or insecure"));
+//		}
 
 		// create query template
 		$query = "SELECT visitorId, visitorEmail, visitorFirstName, visitorLastName, visitorPhone FROM visitor WHERE visitorEmail = :visitorEmail";

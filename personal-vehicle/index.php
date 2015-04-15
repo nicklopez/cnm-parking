@@ -25,18 +25,18 @@ try {
 	$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
 
 	// check for previous parking pass from activation
-	$set = Invite::getParkingPassByActivation($pdo, $_GET["activation"]);
-	if($set !== false) {
-		echo '<div class="alert alert-success" role="alert" id="message">Invite has expired. Please submit a new invite.</div>';
-		exit;
-	}
+//	$set = Invite::getParkingPassByActivation($pdo, $_GET["activation"]);
+//	if($set !== false) {
+//		echo '<div class="alert alert-success" role="alert" id="message">Invite has expired. Please submit a new invite.</div>';
+//		exit;
+//	}
 
 	// verify $_GET["activation"] has an activation token; if not, throw an exception
 	if(!isset($_GET["activation"])) {
 	//		header("location: ../request-invite/index.php");
 		echo '<div class="alert alert-success" role="alert" id="message">Please submit a new request.</div>';
 	}
-
+//sdaf
 	$activation = $_GET["activation"];
 	$resultObjects = Invite::getInviteByActivation($pdo, $activation);
 
@@ -68,8 +68,8 @@ require_once("../verify-availability/index.php");
 				<input type="hidden" id="visitorId" name="visitorId" value="<?php echo $visitor->getVisitorId(); ?>" >
 				<input type="hidden" id="activation" name="activation" value="<?php echo $_GET["activation"]; ?>">
 				<input type="hidden" id="inviteId" name="inviteId" value="<?php echo $invite->getInviteId(); ?>"
-				<input type="text" id="parkingSpotId" name="parkingSpotId">
 				<input type="hidden" id="vehicleId" name="vehicleId">
+				<input type="hidden" id="parkingSpotId" name="parkingSpotId">
 
 			</div>
 			<div class="col-xs-12 col-md-6">
@@ -138,7 +138,7 @@ require_once("../verify-availability/index.php");
 
 				</div>
 				<div class="form-group">
-					<label hidden="" for="vehiclePlateState">Plate State:</label>
+					<label for="vehiclePlateState">Plate State:</label>
 					<select name="vehiclePlateState" class="btn btn-default" id="vehiclePlateState">
 						<option value="AL">AL</option>
 						<option value="AK">AK</option>
@@ -293,6 +293,7 @@ require_once("../verify-availability/index.php");
 </div>
 	<div>
 		<button id="sendRequest" class="btn btn-primary btn-lg " type="submit">Send Request</button>
+		<br>
 	</div>
 
 

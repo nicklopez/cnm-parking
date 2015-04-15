@@ -2,40 +2,74 @@
 	font-family: Lato, sans-serif;
 }
 
+.date {
+	width: 160px;
+}
+
 body {
 	display: flex;
 	min-height: 100vh;
 	flex-direction: column;
 	-webkit-flex-direction: column;
+	padding: 0;
+	margin-bottom: 27px;
 }
 
-main {
-	flex: 1;
-	-webkit-flex: 1;
-	
-}
 
-footer {
-	padding: 10px;
+/*main {*/
+	/*flex: 1;*/
+	/*-webkit-flex: 1;*/
+/*}*/
+
+
+.footer {
+	height: 27px;
+	padding: 5px;
 	background: #F6BE00;
+	clear: both;
+	bottom: 0;
+	position: absolute;
+	width: 100%;
 }
 
-h1 {
+.h1 {
 	padding: 10px;
 	margin: 0px 0px 0px 10px;
+	clear: both;
 }
 
-.headBegin {
+.h2 {
+	clear: both;
+	margin: 0;
+	height: 10px;
+}
+
+.h22 {
+	clear: both;
+	margin: 0;
+	height: 20px;
+}
+
+.page-header {
 	background: #F6BE00;
+	clear: both;
+	width: 100%;
+	margin: 0;
 }
 
 .headEnd {
 	background: #003A70;
+	clear: both;
+	width: 100%;
+	margin: 0;
 }
 
-.date {
-	width: 160px;
+html {
+	min-height: 100%;
+	position: relative;
 }
+
+
 
 .name {
 	width: 192px;
@@ -65,20 +99,27 @@ h1 {
 }
 
 img {
-	width:8%; /* you can use % */
+	width: auto;  /* you can use % */
 	height: auto;
+	float: right;
+
 }
 
 span {
 	display: inline-block;
 	/*vertical-align: middle;*/
+	padding-top: inherit;
 }
 
 .modal-dialog {
 	width: 500px;
 }
 
-a {
-	cursor: pointer;
-	cursor: hand;
+.row-fluid {
+	width: 100%;
+	padding: 0;
 }
+
+
+
+

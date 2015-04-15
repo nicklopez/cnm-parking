@@ -41,11 +41,21 @@
 			</div>
 
 			<div class="container-fluid header">
-				<h1 class="h1"><span><?php echo $headerTitle; ?></span>
-				<img src="https://images.efollett.com/htmlroot/images/templates/storeLogos/CA/402.gif" align="right" class="img-responsive"</h1>
-			</div>
-			<div class="headEnd">
-				<h2 class="h22"></h2>
+				<div class="col-xs-10 col-md-6">
+					<div class="row">
+						<h1 class="h1"><span><?php echo $headerTitle; ?></h1></span>
+					</div>
+				</div>
+					<div class="col-xs-2 col-md-6">
+						<div class="row">
+							<img src="../../img/cnm.jpg" align="right" class="img-responsive">
+						</div>
+					</div>
+				</div>
 
-			</div>
+				<div class="headEnd">
+					<h2 class="h22"></h2>
+				</div>
+
+
 			<main>
