@@ -48,12 +48,12 @@ function deleteSpots(start, end, modalLocationId, action) {
 }
 
 $(document).ready(function() {
-	$("[id='deleteLink']").on('click', function() {
+	$(document).on('click', '#deleteLink', function() {
 		$("#deleteSpotsButton").show();
 		$("#addSpotsButton").hide();
 	});
 
-	$("[id='addLink']").on('click', function() {
+	$(document).on('click', '#addLink', function() {
 		$("#deleteSpotsButton").hide();
 		$("#addSpotsButton").show();
 	});
