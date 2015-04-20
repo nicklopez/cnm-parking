@@ -55,7 +55,7 @@ require_once("../verify-availability/index.php");
 			<div class="col-xs-12 col-md-6">
 				<div class="form-group">
 					<label for="visitorEmail">Email:</label>
-					<input type="text" class="form-control email" id="visitorEmail" name="visitorEmail" onblur="showVisitor(this.value);">
+					<input type="text" class="form-control email" id="visitorEmail" name="visitorEmail">
 				</div>
 				<div class="form-group">
 					<label for="visitorFirstName">First Name:</label>

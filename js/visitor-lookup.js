@@ -17,5 +17,17 @@ $(document).ready(function() {
 	$("#visitorEmail").autocomplete({
 		source: "../php/controllers/email-lookup.php",
 		minLength: 1
-	})
+	});
+
+	$("#visitorEmail" ).on("autocompleteselect", function(event, ui) {
+		showVisitor(ui.item.value);
+	});
+
+	$("#visitorEmail" ).on("input", function() {
+		if(this.value === "") {
+			return;
+		} else {
+			showVisitor(this.value);
+		}
+	});
 });
