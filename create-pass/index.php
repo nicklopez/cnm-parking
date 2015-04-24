@@ -54,6 +54,9 @@ require_once("../verify-availability/index.php");
 			</div>
 			<div class="col-xs-12 col-md-6">
 				<div class="form-group">
+					<label>VISITOR INFO</label>
+				</div>
+				<div class="form-group">
 					<label for="visitorEmail">Email:</label>
 					<input type="text" class="form-control email" id="visitorEmail" name="visitorEmail">
 				</div>
