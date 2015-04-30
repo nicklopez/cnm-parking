@@ -14,13 +14,13 @@ $(document).ready(function() {
 			api.column(2, {page:'current'} ).data().each( function ( group, i ) {
 				if ( last !== group ) {
 					$(rows).eq( i ).before(
-						'<tr class="group"><td colspan="2">'+group+'</td></tr>'
+						'<tr class="group"><td colspan="3">'+group+'</td></tr>'
 					);
 					last = group;
 
 					$('#example tbody').on('click', 'tr.group', function () {
 						var fullLocation = this.textContent;
-						var location = fullLocation.split('+');
+						var location = fullLocation.split('Add');
 						document.getElementById('title').textContent = location[0].trim();
 					});
 				}

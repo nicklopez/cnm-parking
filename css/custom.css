@@ -123,5 +123,7 @@ a {
 	cursor: hand;
 }
 
-
+#redFlag {
+	color: red;
+}
 

@@ -97,7 +97,7 @@ require_once("../verify-availability/index.php");
 				$vehicles = Vehicle::getVehicleByVisitorId($pdo, $visitorId);
 				if ($vehicles != null) { ?>
 				<div class="form-group">
-					<label for="selectVehicle">Please Select A Vehicle</label>
+					<label for="selectVehicle">Vehicle:</label>
 					<?php
 					echo "<select id=selectVehicle name=selectVehicle class=form-control onchange='test()';>";
 					echo "<option value='0'> -- Select Your Vehicle -- </option>";
@@ -106,7 +106,7 @@ require_once("../verify-availability/index.php");
 						$cars = $vehicle["vehicleYear"] . " " . $vehicle["vehicleMake"] . " " . $vehicle["vehicleModel"];
 						echo "<option value=$id>$cars</option>";
 					}
-					echo "<option value='addVehicle'>Add New Vehicle</option>";
+					echo "<option value='addVehicle'>Add a New Vehicle</option>";
 					echo "</select>";
 					?>
 				</div>

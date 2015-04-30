@@ -46,7 +46,7 @@ try {
 			$parkingSpots = new ParkingSpot(null, $newLocation->getLocationId(), $locationSpotStart);
 			$parkingSpots->insert($pdo);
 		}
-		echo "<div class=\"alert alert-success\" role=\"alert\"><strong>Location and parking spot(s) have been added</strong></div>";
+		echo "<div class=\"alert alert-success\" role=\"alert\"><strong>Location and placard(s) have been added</strong></div>";
 
 	} elseif($placardNumber > $end) {
 		echo "<div class=\"alert alert-danger\" role=\"alert\"><strong>Invalid placard # range.</strong></div>";
@@ -56,7 +56,7 @@ try {
 			$parkingSpots = new ParkingSpot(null, $locationId, $placardNumber);
 			$parkingSpots->delete($pdo);
 		}
-		echo "<div class=\"alert alert-success\" role=\"alert\"><strong>Parking spot(s) have been deleted</strong></div>";
+		echo "<div class=\"alert alert-success\" role=\"alert\"><strong>Placard(s) have been deleted</strong></div>";
 
 	} else {
 
@@ -64,7 +64,7 @@ try {
 			$parkingSpots = new ParkingSpot(null, $locationId, $placardNumber);
 			$parkingSpots->insert($pdo);
 		}
-		echo "<div class=\"alert alert-success\" role=\"alert\"><strong>Parking spot(s) have been added</strong></div>";
+		echo "<div class=\"alert alert-success\" role=\"alert\"><strong>Placard(s) have been added</strong></div>";
 	}
 } catch(Exception $exception) {
 	echo "<div class=\"alert alert-danger\" role=\"alert\"><strong>Oh snap!</strong> Unable to add: " . $exception->getMessage() . "</div>";

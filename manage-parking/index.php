@@ -1,9 +1,10 @@
 <?php
 $title = "Manage Parking";
-$headerTitle = "Manage locations & parking spots";
+$headerTitle = "Manage locations & placards";
 require_once("../php/lib/header.php");
 require_once("../php/classes/location.php");
 require_once("../php/classes/parkingspot.php");
+require_once("../php/classes/parkingpass.php");
 
 // start a PHP session
 session_start();
@@ -49,7 +50,6 @@ $pdo = new PDO($dsn, $configArray["username"], $configArray["password"], $option
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
 
 $objects = Location::getAllLocationsAndParkingSpots($pdo);
-
 ?>
 
 <div class="modal fade" id="myModal">
@@ -79,8 +79,8 @@ $objects = Location::getAllLocationsAndParkingSpots($pdo);
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-				<button id="addSpotsButton" type="button" class="btn btn-primary" onclick="addSpots(document.getElementById('start').value, document.getElementById('end').value, document.getElementById('modalLocationId').value);">Add Spots</button>
-				<button id="deleteSpotsButton" value="delete" type="button" class="btn btn-primary" onclick="deleteSpots(document.getElementById('start').value, document.getElementById('end').value, document.getElementById('modalLocationId').value, this.value);">Delete Spots</button>
+				<button id="addSpotsButton" type="button" class="btn btn-primary" onclick="addSpots(document.getElementById('start').value, document.getElementById('end').value, document.getElementById('modalLocationId').value);">Add Placard(s)</button>
+				<button id="deleteSpotsButton" value="delete" type="button" class="btn btn-primary" onclick="deleteSpots(document.getElementById('start').value, document.getElementById('end').value, document.getElementById('modalLocationId').value, this.value);">Delete Placard(s)</button>
 			</div>
 		</div><!-- /.modal-content -->
 	</div><!-- /.modal-dialog -->
@@ -91,7 +91,7 @@ $objects = Location::getAllLocationsAndParkingSpots($pdo);
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-				<h4 class="modal-title" id="title">Add Location & Spot(s)</h4>
+				<h4 class="modal-title">Add Location & Placard(s)</h4>
 			</div>
 			<div class="modal-body">
 				<div class="row container-fluid">
@@ -122,7 +122,71 @@ $objects = Location::getAllLocationsAndParkingSpots($pdo);
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-				<button type="button" class="btn btn-primary" onclick="addLocationSpots(document.getElementById('locationName').value, document.getElementById('locationDescription').value, document.getElementById('locationSpotStart').value, document.getElementById('locationSpotEnd').value);">Save changes</button>
+				<button type="button" class="btn btn-primary" onclick="addLocationSpots(document.getElementById('locationName').value, document.getElementById('locationDescription').value, document.getElementById('locationSpotStart').value, document.getElementById('locationSpotEnd').value);">Save</button>
+			</div>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div class="modal fade" id="placardAssignmentModal">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">Placard Assignment</h4>
+			</div>
+			<div class="modal-body">
+				<form id="placardAssignmentForm">
+					<input hidden="hidden" type="text" id="assignId" name="assignId">
+					<input hidden="hidden" type="text" id="locationId" name="locationId">
+					<input hidden="hidden" type="date" id="returnDate" name="returnDate">
+					<input hidden="hidden" type="text" id="adminProfileId" name="adminProfileId" value="<?php echo $_SESSION["adminProfileId"]; ?>">
+					<div class="row container-fluid">
+						<div class="form-group">
+							<label for="firstName">First Name</label>
+							<input class="form-control" type="text" id="firstName" name="firstName">
+						</div>
+						<div class="form-group">
+							<label for="lastName">Last Name</label>
+							<input class="form-control" type="text" id="lastName" name="lastName">
+						</div>
+					</div>
+					<div class="row container-fluid">
+						<div class="form-group col-xs-6">
+							<label for="startDate">Start Date</label>
+							<input class="form-control" type="date" id="startDate" name="startDate">
+						</div>
+						<div class="form-group col-xs-6">
+							<label for="endDate">End Date</label>
+							<input class="form-control" type="date" id="endDate" name="endDate">
+						</div>
+						<div class="form-group col-xs-6">
+							<label for="placard">Placard</label>
+							<p id="placardText"></p>
+							<select class="form-control" id="availablePlacards" name="availablePlacards">
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-sm-10">
+							<div class="form-group">
+								<label>
+									<input id="returned" type="checkbox"> Placard Returned?
+								</label>
+							</div>
+						</div>
+					</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-12">
+					<p id="placardAssignmentOutputArea"></p>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary" id="saveAssignmentButton" onclick="insertPlacardAssignment();">Save</button>
+				<button type="button" class="btn btn-primary" id="updateAssignmentButton" onclick="updatePlacardAssignment();">Update</button>
+				</form>
 			</div>
 		</div><!-- /.modal-content -->
 	</div><!-- /.modal-dialog -->
@@ -131,9 +195,10 @@ $objects = Location::getAllLocationsAndParkingSpots($pdo);
 <div class="container-fluid">
 	<table id="example" class="hover row-border" width="100%">
 		<thead>
-			<th>Location &nbsp; <a data-toggle="modal" data-target="#locationSpotModal"><span class="glyphicon glyphicon-plus"></span>Add a Location</a></th>
-			<th>Placard#</th>
+			<th>Location &nbsp; <span class="glyphicon glyphicon-plus-sign"></span>&nbsp;<a data-toggle="modal" data-target="#locationSpotModal">Add a Location</a></th>
+			<th>Placard #</th>
 			<th></th>
+			<th>Placard Assigned To</th>
 		</thead>
 		<tbody>
 
@@ -143,8 +208,31 @@ $objects = Location::getAllLocationsAndParkingSpots($pdo);
 				$locationNote = $object["locationNote"];
 				$locationDesc = $object["locationDescription"];
 				$placard = $object["placardNumber"];
+				$parkingSpotId = $object["parkingSpotId"];
+
+				// query placard assignment details and throw results into table element below
+				$placardAssignment = Location::getPlacardAssignmentByParkingSpotId($pdo, $parkingSpotId);
+				$name = $placardAssignment["name"];
+				$assignId = $placardAssignment["assignId"];
+
+				if($placardAssignment["startDateTime"] !== null) {
+					$startDate = DateTime::createFromFormat("Y-m-d H:i:s", $placardAssignment["startDateTime"]);
+					$formattedStartDate = $startDate->format("n-j-y");
+					$endDate = DateTime::createFromFormat("Y-m-d H:i:s", $placardAssignment["endDateTime"]);
+					$formattedEndDate = $endDate->format("n-j-y");
+					$assignedDates = $formattedStartDate . " thru " . $formattedEndDate . "&nbsp;&nbsp;&nbsp;<a id='updateAssignmentLink' data-toggle='modal' data-target='#placardAssignmentModal' data-assign-id='$assignId' data-spot-id='$parkingSpotId' data-location-id='$locationId'><span class='glyphicon glyphicon-pencil'></span></a>";
+					$today = new DateTime();
+					if($endDate < $today) {
+						$name = "<span id='redFlag' class='glyphicon glyphicon-flag'></span>&nbsp;&nbsp;" . $name;
+					}
+				} else {
+					$assignedDates = null;
+				}
 				$row = <<< EOF
-		<tr><td width="25%"></td><td>$placard</td><td>$locationDesc - $locationNote&nbsp;&nbsp;&nbsp;<a id="addLink" cursor data-toggle="modal" data-target="#myModal" onclick="document.getElementById('modalLocationId').value = $locationId"><span class="glyphicon">+</span>Add Spots</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a id="deleteLink" data-toggle="modal" data-target="#myModal" onclick="document.getElementById('modalLocationId').value = $locationId"><span class="glyphicon glyphicon-minus"></span>Delete Spots</a></td></tr>
+		<tr><td width="25%"></td><td>$placard</td><td>$locationDesc - $locationNote&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-plus-sign"></span>&nbsp;<a id="addLink" data-toggle="modal" data-target="#myModal" onclick="document.getElementById('modalLocationId').value = $locationId">Add</a>
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-minus-sign"></span>&nbsp;<a id="deleteLink" data-toggle="modal" data-target="#myModal" onclick="document.getElementById('modalLocationId').value = $locationId">Delete</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		<span class="glyphicon glyphicon-folder-open"></span>&nbsp;&nbsp;<a id="addAssignmentLink" data-toggle="modal" data-target="#placardAssignmentModal" data-assignment="new" data-location-id='$locationId'>Assign a Placard</a>
+		</td><td>$name &nbsp; - &nbsp; $assignedDates</td></tr>
 EOF;
 				echo $row;
 			}

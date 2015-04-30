@@ -135,7 +135,7 @@ class ParkingPass {
 		if($newParkingPassId <= 0) {
 			throw(new RangeException("parkingPassId is not positive"));
 		}
- 		// convert and store the parkingPassId
+		// convert and store the parkingPassId
 		$this->parkingPassId = intval(($newParkingPassId));
 	}
 
@@ -1021,7 +1021,6 @@ class ParkingPass {
 
 	/**
 	 * Verify Availability: Searches for and returns 1 placard number that is free(no conflicts) during given datetime range.
-	 * datetime is limited to 8 hours(if >8 hours then return null)
 	 *
 	 * @param PDO $pdo
 	 * @param $location
@@ -1044,24 +1043,18 @@ class ParkingPass {
 			throw(new RangeException($range->getMessage(), 0, $range));
 		}
 
-		// create query template
-		// testing a new query, original commented out below -- Nick
+		// query available parking spots (placards)
 		$query = "SELECT parkingSpotId FROM parkingSpot WHERE parkingSpotId NOT IN
 		(SELECT parkingSpot.parkingSpotId FROM parkingSpot INNER JOIN parkingPass ON parkingSpot.parkingSpotId = parkingPass.parkingSpotId
 		WHERE (:sunrise >= startDateTime AND :sunset <= endDateTime AND locationId = :locationId)
 		OR (:sunrise < startDateTime AND :sunset > endDateTime AND locationId = :locationId)
 		OR (:sunrise < startDateTime AND :sunset > startDateTime AND locationId = :locationId)
-		OR (:sunrise <= startDateTime AND :sunset > enddatetime AND locationId = :locationId))
+		OR (:sunrise <= startDateTime AND :sunset > enddatetime AND locationId = :locationId)
+		UNION ALL
+		SELECT parkingSpot.parkingSpotId FROM parkingSpot INNER JOIN placardAssignment ON parkingSpot.parkingSpotId = placardAssignment.parkingSpotId
+		WHERE ISNULL(returnDateTime))
 		AND locationId = :locationId
 		LIMIT 1";
-
-//		$query = "SELECT parkingSpotId FROM parkingSpot WHERE parkingSpotId NOT IN
-//					(SELECT parkingSpot.parkingSpotId FROM parkingSpot INNER JOIN parkingPass ON parkingSpot.parkingSpotId = parkingPass.parkingSpotId WHERE
-//		  			(locationId = :locationId AND :sunrise <= endDateTime AND
-//					((:sunrise > startDateTime AND :sunset <= startDateTime) OR
-//			 		(:sunrise >= startDateTime)))) AND
-//					locationId = :locationId
-//					LIMIT 1";
 
 		$statement = $pdo->prepare($query);
 		if($statement === false) {
@@ -1071,7 +1064,7 @@ class ParkingPass {
 		// bind the member variables to the place holders in the template
 		$sunrise = $sunrise->format("Y-m-d H:i:s");
 		$sunset = $sunset->format("Y-m-d H:i:s");
-		$parameters = array("locationId" => $location, "sunrise" => $sunrise, "sunrise" => $sunrise, "sunset" => $sunset, "sunrise" => $sunrise, "locationId" => $location);
+		$parameters = array("locationId" => $location, "sunrise" => $sunrise, "sunset" => $sunset);
 
 		// execute the statement
 		$statement->execute($parameters);
@@ -1151,6 +1144,75 @@ class ParkingPass {
 		} else {
 			return ($visitorData);
 		}
+	}
+
+	/**
+	 * gets available placards; physical placard to be issued
+	 *
+	 * @param PDO $pdo pointer to mySQL connection, by reference
+	 * @param int $location id of the location to search for
+	 * @param datetime $arrival, begin date time range of on-site visit
+	 * @param datetime $departure end date time range of on-site visit
+	 * @return mixed available placard found or null if not found
+	 * @throws PDOException when mySQL related errors occur
+	 */
+	public static function getAvailablePlacards(PDO &$pdo, $location, $arrival, $departure) {
+		// handle degenerate cases
+		if(gettype($pdo) !== "object" || get_class($pdo) !== "PDO") {
+			throw(new PDOException("input is not a PDO object"));
+		}
+
+		// sanitize dates before searching - Using static function
+//		try {
+//			$sunrise = self::sanitizeDate($arrival);
+//			$sunset = self::sanitizeDate($departure);
+//		} catch(InvalidArgumentException $invalidArgument) {
+//			throw(new InvalidArgumentException($invalidArgument->getMessage(), 0, $invalidArgument));
+//		} catch(RangeException $range) {
+//			throw(new RangeException($range->getMessage(), 0, $range));
+//		}
+
+		// query available parking spots (placards)
+		$query = "SELECT parkingSpotId, placardNumber, locationId FROM parkingSpot WHERE parkingSpotId NOT IN
+		(SELECT parkingSpot.parkingSpotId FROM parkingSpot INNER JOIN parkingPass ON parkingSpot.parkingSpotId = parkingPass.parkingSpotId
+		WHERE (:sunrise >= startDateTime AND :sunset <= endDateTime AND locationId = :locationId)
+		OR (:sunrise < startDateTime AND :sunset > endDateTime AND locationId = :locationId)
+		OR (:sunrise < startDateTime AND :sunset > startDateTime AND locationId = :locationId)
+		OR (:sunrise <= startDateTime AND :sunset > enddatetime AND locationId = :locationId)
+		UNION ALL
+		SELECT parkingSpot.parkingSpotId FROM parkingSpot INNER JOIN placardAssignment ON parkingSpot.parkingSpotId = placardAssignment.parkingSpotId
+		WHERE ISNULL(returnDateTime))
+		AND locationId = :locationId";
+
+		$statement = $pdo->prepare($query);
+		if($statement === false) {
+			throw(new PDOException("unable to prepare statement"));
+		}
+
+		// bind the member variables to the place holders in the template
+		$sunrise = DateTime::createFromFormat("n-j-y", $arrival);
+		$formattedSunrise = $sunrise->format("Y-m-d H:i:s");
+		$sunset = DateTime::createFromFormat("n-j-y", $departure);
+		$formattedSunset = $sunset->format("Y-m-d H:i:s");
+		$parameters = array("locationId" => $location, "sunrise" => $formattedSunrise, "sunset" => $formattedSunset);
+
+		// execute the statement
+		$statement->execute($parameters);
+		$statement->setFetchMode(PDO::FETCH_ASSOC);
+
+		// build array of result
+		$placards = array();
+		while(($row = $statement->fetch()) !== false) {
+			try {
+				$placards[] = $row;
+			} catch(Exception $exception) {
+				// if the row couldn't be converted, rethrow it
+				throw(new PDOException($exception->getMessage(), 0, $exception));
+			}
+		}
+
+		// return result
+		return ($placards);
 	}
 
 	/**

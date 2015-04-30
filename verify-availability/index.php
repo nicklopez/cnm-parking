@@ -2,7 +2,7 @@
 	<div class="container">
 		<div class="col-xs-12">
 			<div class="form-group">
-				<h3>Choose Location</h3>
+				<h3>Choose a Location</h3>
 				<label for="selectListLocation" class="control-label"></label>
 				<?php require_once("../php/controllers/list-of-locations.php"); ?>
 			</div>

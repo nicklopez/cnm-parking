@@ -75,10 +75,10 @@ require_once("../verify-availability/index.php");
 			</div>
 			<div class="col-xs-12 col-md-6">
 				<div class="form-group">
-					<label for="selectVehicle">Please Select A Vehicle</label>
+					<label for="selectVehicle">Vehicle:</label>
 					<select id=selectVehicle name=selectVehicle class=form-control onchange='test()';>
 						<option value='0'> -- Select Your Vehicle -- </option>
-						<option value='addVehicle'>Add New Vehicle</option>
+						<option value='addVehicle'>Add a New Vehicle</option>
 					</select>
 				</div>
 				<div id="extra" style="visibility: hidden">
