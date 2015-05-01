@@ -69,8 +69,7 @@ imagesetthickness($image, 10);
 // timeFormat
 $timeFormat = "M j, y g:i a";
 
-// create image text
-// imagettftext($image, 75, 0.0, 125, 95, $black, $font, "City of Albuquerque Temporary Parking Placard");
+
 
 imagettftext($image, 65, 0.0, 100, 125, $black, $font2, "Start Date/Time: Mar 25, '15 9:00 am");
 imagettftext($image, 65, 0.0, 100, 275, $black, $font2, "End Date/Time: Mar 25, '15 10:00 am");
