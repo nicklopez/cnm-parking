@@ -88,7 +88,7 @@ imagettftext($image, 55.0, 0.0, 1750, 1220, $black, $font2, "Placard #: 0284");
 imagettftext($image, 25, 0.0, 150, 1300, $red, $font, "LEGAL NOTICE: Duplication or manufacturing of a parking permit is a crime. Handwritten changes will VOID an temporary parking pass.
 																													Vehicles displaying such permits will be cited.");
 
-// imagerectangle($image, 50, 200, 2350, 1200, $green);
+
 
 $w   = imagecolorallocate($image, 255, 255, 255);
 //$style = array($black, $black, $black, $black, $black, $w, $w, $w, $w, $w);
