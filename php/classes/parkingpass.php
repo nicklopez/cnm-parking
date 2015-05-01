@@ -1093,8 +1093,8 @@ class ParkingPass {
 
 		// sanitize before searching - Using static function
 		try {
-			$sunrise = self::sanitizeDate($startDateTime);
-			$sunset = self::sanitizeDate($endDateTime);
+			$sunrise = self::sanitizeShortDate($startDateTime);
+			$sunset = self::sanitizeShortDate($endDateTime);
 		} catch(InvalidArgumentException $invalidArgument) {
 			throw(new InvalidArgumentException($invalidArgument->getMessage(), 0, $invalidArgument));
 		} catch(RangeException $range) {
@@ -1102,21 +1102,22 @@ class ParkingPass {
 		}
 
 		// create query template
-		$query = "SELECT adminFirstName, adminLastName, locationDescription, locationNote, vehiclePlateNumber, visitorFirstName, visitorLastName, endDateTime, issuedDateTime, startDateTime FROM parkingPass
+		$query = "SELECT adminFirstName, adminLastName, locationDescription, locationNote, placardNumber, vehiclePlateNumber, visitorFirstName, visitorLastName, endDateTime, issuedDateTime, startDateTime FROM parkingPass
 		INNER JOIN vehicle ON vehicle.vehicleId = parkingPass.vehicleId
 		INNER JOIN adminProfile ON adminProfile.adminProfileId = parkingPass.adminProfileId
 		INNER JOIN parkingSpot ON parkingSpot.parkingSpotId = parkingPass.parkingSpotId
 		INNER JOIN location ON location.locationId = parkingSpot.locationId
 		INNER JOIN visitor ON visitor.visitorId = vehicle.visitorId
-		WHERE startDateTime >= :startDateTime AND endDateTime <= :endDateTime";
+		WHERE startDateTime >= :startDateTime AND endDateTime <= :endDateTime
+		ORDER BY startDateTime";
 		$statement = $pdo->prepare($query);
 		if($statement === false) {
 			throw(new PDOException(" unable to prepare statement"));
 		}
 
 		// bind the member variables to the place holders in the template
-		$sunrise = $sunrise->format("Y-m-d H:i:s");
-		$sunset = $sunset->format("Y-m-d H:i:s");
+		$sunrise = $sunrise->format("Y-m-d 00:00:00");
+		$sunset = $sunset->format("Y-m-d 23:59:59");
 		$parameters = array("startDateTime" => $sunrise, "endDateTime" => $sunset);
 
 		// execute the statement
@@ -1259,6 +1260,39 @@ class ParkingPass {
 
 		// store the DateTime value
 		$newDate = DateTime::createFromFormat("Y-m-d H:i:s", $newDate);
+		return($newDate);
+	}
+
+	/**
+	 * sanitizes a date either as a DateTime object or mySQL date string
+	 *
+	 * @param mixed $newDate short date to sanitize
+	 * @return DateTime sanitized DateTime object
+	 * @throws InvalidArgumentException if the date is in an invalid format
+	 * @throws RangeException if the date is not a Gregorian date
+	 **/
+	public static function sanitizeShortDate($newDate) {
+		// base case: if the date is a DateTime object, there's no work to be done
+		if(is_object($newDate) === true && get_class($newDate) === "DateTime") {
+			return($newDate);
+		}
+
+		// treat the date as a mySQL date string: n-j-y
+		$newDate = trim($newDate);
+		if((preg_match("/^(\d{1,2})-(\d{1,2})-(\d{4})$/", $newDate, $matches)) !== 1) {
+			throw(new InvalidArgumentException("date is not a valid date"));
+		}
+
+		// verify the date is really a valid calendar date
+		$month  = intval($matches[1]);
+		$day    = intval($matches[2]);
+		$year   = intval($matches[3]);
+		if(checkdate($month, $day, $year) === false) {
+			throw(new RangeException("date $newDate is not a Gregorian date"));
+		}
+
+		// store the DateTime value
+		$newDate = DateTime::createFromFormat("m-d-Y", $newDate);
 		return($newDate);
 	}
 }

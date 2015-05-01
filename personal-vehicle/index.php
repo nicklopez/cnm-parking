@@ -25,7 +25,7 @@ try {
 	// check for previous parking pass from activation
 //	$set = Invite::getParkingPassByActivation($pdo, $_GET["activation"]);
 //	if($set !== false) {
-//		echo '<div class="alert alert-success" role="alert" id="message">Invite has expired. Please submit a new invite.</div>';
+//		echo '<div class="alert alert-success" role="alert" id="message">Invite has expired. Please submit a new request.</div>';
 //		exit;
 //	}
 
@@ -34,7 +34,7 @@ try {
 		//		header("location: ../request-invite/index.php");
 		echo '<div class="alert alert-success" role="alert" id="message">Please submit a new request.</div>';
 	}
-//sdaf
+
 	$activation = $_GET["activation"];
 	$resultObjects = Invite::getInviteByActivation($pdo, $activation);
 

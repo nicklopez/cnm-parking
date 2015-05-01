@@ -34,12 +34,12 @@ if(!isset($_SESSION["adminProfileId"])) {
 				<form id="reports-form" method="post" action="../php/controllers/reports-post.php">
 				<?php echo generateInputTags(); ?>
 				<div class="form-group">
-					<label for="startDate">Start Date</label>
-					<input type="date" class="form-control date" id="startDate" name="startDate" placeholder="mm/dd/yyyy">
+					<label for="reportStartDate">Start Date</label>
+					<input type="date" class="form-control date" id="reportStartDate" name="reportStartDate" placeholder="mm/dd/yyyy">
 				</div>
 				<div class="form-group">
-					<label for="endDate">End Date</label>
-					<input type="date" class="form-control date" id="endDate" name="endDate" placeholder="mm/dd/yyyy">
+					<label for="reportEndDate">End Date</label>
+					<input type="date" class="form-control date" id="reportEndDate" name="reportEndDate" placeholder="mm/dd/yyyy">
 				</div>
 				<button type="submit" class="btn btn-primary">Run Report</button>
 			</form>

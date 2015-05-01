@@ -17,3 +17,9 @@ function declineInvite(token) {
 		$("#outputArea").html(ajaxOutput)
 	});
 }
+
+$(document).ready(
+//	// inner function for the ready() event
+	function() {
+		$('#invite').dataTable();
+	});

@@ -43,18 +43,18 @@ try {
 	<table id="reports" class="hover row-border">
 		<thead>
 			<th>Location</th>
+			<th>Placard #</th>
 			<th>Visitor Name</th>
 			<th>Vehicle Plate #</th>
-			<th>Arrival</th>
-			<th>Departure</th>
+			<th>Date / Time</th>
 			<th>Approved By</th>
 		</thead>
 		<tbody>
 
 			<?php
 
-			$begin = new DateTime($_POST["startDate"]);
-			$end = new DateTime($_POST["endDate"]);
+			$begin = $_POST["reportStartDate"];
+			$end = $_POST["reportEndDate"];
 
 			$parkingPass = ParkingPass::getVisitorParkingDataByDateRange($pdo, $begin, $end);
 
@@ -66,13 +66,15 @@ try {
 					$visitor = $pass["visitorFirstName"] . " " . $pass["visitorLastName"];
 					$admin = $pass["adminFirstName"] . " " . $pass["adminLastName"];
 					$plateNumber = $pass["vehiclePlateNumber"];
+					$placardNumber = $pass["placardNumber"];
 					$startDate = new DateTime($pass["startDateTime"]);
-					$formattedStartDate = $startDate->format("m-d-Y H:i:s");
+					$formattedStartDate = $startDate->format("m-d-Y (g:iA");
 					$endDate = new DateTime($pass["endDateTime"]);
-					$formattedEndDate = $endDate->format("m-d-Y H:i:s");
+					$formattedEndTime = $endDate->format("g:iA");
+					$dateTimeRange = $formattedStartDate . " - " . $formattedEndTime . ")";
 					$row = <<< EOF
-				<tr><td>$locationDesc</td><td>$visitor</td><td>$plateNumber</td><td>$formattedStartDate</td>
-				<td>$formattedEndDate</td><td>$admin</td></tr>
+				<tr><td>$locationDesc</td><td>$placardNumber</td><td>$visitor</td><td>$plateNumber</td><td>$dateTimeRange</td>
+				<td>$admin</td></tr>
 EOF;
 					echo $row;
 				}
