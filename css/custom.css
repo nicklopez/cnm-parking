@@ -12,16 +12,13 @@ body {
 	flex-direction: column;
 	-webkit-flex-direction: column;
 	padding: 0;
-	margin-bottom: 27px;
+	margin-bottom: 40px;
 }
-
-
 
 /*main {*/
 	/*flex: 1;*/
 	/*-webkit-flex: 1;*/
 /*}*/
-
 
 .footer {
 	height: 27px;
@@ -125,5 +122,9 @@ a {
 
 #redFlag {
 	color: red;
+}
+
+#fullCalendar {
+	width: 80%;
 }
 

@@ -20,7 +20,7 @@ if(!isset($_SESSION["adminProfileId"])) {
 		<a id="logout" href="../php/controllers/admin-logout.php" class="btn btn-primary navbar-btn pull-right">Log Out</a>
 		<p id="welcome" class="navbar-text pull-right">Welcome back, <?php echo $_SESSION["adminFirstName"]; ?></p>
 		<ul class="nav navbar-nav">
-			<li role="presentation" class="active"><a class="navbar-brand" href="../php/test-portal/test-portal.php">Home</a></li>
+			<li role="presentation" class="active"><a class="navbar-brand" href="../php/portal-home/index.php">Home</a></li>
 			<li role="presentation"><a href="../create-pass">Create Parking Pass</a></li>
 			<li role="presentation"><a href="../send-invite">Manage Invites</a></li>
 			<li role="presentation"><a href="../manage-parking">Manage Parking</a></li>

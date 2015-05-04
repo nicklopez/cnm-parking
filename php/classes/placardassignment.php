@@ -208,7 +208,7 @@ class PlacardAssignment {
 
 		// treat the date as a mySQL date string: n-j-y
 		$newEndDateTime = trim($newEndDateTime);
-		if((preg_match("/^(\d{1,2})-(\d{1,2})-(\d{2})$/", $newEndDateTime, $matches)) !== 1) {
+		if((preg_match("/^(\d{1,2})-(\d{1,2})-(\d{4})$/", $newEndDateTime, $matches)) !== 1) {
 			throw(new InvalidArgumentException("end date is not a valid date"));
 		}
 
@@ -221,7 +221,7 @@ class PlacardAssignment {
 		}
 
 		// store the end date
-		$newEndDateTime = DateTime::createFromFormat("n-j-y", $newEndDateTime);
+		$newEndDateTime = DateTime::createFromFormat("n-j-Y", $newEndDateTime);
 		$this->endDateTime = $newEndDateTime;
 	}
 
@@ -396,7 +396,7 @@ class PlacardAssignment {
 
 		// treat the date as a mySQL date string: n-j-y
 		$newStartDateTime = trim($newStartDateTime);
-		if((preg_match("/^(\d{1,2})-(\d{1,2})-(\d{2})$/", $newStartDateTime, $matches)) !== 1) {
+		if((preg_match("/^(\d{1,2})-(\d{1,2})-(\d{4})$/", $newStartDateTime, $matches)) !== 1) {
 			throw(new InvalidArgumentException("start date is not a valid date"));
 		}
 
@@ -409,7 +409,7 @@ class PlacardAssignment {
 		}
 
 		// store the start date
-		$newStartDateTime = DateTime::createFromFormat("n-j-y", $newStartDateTime);
+		$newStartDateTime = DateTime::createFromFormat("n-j-Y", $newStartDateTime);
 		$this->startDateTime = $newStartDateTime;
 	}
 
@@ -495,6 +495,60 @@ class PlacardAssignment {
 
 		// execute the statement
 		$statement->execute($parameters);
+	}
+
+	/**
+	 * gets assignee details for a physical placard (if any) by parking spot Id
+	 *
+	 * @param PDO $pdo pointer to mySQL connection, by reference
+	 * @param int $parkingSpotId placard assignment to search for (if any)
+	 * @return mixed placard assignment found or null if not found
+	 * @throws PDOException when mySQL related errors occur
+	 **/
+	public static function getPlacardAssignmentByParkingSpotId(PDO &$pdo, $parkingSpotId) {
+		// handle degenerate cases
+		if(gettype($pdo) !== "object" || get_class($pdo) !== "PDO") {
+			throw(new PDOException("input is not a PDO object"));
+		}
+
+		// sanitize the parkingSpotId before searching
+		$parkingSpotId = filter_var($parkingSpotId, FILTER_VALIDATE_INT);
+		if($parkingSpotId === false) {
+			throw(new PDOException("parking spot id is not an integer"));
+		}
+		if($parkingSpotId <= 0) {
+			throw(new PDOException("parking spot id is not positive"));
+		}
+
+		// create query template
+		$query = "SELECT assignId, CONCAT(firstName, ' ', lastName) AS name, startDateTime, endDateTime, returnDateTime FROM placardAssignment
+					 INNER JOIN parkingSpot ON parkingSpot.parkingSpotId = placardAssignment.parkingSpotId
+					 WHERE ISNULL(returnDateTime) AND parkingSpot.parkingSpotId = :parkingSpotId";
+		$statement = $pdo->prepare($query);
+		if($statement === false) {
+			throw(new PDOException("unable to prepare statement"));
+		}
+
+		// bind the location id to the place holder in the template
+		$parameters = array("parkingSpotId" => $parkingSpotId);
+
+		// execute the statement
+		$statement->execute($parameters);
+		$statement->setFetchMode(PDO::FETCH_ASSOC);
+
+		// grab the location from mySQL
+		try {
+			$placardAssignment = null;
+			if(($row = $statement->fetch()) !== null) {
+				$placardAssignment = $row;
+			}
+		} catch(Exception $exception) {
+			// if the row couldn't be converted, rethrow it
+			throw(new PDOException($exception->getMessage(), 0, $exception));
+		}
+
+		// Return the result
+		return ($placardAssignment);
 	}
 }
 ?>

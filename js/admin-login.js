@@ -1,4 +1,3 @@
-
 //document ready event
 $(document).ready(
 	// inner function for the ready() event
@@ -11,7 +10,19 @@ $(document).ready(
 				url: "login-session.php",
 				data: {adminProfileId: adminProfileId}
 			}).done(function() {
-				location.href = "//cnmparking.com/php/test-portal/test-portal.php";
+				location.href = "/php/portal-home/index.php";
 			});
+		});
+
+		// page is now ready, initialize the calendar...
+		$('#fullCalendar').fullCalendar({
+			theme: false,
+			header: {
+				left: "title",
+				center: "",
+				right: "today, prev, next"
+			},
+			events: "../controllers/event.php",
+			allDay: true
 		});
 	});

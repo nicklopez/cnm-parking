@@ -90,12 +90,12 @@ function updatePlacardAssignment() {
 
 $(document).ready(function() {
 	$('#startDate').datepicker({
-		dateFormat: "m-d-y",
+		dateFormat: "mm-dd-yy",
 		onSelect: function() {
 			if($("#availablePlacards").is(":hidden")) {
 				return;
 			}
-			if(this.value === "" || $("#endDate") === "" || this.value > $("#endDate").val()) {
+			if(this.value === "" || $("#endDate").val() === "" || this.value > $("#endDate").val()) {
 				$("#availablePlacards").empty();
 			} else {
 				fetchAvailablePlacards($("#locationId").val(), $("#startDate").val(), this.value);
@@ -104,12 +104,12 @@ $(document).ready(function() {
 	});
 
 	$('#endDate').datepicker({
-		dateFormat: "m-d-y",
+		dateFormat: "mm-dd-yy",
 		onSelect: function() {
 			if($("#availablePlacards").is(":hidden")) {
 				return;
 			}
-			if(this.value === "" || $("#startDate") === "" || this.value < $("#startDate").val()) {
+			if(this.value === "" || $("#startDate").val() === "" || this.value < $("#startDate").val()) {
 				$("#availablePlacards").empty();
 			} else {
 				fetchAvailablePlacards($("#locationId").val(), $("#startDate").val(), this.value);

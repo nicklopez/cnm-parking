@@ -52,7 +52,7 @@ try {
 		if($_SESSION["url"] != null) {
 			header("location: " . $link);
 		} else {
-			header("location:../test-portal/test-portal.php");
+			header("location:../portal-home/index.php");
 
 		}
 

@@ -574,19 +574,11 @@ class ParkingPass {
 			$row = $statement->fetch();
 			if($row !== null) {
 				$parkingPass = new ParkingPass($row["parkingPassId"], $row["adminProfileId"], $row["inviteId"], $row["parkingSpotId"], $row["vehicleId"], $row["endDateTime"], $row["issuedDateTime"], $row["startDateTime"], $row["uuId"]);
+				return ($parkingPass);
 			}
 		} catch(Exception $exception) {
 			// if the row couldn't be converted, rethrow it
 			throw(new PDOException($exception->getMessage(), 0, $exception));
-		}
-
-		// count the results in array and return:
-		// 1) null if zero results
-		// 2) the entire array if > 1 result
-		if($row === null) {
-			return (null);
-		} else {
-			return ($parkingPass);
 		}
 	}
 
@@ -1043,6 +1035,15 @@ class ParkingPass {
 			throw(new RangeException($range->getMessage(), 0, $range));
 		}
 
+		// sanitize the locationId before searching
+		$location = filter_var($location, FILTER_VALIDATE_INT);
+		if($location === false) {
+			throw(new mysqli_sql_exception("location id is not an integer"));
+		}
+		if($location <= 0) {
+			throw(new mysqli_sql_exception("location id is not positive"));
+		}
+
 		// query available parking spots (placards)
 		$query = "SELECT parkingSpotId FROM parkingSpot WHERE parkingSpotId NOT IN
 		(SELECT parkingSpot.parkingSpotId FROM parkingSpot INNER JOIN parkingPass ON parkingSpot.parkingSpotId = parkingPass.parkingSpotId
@@ -1083,6 +1084,7 @@ class ParkingPass {
 	 * @param PDO $pdo pointer to mySQL connection, by reference
 	 * @param datetime $startDateTime, $endDateTime startDateTime to endDateTime range to search for
 	 * @return mixed visitor parking data found or null if not found
+	 * @throws RangeException if data values are out of bounds (e.g., strings too long, negative integers)
 	 * @throws PDOException when mySQL related errors occur
 	 */
 	public static function getVisitorParkingDataByDateRange(PDO &$pdo, $startDateTime, $endDateTime) {
@@ -1154,7 +1156,8 @@ class ParkingPass {
 	 * @param int $location id of the location to search for
 	 * @param datetime $arrival, begin date time range of on-site visit
 	 * @param datetime $departure end date time range of on-site visit
-	 * @return mixed available placard found or null if not found
+	 * @return mixed available placards found or null if not found
+	 * @throws RangeException if data values are out of bounds (e.g., strings too long, negative integers)
 	 * @throws PDOException when mySQL related errors occur
 	 */
 	public static function getAvailablePlacards(PDO &$pdo, $location, $arrival, $departure) {
@@ -1164,14 +1167,23 @@ class ParkingPass {
 		}
 
 		// sanitize dates before searching - Using static function
-//		try {
-//			$sunrise = self::sanitizeDate($arrival);
-//			$sunset = self::sanitizeDate($departure);
-//		} catch(InvalidArgumentException $invalidArgument) {
-//			throw(new InvalidArgumentException($invalidArgument->getMessage(), 0, $invalidArgument));
-//		} catch(RangeException $range) {
-//			throw(new RangeException($range->getMessage(), 0, $range));
-//		}
+		try {
+			$sunrise = self::sanitizeShortDate($arrival);
+			$sunset = self::sanitizeShortDate($departure);
+		} catch(InvalidArgumentException $invalidArgument) {
+			throw(new InvalidArgumentException($invalidArgument->getMessage(), 0, $invalidArgument));
+		} catch(RangeException $range) {
+			throw(new RangeException($range->getMessage(), 0, $range));
+		}
+
+		// sanitize the locationId before searching
+		$location = filter_var($location, FILTER_VALIDATE_INT);
+		if($location === false) {
+			throw(new PDOException("location id is not an integer"));
+		}
+		if($location <= 0) {
+			throw(new PDOException("location id is not positive"));
+		}
 
 		// query available parking spots (placards)
 		$query = "SELECT parkingSpotId, placardNumber, locationId FROM parkingSpot WHERE parkingSpotId NOT IN
@@ -1191,9 +1203,7 @@ class ParkingPass {
 		}
 
 		// bind the member variables to the place holders in the template
-		$sunrise = DateTime::createFromFormat("n-j-y", $arrival);
 		$formattedSunrise = $sunrise->format("Y-m-d H:i:s");
-		$sunset = DateTime::createFromFormat("n-j-y", $departure);
 		$formattedSunset = $sunset->format("Y-m-d H:i:s");
 		$parameters = array("locationId" => $location, "sunrise" => $formattedSunrise, "sunset" => $formattedSunset);
 
@@ -1214,6 +1224,67 @@ class ParkingPass {
 
 		// return result
 		return ($placards);
+	}
+
+	/**
+	 * gets total assigned parking passes, grouped by date
+	 *
+	 * @param PDO $pdo pointer to mySQL connection, by reference
+	 * @param string $startDateTime startDateTime range to search for
+	 * @param string $endDateTime endDateTime range to search for
+	 * @return mixed total number of parking passes if found or null if not found
+	 * @throws RangeException if data values are out of bounds (e.g., strings too long, negative integers)
+	 * @throws PDOException when mySQL related errors occur
+	 */
+	public static function getParkingPassCountByDate(&$pdo, $startDateTime, $endDateTime) {
+		// handle degenerate cases
+		if(gettype($pdo) !== "object" || get_class($pdo) !== "PDO") {
+			throw(new PDOException("input is not a PDO object"));
+		}
+
+		// sanitize before searching - Using static function
+		try {
+			$startDateTime = self::sanitizeDate($startDateTime);
+			$endDateTime = self::sanitizeDate($endDateTime);
+		} catch(InvalidArgumentException $invalidArgument) {
+			throw(new InvalidArgumentException($invalidArgument->getMessage(), 0, $invalidArgument));
+		} catch(RangeException $range) {
+			throw(new RangeException($range->getMessage(), 0, $range));
+		}
+
+		// create query template
+		$query = "SELECT count(startDateTime) AS title, DATE_FORMAT(startDateTime, '%Y-%m-%d') AS start FROM parkingPass WHERE startDateTime >= :startDateTime AND endDateTime <= :endDateTime
+		GROUP BY start";
+		$statement = $pdo->prepare($query);
+		if($statement === false) {
+			throw(new PDOException(" unable to prepare statement"));
+		}
+
+		// bind the member variables to the place holders in the template
+		$startDateTime = $startDateTime->format("Y-m-d H:i:s");
+		$endDateTime = $endDateTime->format("Y-m-d H:i:s");
+		$parameters = array("startDateTime" => $startDateTime, "endDateTime" => $endDateTime);
+
+		// execute the statement
+		$statement->execute($parameters);
+		$statement->setFetchMode(PDO::FETCH_ASSOC);
+
+		// build array of parkingPass
+		$passCount = array();
+		while(($row = $statement->fetch()) !== false) {
+			try {
+				if(($row["title"]) === "0") {
+					return null;
+				} else {
+					$passCount[] = $row;
+				}
+			} catch(Exception $exception) {
+				// if the row couldn't be converted, rethrow it
+				throw(new PDOException($exception->getMessage(), 0, $exception));
+			}
+		}
+
+		return ($passCount);
 	}
 
 	/**

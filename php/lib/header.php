@@ -23,38 +23,34 @@
 		<script type="text/javascript" src="//cnmparking.com/js/visitor-lookup.js"></script>
 		<script type="text/javascript" src="//cnmparking.com/js/new-vehicle.js"></script>
 		<script type="text/javascript" src="//cnmparking.com/js/manage-parking.js"></script>
-
+		<script type="text/javascript" src="//cnmparking.com/js/moment.min.js"></script>
+		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.3.1/fullcalendar.min.css" />
+		<link rel="stylesheet" media="print" href="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.3.1/fullcalendar.print.css" />
+		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.3.1/fullcalendar.min.js"></script>
 		<script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 		<link type="text/css" href="//cdn.datatables.net/1.10.5/css/jquery.dataTables.css" rel="stylesheet">
 		<link type="text/css" href="//cnmparking.com/fonts/lato.woff" rel="stylesheet">
 		<link type="text/css" href="//cnmparking.com/fonts/lato.woff2" rel="stylesheet">
 		<link type="text/css" href="//cnmparking.com/css/custom.css" rel="stylesheet">
-
 		<title><?php echo $title ?></title>
 	</head>
-
-		<body>
-
-			<div class="page-header">
-				<h2 class="h2"></h2>
+	<body>
+		<div class="page-header">
+			<h2 class="h2"></h2>
+		</div>
+		<div class="container-fluid header">
+			<div class="col-xs-10 col-md-8">
+				<div class="row">
+					<h1 class="h1"><span><?php echo $headerTitle; ?></h1></span>
+				</div>
 			</div>
-
-			<div class="container-fluid header">
-				<div class="col-xs-10 col-md-8">
-					<div class="row">
-						<h1 class="h1"><span><?php echo $headerTitle; ?></h1></span>
-					</div>
+			<div class="col-xs-2 col-md-4">
+				<div class="row">
+					<img src="../../img/cnm.jpg" align="right" class="img-responsive">
 				</div>
-					<div class="col-xs-2 col-md-4">
-						<div class="row">
-							<img src="../../img/cnm.jpg" align="right" class="img-responsive">
-						</div>
-					</div>
-				</div>
-
-				<div class="headEnd">
-					<h2 class="h22"></h2>
-				</div>
-
-
-			<main>
+			</div>
+		</div>
+		<div class="headEnd">
+			<h2 class="h22"></h2>
+		</div>
+		<main>

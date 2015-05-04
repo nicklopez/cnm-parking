@@ -3,8 +3,7 @@ $title = "Manage Parking";
 $headerTitle = "Manage locations & placards";
 require_once("../php/lib/header.php");
 require_once("../php/classes/location.php");
-require_once("../php/classes/parkingspot.php");
-require_once("../php/classes/parkingpass.php");
+require_once("../php/classes/placardassignment.php");
 
 // start a PHP session
 session_start();
@@ -23,7 +22,7 @@ if(!isset($_SESSION["adminProfileId"])) {
 		<a id="logout" href="../php/controllers/admin-logout.php" class="btn btn-primary navbar-btn pull-right">Log Out</a>
 		<p id="welcome" class="navbar-text pull-right">Welcome back, <?php echo $_SESSION["adminFirstName"]; ?></p>
 		<ul class="nav navbar-nav">
-			<li role="presentation" class="active"><a class="navbar-brand" href="../php/test-portal/test-portal.php">Home</a></li>
+			<li role="presentation" class="active"><a class="navbar-brand" href="../php/portal-home/index.php">Home</a></li>
 			<li role="presentation"><a href="../create-pass">Create Parking Pass</a></li>
 			<li role="presentation"><a href="../send-invite">Manage Invites</a></li>
 			<li role="presentation"><a href="../manage-parking">Manage Parking</a></li>
@@ -154,11 +153,11 @@ $objects = Location::getAllLocationsAndParkingSpots($pdo);
 					<div class="row container-fluid">
 						<div class="form-group col-xs-6">
 							<label for="startDate">Start Date</label>
-							<input class="form-control" type="date" id="startDate" name="startDate">
+							<input class="form-control" type="date" id="startDate" name="startDate" placeholder="mm/dd/yyyy">
 						</div>
 						<div class="form-group col-xs-6">
 							<label for="endDate">End Date</label>
-							<input class="form-control" type="date" id="endDate" name="endDate">
+							<input class="form-control" type="date" id="endDate" name="endDate" placeholder="mm/dd/yyyy">
 						</div>
 						<div class="form-group col-xs-6">
 							<label for="placard">Placard</label>
@@ -211,15 +210,15 @@ $objects = Location::getAllLocationsAndParkingSpots($pdo);
 				$parkingSpotId = $object["parkingSpotId"];
 
 				// query placard assignment details and throw results into table element below
-				$placardAssignment = Location::getPlacardAssignmentByParkingSpotId($pdo, $parkingSpotId);
+				$placardAssignment = PlacardAssignment::getPlacardAssignmentByParkingSpotId($pdo, $parkingSpotId);
 				$name = $placardAssignment["name"];
 				$assignId = $placardAssignment["assignId"];
 
 				if($placardAssignment["startDateTime"] !== null) {
 					$startDate = DateTime::createFromFormat("Y-m-d H:i:s", $placardAssignment["startDateTime"]);
-					$formattedStartDate = $startDate->format("n-j-y");
+					$formattedStartDate = $startDate->format("m-d-Y");
 					$endDate = DateTime::createFromFormat("Y-m-d H:i:s", $placardAssignment["endDateTime"]);
-					$formattedEndDate = $endDate->format("n-j-y");
+					$formattedEndDate = $endDate->format("m-d-Y");
 					$assignedDates = $formattedStartDate . " thru " . $formattedEndDate . "&nbsp;&nbsp;&nbsp;<a id='updateAssignmentLink' data-toggle='modal' data-target='#placardAssignmentModal' data-assign-id='$assignId' data-spot-id='$parkingSpotId' data-location-id='$locationId'><span class='glyphicon glyphicon-pencil'></span></a>";
 					$today = new DateTime();
 					if($endDate < $today) {

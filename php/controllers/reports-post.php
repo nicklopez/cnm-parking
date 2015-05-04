@@ -31,7 +31,7 @@ try {
 			<a id="logout" href="../../php/controllers/admin-logout.php" class="btn btn-primary navbar-btn pull-right">Log Out</a>
 			<p id="welcome" class="navbar-text pull-right">Welcome back, <?php echo $_SESSION["adminFirstName"]; ?></p>
 			<ul class="nav navbar-nav">
-				<li role="presentation" class="active"><a class="navbar-brand" href="../../php/test-portal/test-portal.php">Home</a></li>
+				<li role="presentation" class="active"><a class="navbar-brand" href="../portal-home/index.php">Home</a></li>
 				<li role="presentation"><a href="../../create-pass">Create Parking Pass</a></li>
 				<li role="presentation"><a href="../../send-invite">Manage Invites</a></li>
 				<li role="presentation"><a href="../../manage-parking">Manage Parking</a></li>
@@ -40,16 +40,16 @@ try {
 		</div>
 	</nav>
 	<div class="container-fluid">
-	<table id="reports" class="hover row-border">
-		<thead>
-			<th>Location</th>
-			<th>Placard #</th>
-			<th>Visitor Name</th>
-			<th>Vehicle Plate #</th>
-			<th>Date / Time</th>
-			<th>Approved By</th>
-		</thead>
-		<tbody>
+		<table id="reports" class="hover row-border">
+			<thead>
+				<th>Location</th>
+				<th>Placard #</th>
+				<th>Visitor Name</th>
+				<th>Vehicle Plate #</th>
+				<th>Date / Time</th>
+				<th>Approved By</th>
+			</thead>
+			<tbody>
 
 			<?php
 
@@ -59,7 +59,11 @@ try {
 			$parkingPass = ParkingPass::getVisitorParkingDataByDateRange($pdo, $begin, $end);
 
 			if (count($parkingPass) === 0) {
-				return null;
+				echo "</tbody>";
+				echo "</table>";
+				echo "</div>";
+				require_once("../lib/footer.php");
+
 			} else {
 				foreach($parkingPass as $pass) {
 					$locationDesc = $pass["locationDescription"] . " - " . $pass["locationNote"];
@@ -83,10 +87,10 @@ EOF;
 	echo "</tbody>";
 	echo "</table>";
 	echo "</div>";
-//	$pdo->close();
 
 } catch(Exception $exception) {
 	echo "<td><tr class=\"alert alert-danger\" colspan=\"3\">Exception: " . $exception->getMessage() . "</td></tr>";
 }
 
-require_once("../lib/footer.php"); ?>
+require_once("../lib/footer.php");
+?>
