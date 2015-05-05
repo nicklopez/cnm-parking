@@ -1,4 +1,5 @@
 <?php
+session_start();
 /**
  * controller to verify availability of parking spot/time.placard
  *
@@ -9,9 +10,9 @@
  * require the encrypted config functions
  */
 require_once("/home/cnmparki/etc/mysql/encrypted-config.php");
-
 require_once ("../classes/parkingpass.php");
 require_once ("../classes/parkingspot.php");
+require_once ("../classes/log.php");
 
 /**
  * connect to mySQL
@@ -65,11 +66,10 @@ if($arrival === $departure) {
 
 $availableSpot = ParkingPass::getParkingPassAvailability($pdo, $location, $arrival, $departure);
 if($availableSpot !== false) {
-
 	$isAvailable = "Yes! There are currently available parking spots for that time window" . "," . $availableSpot["parkingSpotId"];
-
-
 } else {
+	$logEntry = new Log(null, $_SESSION["adminProfileId"], $_POST["idForVisitor"], null, "Parking pass request rejected; no spots available");
+	$logEntry->insert($pdo);
 	$isAvailable = "No parking spots are available during the given time window" . "," . $availableSpot["parkingSpotId"];
 }
 

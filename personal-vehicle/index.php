@@ -25,7 +25,7 @@ try {
 	// check for previous parking pass from activation
 //	$set = Invite::getParkingPassByActivation($pdo, $_GET["activation"]);
 //	if($set !== false) {
-//		echo '<div class="alert alert-success" role="alert" id="message">Invite has expired. Please submit a new request.</div>';
+//		echo '<div class="alert alert-success" role="alert" id="message">Invite has expired.&nbsp; Please submit a new request.</div>';
 //		exit;
 //	}
 
@@ -51,6 +51,8 @@ try {
 }
 ?>
 <?php
+// variable for require_once file below
+$idForVisitor = $visitor->getVisitorId();
 require_once("../verify-availability/index.php");
 ?>
 
@@ -297,6 +299,5 @@ require_once("../verify-availability/index.php");
 
 //close if/else statement
 }
-
 require_once("../php/lib/footer.php");
 ?>

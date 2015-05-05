@@ -30,5 +30,6 @@
 		</div>
 		<span id="outputArea" class="" role='alert'></span>
 	</div>
+	<input hidden="hidden" id="idForVisitor" name="idForVisitor" value="<?php echo $idForVisitor; ?>">
 </form>
 

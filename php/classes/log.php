@@ -111,7 +111,12 @@ class Log {
 	 **/
 	public function setAdminProfileId($newAdminProfileId) {
 
-		// verify the admin profile id is valid
+		// verify the admin profile id is null or valid
+		if(empty($newAdminProfileId)) {
+			$this->adminProfileId = null;
+			return;
+		}
+
 		$newAdminProfileId = filter_var($newAdminProfileId, FILTER_VALIDATE_INT);
 		if($newAdminProfileId === false) {
 			throw(new InvalidArgumentException("admin profile id is not a valid integer"));
@@ -144,7 +149,12 @@ class Log {
 	 **/
 	public function setVisitorId($newVisitorId) {
 
-		// verify the visitor id is valid
+		// verify the visitor id is null or valid
+		if(empty($newVisitorId)) {
+			$this->visitorId = null;
+			return;
+		}
+
 		$newVisitorId = filter_var($newVisitorId, FILTER_VALIDATE_INT);
 		if($newVisitorId === false) {
 			throw(new InvalidArgumentException("visitor id is not a valid integer"));
@@ -236,7 +246,7 @@ class Log {
 		}
 
 		// create query template
-		$query = "INSERT INTO log(logId, adminProfileId, visitorId, logDateTime, message) VALUES(:logId, :adminProfileId, :visitorId, :message)";
+		$query = "INSERT INTO log(logId, adminProfileId, visitorId, logDateTime, message) VALUES(:logId, :adminProfileId, :visitorId, :logDateTime, :message)";
 		$statement = $pdo->prepare($query);
 		if($statement === false) {
 			throw(new PDOException("unable to prepare statement"));
@@ -248,7 +258,7 @@ class Log {
 
 		// execute the statement
 		if($statement->execute($parameters) === false) {
-			throw(new PDOException("unable to execute mySQL statement: " . $statement->error));
+			throw(new PDOException("unable to execute mySQL statement: " . $statement->errorInfo()));
 		}
 
 		// update the null logId with what mySQL just gave us
