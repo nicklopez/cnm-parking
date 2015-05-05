@@ -10,9 +10,6 @@ require_once("../php/lib/csrf.php");
 
 // start session
 session_start();
-header("Cache-Control: private, must-revalidate, max-age=0");
-header("Pragma: no-cache");
-header("Expires: Fri, 4 Jun 2010 12:00:00 GMT");
 
 try {
 
@@ -26,11 +23,11 @@ try {
 	$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
 
 	// check for previous parking pass from activation
-//	$set = Invite::getParkingPassByActivation($pdo, $_GET["activation"]);
-//	if($set !== false) {
-//		echo '<div class="alert alert-success" role="alert" id="message">Invite has expired. Please submit a new request.</div>';
-//		exit;
-//	}
+	$set = Invite::getParkingPassByActivation($pdo, $_GET["activation"]);
+	if($set !== false) {
+		echo '<div class="alert alert-success" role="alert" id="message">Invite has expired. Please submit a new request.</div>';
+		exit;
+	}
 
 	// verify $_GET["activation"] has an activation token; if not, throw an exception
 	if(!isset($_GET["activation"])) {
