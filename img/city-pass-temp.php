@@ -38,7 +38,7 @@ function setDpi($jpg, $dpi) {
 
 // create a low resolution image of the proper pixel size
 $tempfile = tempnam("/tmp", "PASS");
-$image = imagecreatetruecolor(2400, 1500);
+$image = imagecreatetruecolor(2400, 2500);
 imagejpeg($image, $tempfile, 90);
 imagedestroy($image);
 
@@ -64,7 +64,7 @@ $green = imagecolorallocate($image, 46, 139, 87);
 imagefill($image, 0, 0, $white);
 
 // line thickness
-imagesetthickness($image, 105);
+imagesetthickness($image, 50);
 
 // timeFormat
 $timeFormat = "M j, y g:i a";
@@ -84,6 +84,13 @@ imagettftext($image, 25, 0.0, 150, 1300, $red, $font, "LEGAL NOTICE: Duplication
 																													Vehicles displaying such permits will be cited.");
 
 imagerectangle($image, 50, 200, 2350, 1200, $green);
+
+$w   = imagecolorallocate($image, 255, 255, 255);
+$style = array($black, $black, $black, $black, $black, $w, $w, $w, $w, $w);
+imagesetstyle($image, $style);
+imageline($image, 0, 1400, 2400, 1400, IMG_COLOR_STYLED);
+
+//imagedashedline($image, 0, 1600, 2400, 1500, $red);
 
 // Output and free from memory
 header('Content-Type: image/jpeg');
@@ -105,16 +112,12 @@ $logoHeight=imagesy($logo);
 imagecopy(
 // parking image (destination)
 	$image,
-
 	// abq logo (source)
 	$logo,
-
 	// place logo within source boundary
 	$imageWidth / 1.31 , $imageHeight / 3.2,
-
 	// source x and y
 	0, 0,
-
 	// width and height of the area of the logo to copy
 	$logoWidth, $logoHeight);
 
