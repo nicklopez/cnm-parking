@@ -23,11 +23,11 @@ try {
 	$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
 
 	// check for previous parking pass from activation
-	$set = Invite::getParkingPassByActivation($pdo, $_GET["activation"]);
-	if($set !== false) {
-		echo '<div class="alert alert-success" role="alert" id="message">Invite has expired. Please submit a new request.</div>';
-		exit;
-	}
+//	$set = Invite::getParkingPassByActivation($pdo, $_GET["activation"]);
+//	if($set !== false) {
+//		echo '<div class="alert alert-success" role="alert" id="message">Invite has expired. Please submit a new request.</div>';
+//		exit;
+//	}
 
 	// verify $_GET["activation"] has an activation token; if not, throw an exception
 	if(!isset($_GET["activation"])) {
