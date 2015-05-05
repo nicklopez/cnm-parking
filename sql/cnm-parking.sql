@@ -8,6 +8,7 @@ DROP TABLE IF EXISTS location;
 DROP TABLE IF EXISTS vehicle;
 DROP TABLE IF EXISTS visitor;
 DROP TABLE IF EXISTS placardAssignment;
+DROP TABLE IF EXISTS log;
 
 -- arbitrary use of character length as 128 for varchar.
 CREATE TABLE admin (
@@ -125,4 +126,17 @@ CREATE TABLE placardAssignment (
 	FOREIGN KEY(adminProfileId) REFERENCES adminProfile(adminProfileId),
 	FOREIGN KEY(parkingSpotId) REFERENCES parkingSpot(parkingSpotId),
 	PRIMARY KEY (assignId)
+);
+
+CREATE TABLE log (
+	logId INT UNSIGNED AUTO_INCREMENT NOT NULL,
+	adminProfileId INT UNSIGNED,
+	visitorId INT UNSIGNED,
+	logDateTime DATETIME NOT NULL,
+	message VARCHAR(128) NOT NULL,
+	INDEX(adminProfileId),
+	INDEX(visitorId),
+	FOREIGN KEY(adminProfileId) REFERENCES adminProfile(adminProfileId),
+	FOREIGN KEY(visitorId) REFERENCES visitor(visitorId),
+	PRIMARY KEY (logId)
 );

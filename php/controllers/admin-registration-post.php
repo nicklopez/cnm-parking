@@ -1,5 +1,4 @@
 <?php
-// require_once("../../../lib/csrf.php");
 $headerTitle = "Success";
 $title = "Success";
 require_once("/home/cnmparki/etc/mysql/encrypted-config.php");
@@ -14,7 +13,7 @@ require_once("Mail.php");
 try {
 
 
-// create a new salt and hash
+	// create a new salt and hash
 	$salt = bin2hex(openssl_random_pseudo_bytes(32));
 	$hash = hash_pbkdf2("sha512", $_POST["password"], $salt, 2048, 128);
 

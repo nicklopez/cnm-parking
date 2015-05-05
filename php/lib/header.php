@@ -24,9 +24,9 @@
 		<script type="text/javascript" src="//cnmparking.com/js/new-vehicle.js"></script>
 		<script type="text/javascript" src="//cnmparking.com/js/manage-parking.js"></script>
 		<script type="text/javascript" src="//cnmparking.com/js/moment.min.js"></script>
-		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.3.1/fullcalendar.min.css" />
-		<link rel="stylesheet" media="print" href="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.3.1/fullcalendar.print.css" />
-		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.3.1/fullcalendar.min.js"></script>
+		<link rel="stylesheet" href="//cnmparking.com/css/fullcalendar.min.css" />
+		<link rel="stylesheet" media="print" href="//cnmparking.com/css/fullcalendar.print.css" />
+		<script type="text/javascript" src="//cnmparking.com/js/fullcalendar.min.js"></script>
 		<script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 		<link type="text/css" href="//cdn.datatables.net/1.10.5/css/jquery.dataTables.css" rel="stylesheet">
 		<link type="text/css" href="//cnmparking.com/fonts/lato.woff" rel="stylesheet">
