@@ -74,11 +74,11 @@ $timeFormat = "M j, y g:i a";
 imagettftext($image, 65, 0.0, 100, 125, $black, $font2, "Start Date/Time: Mar 25, '15 9:00 am");
 imagettftext($image, 65, 0.0, 100, 275, $black, $font2, "End Date/Time: Mar 25, '15 10:00 am");
 
-imagettftext($image, 50.0, 0.0, 100, 400, $black, $font, "Year: 2009" );
-imagettftext($image, 50.0, 0.0, 100, 500, $black, $font, "Make: Toyota" );
-imagettftext($image, 50.0, 0.0, 100, 600, $black, $font, "Model: Tacoma" );
-imagettftext($image, 50.0, 0.0, 100, 700, $black, $font, "Color: Red" );
-imagettftext($image, 50.0, 0.0, 100, 800, $black, $font, "Plate State: NM" );
+imagettftext($image, 50.0, 0.0, 100, 450, $black, $font, "Year: 2009" );
+imagettftext($image, 50.0, 0.0, 100, 550, $black, $font, "Make: Toyota" );
+imagettftext($image, 50.0, 0.0, 100, 650, $black, $font, "Model: Tacoma" );
+imagettftext($image, 50.0, 0.0, 100, 750, $black, $font, "Color: Red" );
+
 
 imagettftext($image, 65, 0.0, 100, 950, $black, $font2, "License Plate #: NM - 000999" );
 imagettftext($image, 65, 0.0, 100, 1100, $black, $font2, "Location: 1st and Copper (CNM)");
@@ -154,6 +154,6 @@ imagecopy(
 	$logoWidth2, $logoHeight2);
 
 imagejpeg($image);
-imagedestroy($image, "test.jpeg");
+imagedestroy($image, "parkingPlacard.jpeg");
 
 ?>
