@@ -9,6 +9,7 @@
  * @see http://develobert.blogspot.com/2008/11/php-jpegjpg-dpi-function.html
  * @see http://bytes.com/topic/php/answers/5948-dpi-php-gd
  **/
+
 function setDpi($jpg, $dpi) {
 	// handle degenerate cases
 	$dpi = filter_var($dpi, FILTER_VALIDATE_INT);
