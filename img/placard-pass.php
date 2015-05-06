@@ -47,6 +47,10 @@ setDpi($tempfile, 300);
 $image = imagecreatefromjpeg($tempfile);
 unlink($tempfile);
 
+// add the logo
+$logo = imagecreatefromjpeg('placard2a.jpg');
+$logo2 = imagecreatefromjpeg('map.jpg');
+
 // fonts
 $font = 'fonts/Helvetica.ttf';
 $font2 = 'fonts/Helvetica-Bold.ttf';
@@ -80,10 +84,10 @@ imagettftext($image, 50.0, 0.0, 100, 650, $black, $font, "Model: Tacoma" );
 imagettftext($image, 50.0, 0.0, 100, 750, $black, $font, "Color: Red" );
 
 
-imagettftext($image, 65, 0.0, 100, 950, $black, $font2, "License Plate #: NM - 000999" );
+imagettftext($image, 65, 0.0, 100, 950, $black, $font2, "State/Lic. Plate #: NM - 000999" );
 imagettftext($image, 65, 0.0, 100, 1100, $black, $font2, "Location: 1st and Copper (CNM)");
 
-imagettftext($image, 55.0, 0.0, 1750, 1220, $black, $font2, "Placard #: 0284");
+imagettftext($logo, 60, 0, 250, 965, $black, $font2, "0205");
 
 imagettftext($image, 25, 0.0, 150, 1300, $red, $font, "LEGAL NOTICE: Duplication or manufacturing of a parking permit is a crime. Handwritten changes will VOID an temporary parking pass.
 																													Vehicles displaying such permits will be cited.");
@@ -100,6 +104,7 @@ imagesetstyle($image, $style);
 imageline($image, 0, 1390, 2400, 1390, IMG_COLOR_STYLED);
 imagettftext($image, 20.0, 0.0, 1100, 1430, $black, $font2, "Fold Here");
 
+imagelayereffect($logo, IMG_EFFECT_OVERLAY);
 
 imagerectangle($image, 10, 10, 2390, 1250, $green);
 
@@ -109,9 +114,6 @@ imagerectangle($image, 10, 10, 2390, 1250, $green);
 // Output and free from memory
 header('Content-Type: image/jpeg');
 
-// add the logo
-$logo = imagecreatefromjpeg('placard2s.jpg');
-$logo2 = imagecreatefromjpeg('map.jpg');
 
 //add transparency to logo
 imagealphablending($logo, true);
@@ -154,6 +156,7 @@ imagecopy(
 	$logoWidth2, $logoHeight2);
 
 imagejpeg($image);
+//imagejpeg($logo);
 imagedestroy($image, "parkingPlacard.jpeg");
-
+//imagedestroy($logo);
 ?>
