@@ -31,7 +31,7 @@ try {
 	$pdo = new PDO($dsn, $configArray["username"], $configArray["password"], $options);
 	$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
 
-	if(isset($_POST["selectVehicle"]) && $_POST['selectVehicle'] != 0) {
+	if(isset($_POST["selectVehicle"]) && $_POST['selectVehicle'] !== 0) {
 		$vehicleId = $_POST["selectVehicle"];
 
 		// create and insert parking pass

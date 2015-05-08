@@ -30,11 +30,11 @@ body {
 	width: 100%;
 }
 
-.h1 {
-	padding: 13px;
-	margin: 0px 0px 0px 10px;
-	clear: both;
-}
+/*.h1 {*/
+	/*padding: 13px;*/
+	/*margin: 0px 0px 0px 10px;*/
+	/*clear: both;*/
+/*}*/
 
 .h2 {
 	clear: both;
@@ -100,10 +100,9 @@ img {
 	float: right;
 }
 
-span {
+span:not(.caret) {
 	display: inline-block;
-	/*vertical-align: middle;*/
-	padding-top: inherit;
+	/*padding-top: inherit;*/
 }
 
 .modal-dialog {
@@ -130,4 +129,5 @@ a {
 
 .fc-content {
 	text-align: center;
+	font-size: 16px;
 }

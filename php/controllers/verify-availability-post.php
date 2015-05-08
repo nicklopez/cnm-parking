@@ -68,7 +68,7 @@ $availableSpot = ParkingPass::getParkingPassAvailability($pdo, $location, $arriv
 if($availableSpot !== false) {
 	$isAvailable = "Yes! There are currently available parking spots for that time window" . "," . $availableSpot["parkingSpotId"];
 } else {
-	$logEntry = new Log(null, $_SESSION["adminProfileId"], $_POST["idForVisitor"], null, "Parking pass request rejected; no spots available");
+	$logEntry = new Log(null, $_SESSION["adminProfileId"], $_POST["idForVisitor"], null, "Parking pass request rejected; no spots available.");
 	$logEntry->insert($pdo);
 	$isAvailable = "No parking spots are available during the given time window" . "," . $availableSpot["parkingSpotId"];
 }

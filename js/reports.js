@@ -2,7 +2,9 @@
 $(document).ready(
 //	// inner function for the ready() event
 	function() {
-		$('#reports').dataTable();
+		$('#log').dataTable();
+
+		$('#vp').dataTable();
 
 		$('#reportStartDate').datepicker({
 			dateFormat: "mm-dd-yy"

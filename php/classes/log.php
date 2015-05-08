@@ -264,5 +264,47 @@ class Log {
 		// update the null logId with what mySQL just gave us
 		$this->logId = $pdo->lastInsertId();
 	}
+
+	/**
+	 * gets parking pass log details
+	 *
+	 * @param PDO $pdo pointer to mySQL connection, by reference
+	 * @return mixed log details found or null if not found
+	 * @throws PDOException when mySQL related errors occur
+	 **/
+	public static function getParkingPassLog(PDO &$pdo) {
+		// handle degenerate cases
+		if(gettype($pdo) !== "object" || get_class($pdo) !== "PDO") {
+			throw(new PDOException("input is not a PDO object"));
+		}
+
+		// create query template
+		$query = "SELECT logDateTime, CONCAT(visitor.visitorFirstName, ' ', visitor.visitorLastName, ' (', visitor.visitorEmail, ')') AS visitor, CONCAT(adminProfile.adminFirstName, ' ', adminProfile.adminLastName, ' (Admin)') AS admin, message FROM log
+		LEFT OUTER JOIN visitor ON visitor.visitorId = log.visitorId
+		LEFT OUTER JOIN adminProfile ON adminProfile.adminProfileId = log.adminProfileId
+		WHERE logDateTime >= CURDATE()-14";
+		$statement = $pdo->prepare($query);
+		if($statement === false) {
+			throw(new PDOException("unable to prepare statement"));
+		}
+
+		// execute the statement
+		$statement->execute();
+		$statement->setFetchMode(PDO::FETCH_ASSOC);
+
+		// grab the log detail from mySQL
+		$log = array();
+		while(($row = $statement->fetch()) !== false) {
+			try {
+				$log[] = $row;
+			} catch(Exception $exception) {
+				// if the row couldn't be converted, rethrow it
+				throw(new PDOException($exception->getMessage(), 0, $exception));
+			}
+		}
+
+		// Return the result
+		return ($log);
+	}
 }
 ?>

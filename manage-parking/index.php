@@ -19,14 +19,19 @@ if(!isset($_SESSION["adminProfileId"])) {
 
 <nav class="navbar navbar-default">
 	<div class="container-fluid">
-		<a id="logout" href="../php/controllers/admin-logout.php" class="btn btn-primary navbar-btn pull-right">Log Out</a>
+		<a id="logout" href="//cnmparking.com/php/controllers/admin-logout.php" class="btn btn-primary navbar-btn pull-right">Log Out</a>
 		<p id="welcome" class="navbar-text pull-right">Welcome back, <?php echo $_SESSION["adminFirstName"]; ?></p>
 		<ul class="nav navbar-nav">
-			<li role="presentation" class="active"><a class="navbar-brand" href="../php/portal-home/index.php">Home</a></li>
-			<li role="presentation"><a href="../create-pass">Create Parking Pass</a></li>
-			<li role="presentation"><a href="../send-invite">Manage Invites</a></li>
-			<li role="presentation"><a href="../manage-parking">Manage Parking</a></li>
-			<li role="presentation"><a href="../reports">Reports</a></li>
+			<li role="presentation" class="active"><a class="navbar-brand" href="//cnmparking.com/php/portal-home/index.php">Home</a></li>
+			<li role="presentation"><a href="//cnmparking.com/create-pass">Create Parking Pass</a></li>
+			<li role="presentation"><a href="//cnmparking.com/send-invite">Manage Invites</a></li>
+			<li role="presentation"><a href="//cnmparking.com/manage-parking">Manage Parking</a></li>
+			<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Reports <span class="caret"></span></a>
+				<ul class="dropdown-menu" role="menu">
+					<li><a href="//cnmparking.com/reports/vp.php">Visitor Parking Data</a></li>
+					<li><a href="//cnmparking.com/reports/log.php">Parking Pass Log</a></li>
+				</ul>
+			</li>
 		</ul>
 	</div>
 </nav>
@@ -132,7 +137,7 @@ $objects = Location::getAllLocationsAndParkingSpots($pdo);
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-				<h4 class="modal-title">Placard Assignment</h4>
+				<h4 class="modal-title" id="placardAssignmentTitle">Placard Assignment</h4>
 			</div>
 			<div class="modal-body">
 				<form id="placardAssignmentForm">

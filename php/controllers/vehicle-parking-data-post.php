@@ -28,19 +28,25 @@ try {
 	?>
 	<nav class="navbar navbar-default">
 		<div class="container-fluid">
-			<a id="logout" href="../../php/controllers/admin-logout.php" class="btn btn-primary navbar-btn pull-right">Log Out</a>
+			<a id="logout" href="//cnmparking.com/php/controllers/admin-logout.php" class="btn btn-primary navbar-btn pull-right">Log Out</a>
 			<p id="welcome" class="navbar-text pull-right">Welcome back, <?php echo $_SESSION["adminFirstName"]; ?></p>
 			<ul class="nav navbar-nav">
-				<li role="presentation" class="active"><a class="navbar-brand" href="../portal-home/index.php">Home</a></li>
-				<li role="presentation"><a href="../../create-pass">Create Parking Pass</a></li>
-				<li role="presentation"><a href="../../send-invite">Manage Invites</a></li>
-				<li role="presentation"><a href="../../manage-parking">Manage Parking</a></li>
-				<li role="presentation"><a href="../../reports">Reports</a></li>
+				<li role="presentation" class="active"><a class="navbar-brand" href="//cnmparking.com/php/portal-home/index.php">Home</a></li>
+				<li role="presentation"><a href="//cnmparking.com/create-pass">Create Parking Pass</a></li>
+				<li role="presentation"><a href="//cnmparking.com/send-invite">Manage Invites</a></li>
+				<li role="presentation"><a href="//cnmparking.com/manage-parking">Manage Parking</a></li>
+				<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Reports <span class="caret"></span></a>
+					<ul class="dropdown-menu" role="menu">
+						<li><a href="//cnmparking.com/reports/vp.php">Visitor Parking Data</a></li>
+						<li><a href="//cnmparking.com/reports/log.php">Parking Pass Log</a></li>
+					</ul>
+				</li>
 			</ul>
 		</div>
 	</nav>
+
 	<div class="container-fluid">
-		<table id="reports" class="hover row-border">
+		<table id="vp" class="hover row-border">
 			<thead>
 				<th>Location</th>
 				<th>Placard #</th>

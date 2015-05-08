@@ -28,7 +28,7 @@
 		<div class="col-xs-3">
 			<button id="verifyAvailabilitySubmit" class="btn btn-primary btn-lg" type="submit" onclick="getAvailability();">Verify Availability</button>
 		</div>
-		<span id="outputArea" class="" role='alert'></span>
+		<span id="outputArea" role='alert'></span>
 	</div>
 	<input hidden="hidden" id="idForVisitor" name="idForVisitor" value="<?php echo $idForVisitor; ?>">
 </form>
