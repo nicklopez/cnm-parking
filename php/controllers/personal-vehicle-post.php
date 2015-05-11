@@ -73,7 +73,7 @@ try {
 EOF;
 
 	// create the parking pass
-	$imageData = generatePassImage($pdo, $parkingPass, $vehicle, "../../img/fonts/Helvetica.ttf", "../../img/fonts/Helvetica-Bold.ttf", "../../img/placard2s.jpg", "../../img/map.jpg");
+	$imageData = generatePassImage($pdo, $parkingPass, $vehicle, "../../img/fonts/Helvetica.ttf", "../../img/fonts/Helvetica-Bold.ttf", "../../img/placard2a1.jpg", "../../img/gmapd.jpg", "../../img/abq.jpg", "../../img/ignite.jpg");
 	$plaintext = strip_tags($message);
 	$mimeOptions = array("head_charset" => "UTF-8", "html_charset" => "UTF-8", "text_charset" => "UTF-8", "eol" => "\n");
 	$mimeMessage = new Mail_mime($mimeOptions);
