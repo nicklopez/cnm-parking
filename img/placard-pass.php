@@ -48,8 +48,10 @@ $image = imagecreatefromjpeg($tempfile);
 unlink($tempfile);
 
 // add the logo
-$logo = imagecreatefromjpeg('placard2a.jpg');
-$logo2 = imagecreatefromjpeg('map.jpg');
+$logo = imagecreatefromjpeg('placard2a1.jpg');
+$logo2 = imagecreatefromjpeg('gmapd.jpg');
+$logo3 = imagecreatefromjpeg('ignite.jpg');
+$logo4 = imagecreatefromjpeg('abq.jpg');
 
 // fonts
 $font = 'fonts/Helvetica.ttf';
@@ -92,6 +94,11 @@ imagettftext($logo, 60, 0, 250, 965, $black, $font2, "0205");
 imagettftext($image, 25, 0.0, 150, 1300, $red, $font, "LEGAL NOTICE: Duplication or manufacturing of a parking permit is a crime. Handwritten changes will VOID an temporary parking pass.
 																													Vehicles displaying such permits will be cited.");
 
+// text for parking lot address
+imagettftext($image, 30, 0, 1800, 1800, $black, $font2, "Parking Lot Address:
+					1st and Copper
+					(Near Central Ave.
+					and 2nd St.)");
 
 
 $w   = imagecolorallocate($image, 255, 255, 255);
@@ -128,6 +135,12 @@ $logoHeight=imagesy($logo);
 $logoWidth2=imagesx($logo2);
 $logoHeight2=imagesy($logo2);
 
+$logoWidth3=imagesx($logo3);
+$logoHeight3=imagesy($logo3);
+
+$logoWidth4=imagesx($logo4);
+$logoHeight4=imagesy($logo4);
+
 
 
 // Paste the logo
@@ -154,6 +167,30 @@ imagecopy(
 	0, 0,
 	// width and height of the area of the logo to copy
 	$logoWidth2, $logoHeight2);
+
+imagecopy(
+// parking image (destination)
+	$image,
+	// abq logo (source)
+	$logo3,
+	// place logo within source boundary
+	$imageWidth / 1.189, $imageHeight / 2.1,
+	// source x and y
+	0, 0,
+	// width and height of the area of the logo to copy
+	$logoWidth3, $logoHeight3);
+
+imagecopy(
+// parking image (destination)
+	$image,
+	// abq logo (source)
+	$logo4,
+	// place logo within source boundary
+	$imageWidth / 2.5, $imageHeight / 6.5,
+	// source x and y
+	0, 0,
+	// width and height of the area of the logo to copy
+	$logoWidth4, $logoHeight4);
 
 imagejpeg($image);
 //imagejpeg($logo);

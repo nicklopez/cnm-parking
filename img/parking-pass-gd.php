@@ -46,7 +46,7 @@ function setDpi($jpg, $dpi) {
 	rename("$jpg.temp", $jpg);
 }
 
-function generatePassImage($pdo, $parkingPass, $vehicle, $font, $font2, $placardF, $mapF) {
+function generatePassImage($pdo, $parkingPass, $vehicle, $font, $font2, $placardF, $mapF, $abqF, $igniteF) {
 
 	try {
 
@@ -110,9 +110,10 @@ function generatePassImage($pdo, $parkingPass, $vehicle, $font, $font2, $placard
 	imagettftext($image, 25, 0.0, 150, 1300, $red, $font, "LEGAL NOTICE: Duplication or manufacturing of a parking permit is a crime. Handwritten changes will VOID an temporary parking pass.
 Vehicles displaying such permits will be cited. Attempts to fraudulently obtain parking privileges at CNM may result in disciplinary action.");
 
-// test drawing a black line
-//	imageline($image, 0, 200, 2500, 200, $yellow);
-//	imageline($image, 0, 1200, 2500, 1200, $blue);
+	imagettftext($image, 30, 0, 1800, 1800, $black, $font2, "Parking Lot Address:
+					1st and Copper
+					(Near Central Ave.
+					and 2nd St.)");
 
 	//create dashed line
 	$style = array($black, $black, $white, $white);
@@ -124,8 +125,9 @@ Vehicles displaying such permits will be cited. Attempts to fraudulently obtain 
 	imagerectangle($image, 10, 10, 2390, 1250, $green);
 
 	// create map image
-	//$placard = imagecreatefromjpeg($placardF);
 	$map = imagecreatefromjpeg($mapF);
+	$abq = imagecreatefromjpeg($abqF);
+	$ignite = imagecreatefromjpeg($igniteF);
 
 	//add transparency to logo
 	imagealphablending($placard, true);
@@ -141,6 +143,14 @@ Vehicles displaying such permits will be cited. Attempts to fraudulently obtain 
 	// get map dimensions
 	$mapWidth=imagesx($map);
 	$mapHeight=imagesy($map);
+
+	// get abq logo dimensions
+	$abqWidth=imagesx($abq);
+	$abqHeight=imagesy($abq);
+
+	// get ignite logo dimensions
+//	$igniteWidth=imagesx($ignite);
+//	$igniteHeight=imagesx($ignite);
 
 	// place the placard image
 	imagecopy(
@@ -167,6 +177,32 @@ Vehicles displaying such permits will be cited. Attempts to fraudulently obtain 
 		0, 0,
 		// width and height of the area of the logo to copy
 		$mapWidth, $mapHeight);
+
+	// place abq logo
+	imagecopy(
+	// parking image (destination)
+		$image,
+		// abq logo (source)
+		$abq,
+		// place logo within source boundary
+		$imageWidth / 2.5, $imageHeight / 6.5,
+		// source x and y
+		0, 0,
+		// width and height of the area of the logo to copy
+		$abqWidth, $abqHeight);
+
+	// place ignite logo
+//	imagecopy(
+//	$image,
+//	// abq logo (source)
+//	$ignite,
+//	// place logo within source boundary
+//	$imageWidth / 1.189, $imageHeight / 2.1,
+//	// source x and y
+//	0, 0,
+//	// width and height of the area of the logo to copy
+//	$igniteWidth, $igniteHeight);
+
 
 	// output image
 	ob_start();
