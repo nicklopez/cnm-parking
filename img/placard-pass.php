@@ -38,7 +38,7 @@ function setDpi($jpg, $dpi) {
 
 // create a low resolution image of the proper pixel size
 $tempfile = tempnam("/tmp", "PASS");
-$image = imagecreatetruecolor(2400, 2500);
+$image = imagecreatetruecolor(2400, 2600);
 imagejpeg($image, $tempfile, 90);
 imagedestroy($image);
 
@@ -48,10 +48,10 @@ $image = imagecreatefromjpeg($tempfile);
 unlink($tempfile);
 
 // add the logo
-$logo = imagecreatefromjpeg('placard2a1.jpg');
+$logo = imagecreatefromjpeg('placard4.jpg');
 $logo2 = imagecreatefromjpeg('gmapd.jpg');
 $logo3 = imagecreatefromjpeg('ignite.jpg');
-$logo4 = imagecreatefromjpeg('abq.jpg');
+$logo4 = imagecreatefromjpeg('abq3.jpg');
 
 // fonts
 $font = 'fonts/Helvetica.ttf';
@@ -78,24 +78,25 @@ $timeFormat = "M j, y g:i a";
 
 
 imagettftext($image, 65, 0.0, 100, 125, $black, $font2, "Start Date/Time: Mar 25, '15 9:00 am");
-imagettftext($image, 65, 0.0, 100, 275, $black, $font2, "End Date/Time: Mar 25, '15 10:00 am");
+imagettftext($image, 65, 0.0, 100, 300, $black, $font2, "End Date/Time: Mar 25, '15 10:00 am");
 
-imagettftext($image, 50.0, 0.0, 100, 450, $black, $font, "Year: 2009" );
-imagettftext($image, 50.0, 0.0, 100, 550, $black, $font, "Make: Toyota" );
-imagettftext($image, 50.0, 0.0, 100, 650, $black, $font, "Model: Tacoma" );
-imagettftext($image, 50.0, 0.0, 100, 750, $black, $font, "Color: Red" );
+imagettftext($image, 50.0, 0.0, 100, 550, $black, $font, "Year: 2009" );
+imagettftext($image, 50.0, 0.0, 100, 650, $black, $font, "Make: Toyota" );
+imagettftext($image, 50.0, 0.0, 100, 750, $black, $font, "Model: Tacoma" );
+imagettftext($image, 50.0, 0.0, 100, 850, $black, $font, "Color: Red" );
 
 
-imagettftext($image, 65, 0.0, 100, 950, $black, $font2, "State/Lic. Plate #: NM - 000999" );
-imagettftext($image, 65, 0.0, 100, 1100, $black, $font2, "Location: 1st and Copper (CNM)");
+imagettftext($image, 65, 0.0, 100, 1125, $black, $font2, "State/Lic. Plate #: NM - 000999" );
+imagettftext($image, 65, 0.0, 100, 1300, $black, $font2, "Location: 1st and Copper (CNM)");
 
-imagettftext($logo, 60, 0, 250, 965, $black, $font2, "0205");
+imagettftext($logo, 70, 0, 260, 1130, $black, $font2, "0205");
 
-imagettftext($image, 25, 0.0, 150, 1300, $red, $font, "LEGAL NOTICE: Duplication or manufacturing of a parking permit is a crime. Handwritten changes will VOID an temporary parking pass.
+imagettftext($image, 25, 0.0, 150, 1460, $red, $font, "LEGAL NOTICE: Duplication or manufacturing of a parking permit is a crime. Handwritten changes will VOID an temporary parking pass.
 																													Vehicles displaying such permits will be cited.");
 
 // text for parking lot address
 imagettftext($image, 30, 0, 1800, 1800, $black, $font2, "Parking Lot Address:
+
 					1st and Copper
 					(Near Central Ave.
 					and 2nd St.)");
@@ -108,12 +109,12 @@ $w   = imagecolorallocate($image, 255, 255, 255);
 
 $style = array($black, $black, $w, $w);
 imagesetstyle($image, $style);
-imageline($image, 0, 1390, 2400, 1390, IMG_COLOR_STYLED);
-imagettftext($image, 20.0, 0.0, 1100, 1430, $black, $font2, "Fold Here");
+imageline($image, 0, 1550, 2400, 1550, IMG_COLOR_STYLED);
+imagettftext($image, 20.0, 0.0, 1100, 1590, $black, $font2, "Fold Here");
 
 imagelayereffect($logo, IMG_EFFECT_OVERLAY);
 
-imagerectangle($image, 10, 10, 2390, 1250, $green);
+imagerectangle($image, 10, 10, 2390, 1400, $green);
 
 //imagedashedline($image, 0, 1600, 2400, 1500, $red);
 
@@ -147,10 +148,10 @@ $logoHeight4=imagesy($logo4);
 imagecopy(
 // parking image (destination)
 	$image,
-	// abq logo (source)
+	// abq logo (source=)
 	$logo,
 	// place logo within source boundary
-	$imageWidth / 1.41, $imageHeight / 50,
+	$imageWidth / 1.45, $imageHeight / 50,
 	// source x and y
 	0, 0,
 	// width and height of the area of the logo to copy
@@ -162,8 +163,7 @@ imagecopy(
 	// abq logo (source)
 	$logo2,
 	// place logo within source boundary
-	$imageWidth / 3.3, $imageHeight / 1.60,
-	// source x and y
+	$imageWidth / 3.4, $imageHeight / 1.5,
 	0, 0,
 	// width and height of the area of the logo to copy
 	$logoWidth2, $logoHeight2);
@@ -174,7 +174,7 @@ imagecopy(
 	// abq logo (source)
 	$logo3,
 	// place logo within source boundary
-	$imageWidth / 1.189, $imageHeight / 2.1,
+	$imageWidth / 1.1869, $imageHeight / 1.935,
 	// source x and y
 	0, 0,
 	// width and height of the area of the logo to copy
@@ -186,7 +186,7 @@ imagecopy(
 	// abq logo (source)
 	$logo4,
 	// place logo within source boundary
-	$imageWidth / 2.5, $imageHeight / 6.5,
+	$imageWidth / 2.85, $imageHeight / 6.15,
 	// source x and y
 	0, 0,
 	// width and height of the area of the logo to copy

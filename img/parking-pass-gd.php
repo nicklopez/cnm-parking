@@ -53,7 +53,7 @@ function generatePassImage($pdo, $parkingPass, $vehicle, $font, $font2, $placard
 
 		// create a low resolution image of the proper pixel size
 		$tempfile = tempnam("/tmp", "PASS");
-		$image = imagecreatetruecolor(2400, 2500);
+		$image = imagecreatetruecolor(2400, 2600);
 		imagejpeg($image, $tempfile, 90);
 		imagedestroy($image);
 
@@ -94,20 +94,19 @@ function generatePassImage($pdo, $parkingPass, $vehicle, $font, $font2, $placard
 
 	// create image text
 	imagettftext($image, 65, 0.0, 100, 125, $black, $font2, "Start Date/Time: " . $parkingPass->getStartDateTime()->format($timeFormat));
-	imagettftext($image, 65, 0.0, 100, 275, $black, $font2, "End Date/Time: " . $parkingPass->getEndDateTime()->format($timeFormat));
+	imagettftext($image, 65, 0.0, 100, 300, $black, $font2, "End Date/Time: " . $parkingPass->getEndDateTime()->format($timeFormat));
 
-	imagettftext($image, 50.0, 0.0, 100, 450, $black, $font, "Year: " . $vehicle->getVehicleYear());
-	imagettftext($image, 50.0, 0.0, 100, 550, $black, $font, "Make: " . $vehicle->getVehicleMake());
-	imagettftext($image, 50.0, 0.0, 100, 650, $black, $font, "Model: " . $vehicle->getVehicleModel());
-	imagettftext($image, 50.0, 0.0, 100, 750, $black, $font, "Color: " . $vehicle->getVehicleColor());
+	imagettftext($image, 50.0, 0.0, 100, 550, $black, $font, "Year: " . $vehicle->getVehicleYear());
+	imagettftext($image, 50.0, 0.0, 100, 650, $black, $font, "Make: " . $vehicle->getVehicleMake());
+	imagettftext($image, 50.0, 0.0, 100, 750, $black, $font, "Model: " . $vehicle->getVehicleModel());
+	imagettftext($image, 50.0, 0.0, 100, 850, $black, $font, "Color: " . $vehicle->getVehicleColor());
 
-	imagettftext($image, 65, 0.0, 100, 950, $black, $font2, "State/Lic. Plate #: " . $vehicle->getVehiclePlateState() . " - " . $vehicle->getVehiclePlateNumber());
-	imagettftext($image, 65, 0.0, 100, 1100, $black, $font2, "Location: " . $location->getLocationDescription());
+	imagettftext($image, 65, 0.0, 100, 1125, $black, $font2, "State/Lic. Plate #: " . $vehicle->getVehiclePlateState() . " - " . $vehicle->getVehiclePlateNumber());
+	imagettftext($image, 65, 0.0, 100, 1300, $black, $font2, "Location: " . $location->getLocationDescription());
 
-	//imagettftext($image, 60, 0.0, 1750, 1220, $black, $font2, "#" . $parkingSpot->getPlacardNumber());
-	imagettftext($placard, 60, 0, 250, 965, $black, $font2, "0" . $parkingSpot->getPlacardNumber());
+	imagettftext($placard, 70, 0, 260, 1130, $black, $font2, "0" . $parkingSpot->getPlacardNumber());
 
-	imagettftext($image, 25, 0.0, 150, 1300, $red, $font, "LEGAL NOTICE: Duplication or manufacturing of a parking permit is a crime. Handwritten changes will VOID an temporary parking pass.
+	imagettftext($image, 25, 0.0, 150, 1460, $red, $font, "LEGAL NOTICE: Duplication or manufacturing of a parking permit is a crime. Handwritten changes will VOID an temporary parking pass.
 Vehicles displaying such permits will be cited. Attempts to fraudulently obtain parking privileges at CNM may result in disciplinary action.");
 
 	imagettftext($image, 30, 0, 1800, 1800, $black, $font2, "Parking Lot Address:
@@ -118,11 +117,11 @@ Vehicles displaying such permits will be cited. Attempts to fraudulently obtain 
 	//create dashed line
 	$style = array($black, $black, $white, $white);
 	imagesetstyle($image, $style);
-	imageline($image, 0, 1390, 2400, 1390, IMG_COLOR_STYLED);
-	imagettftext($image, 20.0, 0.0, 1100, 1430, $black, $font, "Fold Here");
+	imageline($image, 0, 1550, 2400, 1550, IMG_COLOR_STYLED);
+	imagettftext($image, 20.0, 0.0, 1100, 1590, $black, $font, "Fold Here");
 
 	// create border
-	imagerectangle($image, 10, 10, 2390, 1250, $green);
+	imagerectangle($image, 10, 10, 2390, 1400, $green);
 
 	// create map image
 	$map = imagecreatefromjpeg($mapF);
@@ -159,7 +158,7 @@ Vehicles displaying such permits will be cited. Attempts to fraudulently obtain 
 		// abq logo (source)
 		$placard,
 		// place logo within source boundary
-		$imageWidth / 1.41, $imageHeight / 50,
+		$imageWidth / 1.45, $imageHeight / 50,
 		// source x and y
 		0, 0,
 		// width and height of the area of the logo to copy
@@ -172,7 +171,7 @@ Vehicles displaying such permits will be cited. Attempts to fraudulently obtain 
 		// abq logo (source)
 		$map,
 		// place logo within source boundary
-		$imageWidth / 3.3, $imageHeight / 1.60,
+		$imageWidth / 3.4, $imageHeight / 1.5,
 		// source x and y
 		0, 0,
 		// width and height of the area of the logo to copy
@@ -185,7 +184,7 @@ Vehicles displaying such permits will be cited. Attempts to fraudulently obtain 
 		// abq logo (source)
 		$abq,
 		// place logo within source boundary
-		$imageWidth / 2.5, $imageHeight / 6.5,
+		$imageWidth / 2.85, $imageHeight / 6.15,
 		// source x and y
 		0, 0,
 		// width and height of the area of the logo to copy
