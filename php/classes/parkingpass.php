@@ -1253,8 +1253,9 @@ class ParkingPass {
 		}
 
 		// create query template
-		$query = "SELECT count(startDateTime) AS title, DATE_FORMAT(startDateTime, '%Y-%m-%d') AS start FROM parkingPass WHERE startDateTime >= :startDateTime AND endDateTime <= :endDateTime
+		$query = "SELECT CONCAT('Passes: ', count(startDateTime)) AS title, DATE_FORMAT(startDateTime, '%Y-%m-%d') AS start FROM parkingPass WHERE startDateTime >= :startDateTime AND endDateTime <= :endDateTime
 		GROUP BY start";
+
 		$statement = $pdo->prepare($query);
 		if($statement === false) {
 			throw(new PDOException(" unable to prepare statement"));
@@ -1285,6 +1286,70 @@ class ParkingPass {
 		}
 
 		return ($passCount);
+	}
+
+	/**
+	 * gets total assigned placards (physical) by date range
+	 *
+	 * @param PDO $pdo pointer to mySQL connection, by reference
+	 * @param string $startDateTime startDateTime range to search for
+	 * @param string $endDateTime endDateTime range to search for
+	 * @return mixed total number of parking passes if found or null if not found
+	 * @throws RangeException if data values are out of bounds (e.g., strings too long, negative integers)
+	 * @throws PDOException when mySQL related errors occur
+	 */
+	public static function getPhysicalPlacardCountByDateRange(&$pdo, $startDateTime, $endDateTime) {
+		// handle degenerate cases
+		if(gettype($pdo) !== "object" || get_class($pdo) !== "PDO") {
+			throw(new PDOException("input is not a PDO object"));
+		}
+
+		// sanitize before searching - Using static function
+		try {
+			$startDateTime = self::sanitizeDate($startDateTime);
+			$endDateTime = self::sanitizeDate($endDateTime);
+		} catch(InvalidArgumentException $invalidArgument) {
+			throw(new InvalidArgumentException($invalidArgument->getMessage(), 0, $invalidArgument));
+		} catch(RangeException $range) {
+			throw(new RangeException($range->getMessage(), 0, $range));
+		}
+
+		// create query template
+		$query = "SELECT DATE_FORMAT(startDateTime, '%Y-%m-%d') AS start, CONCAT('Placards: ', (SELECT COUNT(startDateTime)
+		FROM placardAssignment
+		WHERE startDateTime BETWEEN :startDateTime AND start AND returnDateTime IS NULL)) AS title
+		FROM parkingPass WHERE startDateTime >= :startDateTime and endDateTime <= :endDateTime
+		GROUP BY DATE_FORMAT(startDateTime, '%Y-%m-%d')";
+
+		$statement = $pdo->prepare($query);
+		if($statement === false) {
+			throw(new PDOException(" unable to prepare statement"));
+		}
+
+		// bind the member variables to the place holders in the template
+		$startDateTime = $startDateTime->format("Y-m-d H:i:s");
+		$endDateTime = $endDateTime->format("Y-m-d H:i:s");
+		$parameters = array("startDateTime" => $startDateTime, "endDateTime" => $endDateTime);
+		// execute the statement
+		$statement->execute($parameters);
+		$statement->setFetchMode(PDO::FETCH_ASSOC);
+
+		// build array of parkingPass
+		$placardCount = array();
+		while(($row = $statement->fetch()) !== false) {
+			try {
+				if(($row["title"]) === "0") {
+					return null;
+				} else {
+					$placardCount[] = $row;
+				}
+			} catch(Exception $exception) {
+				// if the row couldn't be converted, rethrow it
+				throw(new PDOException($exception->getMessage(), 0, $exception));
+			}
+		}
+
+		return ($placardCount);
 	}
 
 	/**

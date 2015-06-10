@@ -13,6 +13,10 @@ session_start();
 ?>
 
 	<div class="container-fluid">
+		<h1>Welcome!</h1>
+		<h4>Please fill out the form below.  Once approved, you will receive a separate invite (via email) to generate your parking pass.</h4>
+	</div>
+	<div class="container-fluid">
 		<form id="request-invite" method="post" action="../php/controllers/request-invite-post.php" novalidate="novalidate">
 			<?php echo generateInputTags(); ?>
 			<div class="form-group">

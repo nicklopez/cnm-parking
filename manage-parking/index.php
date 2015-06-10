@@ -158,11 +158,11 @@ $objects = Location::getAllLocationsAndParkingSpots($pdo);
 					<div class="row container-fluid">
 						<div class="form-group col-xs-6">
 							<label for="startDate">Start Date</label>
-							<input class="form-control" type="date" id="startDate" name="startDate" placeholder="mm/dd/yyyy">
+							<input class="form-control" type="text" id="startDate" name="startDate" placeholder="mm/dd/yyyy">
 						</div>
 						<div class="form-group col-xs-6">
 							<label for="endDate">End Date</label>
-							<input class="form-control" type="date" id="endDate" name="endDate" placeholder="mm/dd/yyyy">
+							<input class="form-control" type="text" id="endDate" name="endDate" placeholder="mm/dd/yyyy">
 						</div>
 						<div class="form-group col-xs-6">
 							<label for="placard">Placard</label>

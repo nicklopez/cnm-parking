@@ -22,7 +22,18 @@ $(document).ready(
 				center: "",
 				right: "today, prev, next"
 			},
-			events: "../controllers/event.php",
+			//events: "../controllers/event.php",
+			eventSources: [
+				{
+					url: "../controllers/all-day-event.php",
+					color: 'grey'
+					//textColor: 'black'
+				},
+
+				{
+					url: "../controllers/event.php"
+				}
+			],
 			allDay: true
 		});
 	});

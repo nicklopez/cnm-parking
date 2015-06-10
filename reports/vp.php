@@ -41,11 +41,11 @@ if(!isset($_SESSION["adminProfileId"])) {
 				<?php echo generateInputTags(); ?>
 				<div class="form-group">
 					<label for="reportStartDate">Start Date</label>
-					<input type="date" class="form-control date" id="reportStartDate" name="reportStartDate" placeholder="mm/dd/yyyy">
+					<input type="text" class="form-control date" id="reportStartDate" name="reportStartDate" placeholder="mm/dd/yyyy">
 				</div>
 				<div class="form-group">
 					<label for="reportEndDate">End Date</label>
-					<input type="date" class="form-control date" id="reportEndDate" name="reportEndDate" placeholder="mm/dd/yyyy">
+					<input type="text" class="form-control date" id="reportEndDate" name="reportEndDate" placeholder="mm/dd/yyyy">
 				</div>
 				<button type="submit" class="btn btn-primary">Run Report</button>
 			</form>
